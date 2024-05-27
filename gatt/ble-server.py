@@ -1,90 +1,3 @@
-# import sys
-# import logging
-# import asyncio
-# import threading
-# import socket
-#
-# from typing import Any, Union
-#
-# from bless import (  # pylint: disable=import-error
-#     BlessServer,
-#     BlessGATTCharacteristic,
-#     GATTCharacteristicProperties,
-#     GATTAttributePermissions,
-# )
-#
-# logging.basicConfig(level=logging.DEBUG)
-# logger = logging.getLogger(name=__name__)
-#
-# # NOTE: Some systems require different synchronization methods.
-# trigger = asyncio.Event()
-#
-# def send_data_to_cpp(data):
-#     # Create a TCP/IP socket
-#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#     server_address = ('localhost', 10000)
-#     try:
-#         sock.connect(server_address)
-#         sock.sendall(data)
-#     finally:
-#         # Clean up
-#         sock.close()
-#
-# def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
-#     logger.debug(f"Reading {characteristic.value}")
-#     return characteristic.value
-#
-#
-# def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
-#     # characteristic.value = value
-#     send_data_to_cpp(value)
-#     #logger.debug(f"Received {characteristic.value}")
-#
-#
-#
-# async def run(loop):
-#
-#     trigger.clear()
-#
-#     # Instantiate the server
-#     service_name = "PixelForge"
-#     server = BlessServer(name=service_name, loop=loop)
-#     server.read_request_func = read_request
-#     server.write_request_func = write_request
-#
-#     # Add Service
-#     service_uuid = "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2"
-#     await server.add_new_service(service_uuid)
-#
-#     # Create first-setup characteristic
-#     setup_characteristic_uuid = "9d0e35da-bc0f-473e-a32c-25d33eaae17a"
-#     char_flags = (
-#         GATTCharacteristicProperties.read
-#         | GATTCharacteristicProperties.write
-#         | GATTCharacteristicProperties.indicate
-#     )
-#     permissions = GATTAttributePermissions.readable | GATTAttributePermissions.writeable
-#     await server.add_new_characteristic(
-#         service_uuid, setup_characteristic_uuid, char_flags, None, permissions
-#     )
-#
-#     await server.start()
-#     await trigger.wait()
-#     await asyncio.sleep(2)
-#     server.get_characteristic(setup_characteristic_uuid)
-#     server.update_value(service_uuid, setup_characteristic_uuid)
-#     await asyncio.sleep(5)
-#     await server.stop()
-#
-#
-# loop = asyncio.get_event_loop()
-# loop.run_until_complete(run(loop))
-
-
-"""
-Example for a BLE 4.0 Server using a GATT dictionary of services and
-characteristics
-"""
 import sys
 import logging
 import asyncio
@@ -93,7 +6,7 @@ import socket
 
 from typing import Any, Dict, Union
 
-from bless import (  # type: ignore
+from bless import ( 
     BlessServer,
     BlessGATTCharacteristic,
     GATTCharacteristicProperties,
