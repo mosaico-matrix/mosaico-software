@@ -1,0 +1,12 @@
+def renderFrame()
+{
+    print("[CHAI] Rendering frame");
+
+   // setPixel();
+
+  //  clear();
+
+    // Wooow use this for drawers
+    var z = Canvas();
+    z.setPixel();
+}

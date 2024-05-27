@@ -1,0 +1,28 @@
+# DO NOT USE THIS, USE THE MAIN CMakelists.txt FILE INSTEAD
+
+# Compiler flags
+CFLAGS = -std=c++11 -Wall -Wextra -fPIC -static-libstdc++ -static-libgcc
+# Include directories
+INCLUDES = -I../include -I../include/restclient-cpp
+# Source files
+SOURCES = connection.cc \
+          helpers.cc \
+          restclient.cc
+
+# Object files
+OBJECTS = $(SOURCES:.cc=.o)
+
+# Shared library name
+LIBRARY = librestclient.so
+
+# Rule for compiling .cc files to .o files
+%.o: %.cc
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Rule for building the library
+$(LIBRARY): $(OBJECTS)
+	$(CC) $(CFLAGS) -shared $(OBJECTS) -o $(LIBRARY)
+
+# Rule for cleaning up
+clean:
+	rm -f $(LIBRARY) $(OBJECTS)

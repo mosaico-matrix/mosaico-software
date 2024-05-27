@@ -1,0 +1,46 @@
+# Cross-compilation
+Building on Raspberry Pi is sloooow, so it's better to cross-compile on a faster machine, especially if you're going to play with the code.
+I followed this tutorial in order to set up cross-compilation environment: https://tttapa.github.io/Pages/Raspberry-Pi/C++-Development-RPiOS/index.html
+
+## Set up the toolchain (Raspberry pi 0)
+
+### Create opt in home di
+```bash
+mkdir -p ~/opt
+```
+
+### Download the toolchain and extract it to ~/opt
+```bash
+wget -qO- https://github.com/tttapa/docker-arm-cross-toolchain/releases/download/0.2.0/x-tools-armv6-rpi-linux-gnueabihf-gcc14.tar.xz | tar xJ -C ~/opt;
+```
+Note that the release can be deleted, try to find the latest release on the release page
+
+### Add the toolchain to the PATH
+```bash
+echo 'export PATH="$HOME/opt/x-tools/armv6-rpi-linux-gnueabihf/bin:$PATH"' >>~/.zshrc # or ~/.bashrc
+source ~/.zshrc # or ~/.bashrc
+```
+
+### Test the toolchain
+```bash
+armv6-rpi-linux-gnueabihf-g++ --version
+```
+
+### CURL
+```bash
+apt install libtool
+apt install autoconf
+cd external
+wget http://curl.haxx.se/download/curl-7.40.0.tar.gz
+tar xzf curl-7.40.0.tar.gz
+mkdir curl
+cd curl-7.40.0
+export CC="armv6-rpi-linux-gnueabihf-gcc"
+export CXX="armv6-rpi-linux-gnueabihf-g++"
+autoreconf -i
+./configure --host=arm-linux-gnueabihf --prefix=$(pwd)/../curl
+make
+make install
+```
+This should place compiled CURL in ./magic-square-software/external/curl, note that i only compiled from source for convenience,
+you can install it from apt in the virtual environment if cross-compiling

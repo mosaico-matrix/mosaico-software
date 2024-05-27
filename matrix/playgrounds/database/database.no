@@ -1,0 +1,99 @@
+#include <iostream>
+#include "/home/murkrow/Repos/MagicSquare/magic-square-software/external/sqlite-modern-cpp /sqlite_modern_cpp.h"
+#include <string>
+#include <vector>
+
+class Database {
+
+private:
+    std::string db_path;
+    sqlite::database db;
+
+    void createRunner()
+    {
+        // Define what to do for creating a runner, if needed
+    }
+
+    bool isMigrated()
+    {
+        // Check if the database is migrated
+        int count;
+        db << "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='runners';" >> count;
+
+        return count == 1;
+    }
+
+    bool isEmpty()
+    {
+        // Check if the database is empty
+        int count;
+        db << "SELECT COUNT(*) FROM runners;" >> count;
+        return count == 0;
+    }
+
+    void seed()
+    {
+        // Seed the database with some data
+        addRunner("Runner 1", 1);
+        addRunner("Runner 2", 2);
+        addRunner("Runner 3", 3);
+    }
+
+    void migrate()
+    {
+        // RUNNERS
+        db << "CREATE TABLE IF NOT EXISTS runners ("
+              "id INTEGER PRIMARY KEY,"
+              "name TEXT NOT NULL"
+              ");";
+
+        // SLIDESHOWS
+
+        std::cout << "Database migrated!" << std::endl;
+    }
+
+public:
+    Database(const std::string &path) : db_path(path), db(db_path)
+    {
+        if (!isMigrated())
+        {
+            std::cout << "Migrating database..." << std::endl;
+            migrate();
+        }
+
+        if (isEmpty())
+        {
+            std::cout << "Seeding database..." << std::endl;
+            seed();
+        }
+    }
+
+    void getRunners()
+    {
+        // Get all runners
+        std::vector<std::string> runners;
+        db << "SELECT name FROM runners;" >> [&](std::string name) {
+            runners.push_back(name);
+        };
+
+        // Print runners for demonstration
+        for (const auto &runner : runners)
+        {
+            std::cout << "Runner: " << runner << std::endl;
+        }
+    }
+
+    void addRunner(const std::string &name, const int &id = 0)
+    {
+        db << "INSERT INTO runners (id, name) VALUES (?, ?);" << id << name;
+    }
+};
+
+int main()
+{
+    Database db("../../database.db");
+    //db.addRunner("Runner 10", 10);
+    db.getRunners();
+
+    return 0;
+}

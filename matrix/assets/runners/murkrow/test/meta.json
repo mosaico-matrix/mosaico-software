@@ -1,0 +1,30 @@
+{
+  "author": "murkrow",
+  "name": "test",
+  "version": 0.1,
+  "fps": 30,
+  "passive": true,
+  "user_input": {
+    "nameable": true,
+    "form_template": [
+      {
+        "name": "title",
+        "type": "text",
+        "required": true,
+        "default": "todo"
+      },
+      {
+        "name": "items",
+        "type": "text[]",
+        "default": [],
+        "required": true
+      },
+      {
+        "name": "image",
+        "type": "image",
+        "default": "",
+        "required": false
+      }
+    ]
+  }
+}

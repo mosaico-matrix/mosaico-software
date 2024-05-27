@@ -1,0 +1,8 @@
+cmake-build-debug
+CMakeFiles
+CMakeCache.txt
+magic_square_sw
+.idea
+/.cmake/
+/.cmake/api/
+/.cmake/api/v1/
