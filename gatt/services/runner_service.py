@@ -37,7 +37,7 @@ class RunnerService:
         
     
     characteristics = {
-        "active": "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2"
+        "active": "9d0e35da-bc0f-473e-a32c-25d33eaae17a"
     }
     
     
@@ -47,6 +47,8 @@ class RunnerService:
         await self.server.add_new_service(self.service_uuid)
         
         # Register the characteristics
+        print(f"RunnerService: Registering characteristics for service: {self.service_uuid}")
+        print(f"RunnerService: Registering characteristic: {self.characteristics['active']}")
         await self.server.add_new_characteristic(
             self.service_uuid,
             self.characteristics["active"],
