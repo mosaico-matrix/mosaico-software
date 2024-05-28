@@ -3,6 +3,8 @@ import logging
 import asyncio
 import threading
 import socket
+from services.service_dispatcher import ServiceDispatcher
+from services.runner_service import RunnerService
 
 from typing import Any, Dict, Union
 
@@ -13,7 +15,7 @@ from bless import (
     GATTAttributePermissions,
 )
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(name=__name__)
 
 trigger: Union[asyncio.Event, threading.Event]
@@ -21,6 +23,17 @@ if sys.platform in ["darwin", "win32"]:
     trigger = threading.Event()
 else:
     trigger = asyncio.Event()
+
+
+# Dispatch services
+services: Dict = {
+    "runner": {
+        "uuid": "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2",
+        "class": RunnerService(),
+    },
+}
+service_dispatcher = ServiceDispatcher()
+service_dispatcher.register_services(services)
 
 
 def send_data_to_cpp(data):
@@ -35,17 +48,17 @@ def send_data_to_cpp(data):
         sock.close()
 
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
-    logger.debug(f"Reading {characteristic.value}")
+    logger.debug(f"Reading {characteristic}")
     return characteristic.value
 
 
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
+    service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
+    return
+    logger.debug(characteristic.uuid)
     characteristic.value = value
     logger.debug(f"Char value set to {characteristic.value}")
-    send_data_to_cpp(value)
-    if characteristic.value == b"\x0f":
-        logger.debug("Nice")
-        trigger.set()
+    #send_data_to_cpp(value)
 
 
 async def run(loop):
@@ -54,14 +67,14 @@ async def run(loop):
 
     # Instantiate the server
     gatt: Dict = {
-        "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2": {
+        services["runner"]["uuid"]: {
             "9d0e35da-bc0f-473e-a32c-25d33eaae17a": {
                 "Properties": (
                         GATTCharacteristicProperties.read
                         | GATTCharacteristicProperties.write
                         | GATTCharacteristicProperties.indicate
                 ),
-                "Permissions": (
+                "Permissions": ( 
                         GATTAttributePermissions.readable
                         | GATTAttributePermissions.writeable
                 ),
@@ -77,31 +90,20 @@ async def run(loop):
         # },
     }
 
+    # Configure the server
     my_service_name = "PixelForge"
     server = BlessServer(name=my_service_name, loop=loop)
     server.read_request_func = read_request
     server.write_request_func = write_request
-
     await server.add_gatt(gatt)
+
+    # Start server
     await server.start()
-    #logger.debug(server.get_characteristic("51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"))
     logger.debug("Advertising")
-    logger.info(
-        "Write '0xF' to the advertised characteristic: "
-        + "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"
-    )
     if trigger.__module__ == "threading":
         trigger.wait()
     else:
         await trigger.wait()
-    await asyncio.sleep(2)
-    logger.debug("Updating")
-    # server.get_characteristic("51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B").value = bytearray(
-    #     b"i"
-    # )
-    # server.update_value(
-    #     "A07498CA-AD5B-474E-940D-16F1FBE7E8CD", "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"
-    # )
     await asyncio.sleep(5)
     await server.stop()
 
