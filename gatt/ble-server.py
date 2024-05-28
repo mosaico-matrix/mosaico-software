@@ -54,23 +54,19 @@ def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs)
 async def run(loop):
 
     trigger.clear()
-    
-    
     # Configure server
     server = BlessServer(name="PixelForge", loop=loop)
     server.read_request_func = read_request
     server.write_request_func = write_request
 
 
-    # Dispatch services
-    runner_service_uuid = "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2"
-    services: Dict = {
-        "runner": {
-            "uuid": runner_service_uuid,
-            "class": await RunnerService.create(server, runner_service_uuid),
-        },
-    }
-    service_dispatcher.register_services(services)
+    # Enum all the possible services and initialize them
+    services = [
+        await RunnerService.create(server),
+    ]
+    
+    # Register services with the dispatcher in order to dispatch read and write requests to the appropriate service.
+    service_dispatcher.register_services(services) 
         
     # Start server
     await server.start()

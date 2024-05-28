@@ -1,3 +1,5 @@
 .DS_STORE
 
 gatt/services/__pycache__/
+
+gatt/.idea/
