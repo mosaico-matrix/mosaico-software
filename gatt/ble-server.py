@@ -17,23 +17,13 @@ from bless import (
 
 logging.basicConfig(level=logging.CRITICAL)
 logger = logging.getLogger(name=__name__)
+service_dispatcher = ServiceDispatcher()
 
 trigger: Union[asyncio.Event, threading.Event]
 if sys.platform in ["darwin", "win32"]:
     trigger = threading.Event()
 else:
     trigger = asyncio.Event()
-
-
-# Dispatch services
-services: Dict = {
-    "runner": {
-        "uuid": "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2",
-        "class": RunnerService(),
-    },
-}
-service_dispatcher = ServiceDispatcher()
-service_dispatcher.register_services(services)
 
 
 def send_data_to_cpp(data):
@@ -64,39 +54,24 @@ def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs)
 async def run(loop):
 
     trigger.clear()
-
-    # Instantiate the server
-    gatt: Dict = {
-        services["runner"]["uuid"]: {
-            "9d0e35da-bc0f-473e-a32c-25d33eaae17a": {
-                "Properties": (
-                        GATTCharacteristicProperties.read
-                        | GATTCharacteristicProperties.write
-                        | GATTCharacteristicProperties.indicate
-                ),
-                "Permissions": ( 
-                        GATTAttributePermissions.readable
-                        | GATTAttributePermissions.writeable
-                ),
-                "Value": None,
-            }
-        },
-        # "5c339364-c7be-4f23-b666-a8ff73a6a86a": {
-        #     "bfc0c92f-317d-4ba9-976b-cc11ce77b4ca": {
-        #         "Properties": GATTCharacteristicProperties.read,
-        #         "Permissions": GATTAttributePermissions.readable,
-        #         "Value": bytearray(b"\x69"),
-        #     }
-        # },
-    }
-
-    # Configure the server
-    my_service_name = "PixelForge"
-    server = BlessServer(name=my_service_name, loop=loop)
+    
+    
+    # Configure server
+    server = BlessServer(name="PixelForge", loop=loop)
     server.read_request_func = read_request
     server.write_request_func = write_request
-    await server.add_gatt(gatt)
 
+
+    # Dispatch services
+    runner_service_uuid = "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2"
+    services: Dict = {
+        "runner": {
+            "uuid": runner_service_uuid,
+            "class": await RunnerService.create(server, runner_service_uuid),
+        },
+    }
+    service_dispatcher.register_services(services)
+        
     # Start server
     await server.start()
     logger.debug("Advertising")
@@ -106,6 +81,7 @@ async def run(loop):
         await trigger.wait()
     await asyncio.sleep(5)
     await server.stop()
+
 
 
 loop = asyncio.get_event_loop()
