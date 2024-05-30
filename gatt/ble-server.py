@@ -3,19 +3,21 @@ import logging
 import asyncio
 import threading
 import socket
+
+from services.welcome_service import WelcomeService
 from services.service_dispatcher import ServiceDispatcher
 from services.runner_service import RunnerService
-
+from db import init as init_db
 from typing import Any, Dict, Union
 
-from bless import ( 
+from bless import (
     BlessServer,
     BlessGATTCharacteristic,
     GATTCharacteristicProperties,
     GATTAttributePermissions,
 )
 
-logging.basicConfig(level=logging.CRITICAL)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(name=__name__)
 service_dispatcher = ServiceDispatcher()
 
@@ -38,18 +40,13 @@ def send_data_to_cpp(data):
         sock.close()
 
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
-    logger.debug(f"Reading {characteristic}")
-    return characteristic.value
+    print(f"Read request for characteristic: {characteristic.uuid}")
+    #return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
 
 
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
-    service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
-    return
-    logger.debug(characteristic.uuid)
-    characteristic.value = value
-    logger.debug(f"Char value set to {characteristic.value}")
-    #send_data_to_cpp(value)
-
+    print(f"Write request for characteristic: {characteristic.uuid} with value: {value}")
+    #service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
 
 async def run(loop):
 
@@ -62,12 +59,13 @@ async def run(loop):
 
     # Enum all the possible services and initialize them
     services = [
+       # await WelcomeService.create(server),
         await RunnerService.create(server),
     ]
-    
+
     # Register services with the dispatcher in order to dispatch read and write requests to the appropriate service.
-    service_dispatcher.register_services(services) 
-        
+    service_dispatcher.register_services(services)
+
     # Start server
     await server.start()
     logger.debug("Advertising")
@@ -78,7 +76,8 @@ async def run(loop):
     await asyncio.sleep(5)
     await server.stop()
 
-
+# Init database
+init_db()
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(run(loop))

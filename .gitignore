@@ -3,3 +3,7 @@
 gatt/services/__pycache__/
 
 gatt/.idea/
+
+.idea/
+
+gatt/__pycache__/
