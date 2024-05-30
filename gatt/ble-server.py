@@ -4,7 +4,7 @@ import asyncio
 import threading
 import socket
 
-from services.welcome_service import WelcomeService
+from services.matrix_service import MatrixService
 from services.service_dispatcher import ServiceDispatcher
 from services.runner_service import RunnerService
 from db import init as init_db
@@ -56,11 +56,11 @@ async def run(loop):
     server.read_request_func = read_request
     server.write_request_func = write_request
 
-
     # Enum all the possible services and initialize them
     services = [
-       # await WelcomeService.create(server),
-        await RunnerService.create(server),
+        # We cannot initialize more than one service at a time since this lib is bugged :(
+        #await RunnerService.create(server),
+        await MatrixService.create(server)
     ]
 
     # Register services with the dispatcher in order to dispatch read and write requests to the appropriate service.
