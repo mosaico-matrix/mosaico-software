@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="MatrixExample"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/murkrow/Repos/mosaico/mosaico-software/matrix"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="restclient">
+				<Option output="/home/murkrow/Repos/mosaico/mosaico-software/matrix/librestclient.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/murkrow/Repos/mosaico/mosaico-software/matrix"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/lib"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/include"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/restclient/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 restclient"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="restclient/fast">
+				<Option output="/home/murkrow/Repos/mosaico/mosaico-software/matrix/librestclient.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/murkrow/Repos/mosaico/mosaico-software/matrix"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/lib"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/include"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/restclient/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 restclient/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="main">
+				<Option output="/home/murkrow/Repos/mosaico/mosaico-software/matrix/main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/murkrow/Repos/mosaico/mosaico-software/matrix"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/lib"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/include"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/restclient/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 main"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="main/fast">
+				<Option output="/home/murkrow/Repos/mosaico/mosaico-software/matrix/main" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/murkrow/Repos/mosaico/mosaico-software/matrix"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/lib"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/rpi-rgb-led-matrix/include"/>
+					<Add directory="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/restclient/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 main/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/murkrow/Repos/mosaico/mosaico-software/matrix"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/murkrow/Repos/mosaico/mosaico-software/matrix"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/murkrow/Repos/mosaico/mosaico-software/matrix/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/configs.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/restclient/source/connection.cc">
+			<Option target="restclient"/>
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/restclient/source/helpers.cc">
+			<Option target="restclient"/>
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/external/restclient/source/restclient.cc">
+			<Option target="restclient"/>
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/logger/console-logger.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/main.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/canvas-buffer.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/canvas-layer.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/drawables/animation-drawer.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/drawables/colors.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/drawables/drawable-ppm.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/drawables/drawable-text.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/drawables/drawable.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/drawables/drawable.h">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/matrices/matrix-builder.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/matrices/matrix-device.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/matrices/x11-matrix.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/matrix-slideshow.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/dynamic/dynamic-runner-metadata.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/dynamic/dynamic-runner-parser.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/dynamic/dynamic-runner.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/dynamic/modules/rest-module.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/games/flappy-bird.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/games/pixel-mover.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/games/tetris.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/loading-runner.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/matrix-runner.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/matrix/runners/matrix-runner.h">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/networking/server/ble/ble-server.cpp">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/playgrounds/database/database.no">
+			<Option target="main"/>
+		</Unit>
+		<Unit filename="/home/murkrow/Repos/mosaico/mosaico-software/matrix/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

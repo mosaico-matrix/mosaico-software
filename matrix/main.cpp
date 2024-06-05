@@ -27,6 +27,33 @@ void signalHandler(int signal) {
     }
 }
 
+// Handle commands received from Python through BLE
+void commandHandler(const std::string& command, const std::string& data) {
+
+    // Handle different commands
+    if (command == "CMD1") {
+
+        // Create new slideshow
+        newSlideshowReceived = new MatrixSlideshow(matrix);
+        newSlideshowReceived->setDynamicRunner();
+
+        // Do something with data for command 1
+        std::cout << "Received CMD1 with data: " << data << std::endl;
+        // Send response back to Python
+        bleServer->sendResponse("Response to CMD1");
+    } else if (command == "CMD2") {
+        // Do something with data for command 2
+        std::cout << "Received CMD2 with data: " << data << std::endl;
+        // Send response back to Python
+        bleServer->sendResponse("Response to CMD2");
+    } else {
+        // Unknown command
+        std::cerr << "Unknown command: " << command << std::endl;
+        // Send error response back to Python
+        bleServer->sendResponse("Unknown command");
+    }
+}
+
 
 // This is run while loading screena is shown
 void initStuffBackground() {
@@ -36,7 +63,7 @@ void initStuffBackground() {
 
     // Load fonts in memory to prevent lag when rendering text
     Logger::logInfo("Loading fonts...");
-    //DrawableText::loadFonts();
+    DrawableText::loadFonts();
 
     // Set matrix as fully initialized
     matrixFullyInitialized = true;
@@ -55,53 +82,8 @@ void initStuffBackground() {
     bleServer = new BleServer();
     while (true)
     {
-
-    }
-
-
-
-    bleServer->startListening();
-}
-
-void handleCommand(const std::string& command, const std::string& data) {
-
-    // Handle different commands
-    if (command == "CMD1") {
-        // Do something with data for command 1
-        std::cout << "Received CMD1 with data: " << data << std::endl;
-        // Send response back to Python
-        bleServer->sendResponse("Response to CMD1");
-    } else if (command == "CMD2") {
-        // Do something with data for command 2
-        std::cout << "Received CMD2 with data: " << data << std::endl;
-        // Send response back to Python
-        bleServer->sendResponse("Response to CMD2");
-    } else {
-        // Unknown command
-        std::cerr << "Unknown command: " << command << std::endl;
-        // Send error response back to Python
-        bleServer->sendResponse("Unknown command");
-    }
-}
-
-// In background thread, listen for TCP commands
-void listenTcp() {
-    while (true) {
-        try {
-           // MatrixSlideshow *slideshowReceived = tcpServer->listenForCommands();
-
-            // Ignore if matrix is not fully initialized
-            if (!matrixFullyInitialized) {
-                Logger::logDebug("Ignoring new slideshow, matrix not fully initialized");
-                continue;
-            }
-
-            // Set the new slideshow
-            //newSlideshowReceived = slideshowReceived;
-
-        } catch (std::exception &e) {
-            Logger::logError("Error downloading slideshow: " + std::string(e.what()));
-        }
+        auto command = bleServer->waitNextCommand();
+        commandHandler(command.first, command.second);
     }
 }
 

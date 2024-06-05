@@ -137,7 +137,8 @@ public:
     }
 
 
-    std::pair<std::string, std::string> twoStrings() {
+    std::pair<std::string, std::string> waitNextCommand() {
+
         // Accept connection
         if (acceptConnection(server_fd, new_socket, address, addrlen) != 0) {
             Logger::logFatal("Failed to accept connection");
@@ -148,27 +149,22 @@ public:
             Logger::logFatal("Failed to read from socket");
         }
 
-        // Print received data
+        // Return command and data
         std::string receivedData(buffer);
         if (!receivedData.empty()) {
+
             // Parse command and data
             std::istringstream iss(receivedData);
             std::string command;
             std::string data;
             iss >> command >> data;
 
-            // Handle command
-            handleCommand(command, data);
+            return {std::move(command), std::move(data)};
         }
+
+        return {"", ""};
     }
 
-    void startListening() {
-
-        while (true) {
-
-
-        }
-    }
 
     void sendResponse(const char *response) {
         // Send response back to Python
