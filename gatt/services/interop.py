@@ -1,7 +1,7 @@
 import socket
 
 
-def send_data_to_cpp(command, data):
+def call_matrix(command, data):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_address = ('localhost', 10000)
     sock.connect(server_address)

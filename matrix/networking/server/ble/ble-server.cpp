@@ -93,32 +93,6 @@ private:
         return 0;
     }
 
-    void sendResponse(const char *response) {
-        // Send response back to Python
-        send(new_socket, response, strlen(response), 0);
-    }
-
-    void handleCommand(const std::string& command, const std::string& data) {
-
-        // Handle different commands
-        if (command == "CMD1") {
-            // Do something with data for command 1
-            std::cout << "Received CMD1 with data: " << data << std::endl;
-            // Send response back to Python
-            sendResponse("Response to CMD1");
-        } else if (command == "CMD2") {
-            // Do something with data for command 2
-            std::cout << "Received CMD2 with data: " << data << std::endl;
-            // Send response back to Python
-            sendResponse("Response to CMD2");
-        } else {
-            // Unknown command
-            std::cerr << "Unknown command: " << command << std::endl;
-            // Send error response back to Python
-            sendResponse("Unknown command");
-        }
-    }
-
     void closeSocket(int server_fd) {
         close(server_fd);
     }
@@ -155,40 +129,50 @@ public:
         if (bindSocket(server_fd, address) != 0) {
             Logger::logFatal("Failed to bind socket");
         }
-    }
-
-    void startListening() {
 
         // Start listening
         if (startListening(server_fd) != 0) {
             Logger::logFatal("Failed to start listening");
         }
+    }
+
+
+    std::pair<std::string, std::string> twoStrings() {
+        // Accept connection
+        if (acceptConnection(server_fd, new_socket, address, addrlen) != 0) {
+            Logger::logFatal("Failed to accept connection");
+        }
+
+        // Read from socket
+        if (readSocket(new_socket, buffer, sizeof(buffer), valread) != 0) {
+            Logger::logFatal("Failed to read from socket");
+        }
+
+        // Print received data
+        std::string receivedData(buffer);
+        if (!receivedData.empty()) {
+            // Parse command and data
+            std::istringstream iss(receivedData);
+            std::string command;
+            std::string data;
+            iss >> command >> data;
+
+            // Handle command
+            handleCommand(command, data);
+        }
+    }
+
+    void startListening() {
 
         while (true) {
 
-            // Accept connection
-            if (acceptConnection(server_fd, new_socket, address, addrlen) != 0) {
-                Logger::logFatal("Failed to accept connection");
-            }
 
-            // Read from socket
-            if (readSocket(new_socket, buffer, sizeof(buffer), valread) != 0) {
-                Logger::logFatal("Failed to read from socket");
-            }
-
-            // Print received data
-            std::string receivedData(buffer);
-            if (!receivedData.empty()) {
-                // Parse command and data
-                std::istringstream iss(receivedData);
-                std::string command;
-                std::string data;
-                iss >> command >> data;
-
-                // Handle command
-                handleCommand(command, data);
-            }
         }
+    }
+
+    void sendResponse(const char *response) {
+        // Send response back to Python
+        send(new_socket, response, strlen(response), 0);
     }
 
     ~BleServer() {

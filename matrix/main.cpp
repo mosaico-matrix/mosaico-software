@@ -18,15 +18,11 @@ MatrixDevice *matrix;
 // BLE server
 BleServer *bleServer;
 
-// Tcp server
-//TcpServer *tcpServer;
-
 // Signal handler function
 void signalHandler(int signal) {
     if (signal == SIGINT || signal == SIGTERM || signal == SIGKILL  || signal == SIGABRT) {
         delete matrix;
         delete bleServer;
-        //tcpServer->destroySocket();
         exit(0);
     }
 }
@@ -53,11 +49,39 @@ void initStuffBackground() {
 //  newSlideshowReceived->showClock();
 //  newSlideshowReceived->setTestRunner();
 //  newSlideshowReceived->setGame(MatrixGameEnum::TETRIS);
-newSlideshowReceived->showLoading();
+    newSlideshowReceived->showLoading();
 
     // Start BLE server
     bleServer = new BleServer();
+    while (true)
+    {
+
+    }
+
+
+
     bleServer->startListening();
+}
+
+void handleCommand(const std::string& command, const std::string& data) {
+
+    // Handle different commands
+    if (command == "CMD1") {
+        // Do something with data for command 1
+        std::cout << "Received CMD1 with data: " << data << std::endl;
+        // Send response back to Python
+        bleServer->sendResponse("Response to CMD1");
+    } else if (command == "CMD2") {
+        // Do something with data for command 2
+        std::cout << "Received CMD2 with data: " << data << std::endl;
+        // Send response back to Python
+        bleServer->sendResponse("Response to CMD2");
+    } else {
+        // Unknown command
+        std::cerr << "Unknown command: " << command << std::endl;
+        // Send error response back to Python
+        bleServer->sendResponse("Unknown command");
+    }
 }
 
 // In background thread, listen for TCP commands
@@ -91,23 +115,12 @@ int main(int argc, char *argv[]) {
     // Initialize the logger
     Logger::initLogger();
 
-    // Start TCP server thread
- //   Logger::logInfo("Starting TCP server...");
-   // tcpServer = new TcpServer();
-//    std::thread serverThread([&]() {
-//        listenTcp();
-//    });
-
-    // Init matrix IF YOU MOVE THIS BEFORE TCP SERVER IT CRASHES IDK WHY
-    Logger::logInfo("Magic Square is starting");
-
-    // Initialize the matrix
+    // Init matrix
+    Logger::logInfo("Mosaico is starting");
     matrix = MatrixBuilder::build();
 
- //   tcpServer->matrix = matrix;
-
     // Show loading at first
-    MatrixSlideshow *runningSlideshow = new MatrixSlideshow(matrix);
+    auto *runningSlideshow = new MatrixSlideshow(matrix);
     runningSlideshow->showLoading();
 
     // Initialize stuff on a separate thread while showing loading

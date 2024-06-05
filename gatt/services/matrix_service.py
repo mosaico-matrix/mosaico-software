@@ -10,12 +10,12 @@ from bless import (
 )
 from .service_dispatcher import AsyncInitMixin
 import logging
-from .interop import send_data_to_cpp
+from .interop import call_matrix
 
 logger = logging.getLogger(name=__name__)
 
 def write_active_service(data):
-    response = send_data_to_cpp("CMD1", data)
+    response = call_matrix("CMD1", data)
     logger.debug(f"active service write: {data} and response: {response}")
 
 def read_active_service():
