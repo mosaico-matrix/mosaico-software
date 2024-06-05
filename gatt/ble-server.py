@@ -40,8 +40,8 @@ def send_data_to_cpp(data):
         sock.close()
 
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
-    print(f"Read request for characteristic: {characteristic.uuid}")
-    #return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
+    logger.debug(f"Read request for characteristic: {characteristic.uuid}")
+    return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
 
 
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
@@ -52,7 +52,7 @@ async def run(loop):
 
     trigger.clear()
     # Configure server
-    server = BlessServer(name="PixelForge", loop=loop)
+    server = BlessServer(name="Mosaico", loop=loop)
     server.read_request_func = read_request
     server.write_request_func = write_request
 
