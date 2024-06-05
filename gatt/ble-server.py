@@ -4,9 +4,13 @@ import asyncio
 import threading
 import socket
 
+from services.matrix_service import MatrixService
+from services.service_dispatcher import ServiceDispatcher
+from services.runner_service import RunnerService
+from db import init as init_db
 from typing import Any, Dict, Union
 
-from bless import ( 
+from bless import (
     BlessServer,
     BlessGATTCharacteristic,
     GATTCharacteristicProperties,
@@ -15,6 +19,7 @@ from bless import (
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(name=__name__)
+service_dispatcher = ServiceDispatcher()
 
 trigger: Union[asyncio.Event, threading.Event]
 if sys.platform in ["darwin", "win32"]:
@@ -35,76 +40,44 @@ def send_data_to_cpp(data):
         sock.close()
 
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
-    logger.debug(f"Reading {characteristic.value}")
-    return characteristic.value
+    logger.debug(f"Read request for characteristic: {characteristic.uuid}")
+    return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
 
 
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
-    characteristic.value = value
-    logger.debug(f"Char value set to {characteristic.value}")
-    send_data_to_cpp(value)
-    if characteristic.value == b"\x0f":
-        logger.debug("Nice")
-        trigger.set()
-
+    print(f"Write request for characteristic: {characteristic.uuid} with value: {value}")
+    #service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
 
 async def run(loop):
 
     trigger.clear()
-
-    # Instantiate the server
-    gatt: Dict = {
-        "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2": {
-            "9d0e35da-bc0f-473e-a32c-25d33eaae17a": {
-                "Properties": (
-                        GATTCharacteristicProperties.read
-                        | GATTCharacteristicProperties.write
-                        | GATTCharacteristicProperties.indicate
-                ),
-                "Permissions": (
-                        GATTAttributePermissions.readable
-                        | GATTAttributePermissions.writeable
-                ),
-                "Value": None,
-            }
-        },
-        # "5c339364-c7be-4f23-b666-a8ff73a6a86a": {
-        #     "bfc0c92f-317d-4ba9-976b-cc11ce77b4ca": {
-        #         "Properties": GATTCharacteristicProperties.read,
-        #         "Permissions": GATTAttributePermissions.readable,
-        #         "Value": bytearray(b"\x69"),
-        #     }
-        # },
-    }
-
-    my_service_name = "PixelForge"
-    server = BlessServer(name=my_service_name, loop=loop)
+    # Configure server
+    server = BlessServer(name="Mosaico", loop=loop)
     server.read_request_func = read_request
     server.write_request_func = write_request
 
-    await server.add_gatt(gatt)
+    # Enum all the possible services and initialize them
+    services = [
+        # We cannot initialize more than one service at a time since this lib is bugged :(
+        #await RunnerService.create(server),
+        await MatrixService.create(server)
+    ]
+
+    # Register services with the dispatcher in order to dispatch read and write requests to the appropriate service.
+    service_dispatcher.register_services(services)
+
+    # Start server
     await server.start()
-    #logger.debug(server.get_characteristic("51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"))
     logger.debug("Advertising")
-    logger.info(
-        "Write '0xF' to the advertised characteristic: "
-        + "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"
-    )
     if trigger.__module__ == "threading":
         trigger.wait()
     else:
         await trigger.wait()
-    await asyncio.sleep(2)
-    logger.debug("Updating")
-    # server.get_characteristic("51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B").value = bytearray(
-    #     b"i"
-    # )
-    # server.update_value(
-    #     "A07498CA-AD5B-474E-940D-16F1FBE7E8CD", "51FF12BB-3ED8-46E5-B4F9-D64E2FEC021B"
-    # )
     await asyncio.sleep(5)
     await server.stop()
 
+# Init database
+init_db()
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(run(loop))
