@@ -147,8 +147,6 @@ set(SOURCES
 
         # Networking
         networking/server/ble/ble-server.cpp
-        networking/server/udp-server.cpp
-        networking/client/api-client.cpp
         #networking/server/database.cpp
 
         ${MATRIX_DEVICE}

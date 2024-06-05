@@ -16,14 +16,14 @@ class ServiceDispatcher:
     def dispatch_read(self, service_uuid, characteristic_uuid):
         if service_uuid in self.services:
             characteristic = self.services[service_uuid].characteristics[characteristic_uuid]
-            return characteristic["value"]
+            return characteristic["read_action"]()
         else:
             raise ValueError(f"No service registered for UUID: {service_uuid}")
 
     def dispatch_write(self, service_uuid, characteristic_uuid, data):
         if service_uuid in self.services:
             characteristic = self.services[service_uuid].characteristics[characteristic_uuid]
-            characteristic["write_action"](data, characteristic_uuid)
+            characteristic["write_action"](data)
         else:
             raise ValueError(f"No service registered for UUID: {service_uuid}")
 

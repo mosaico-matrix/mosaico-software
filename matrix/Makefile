@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/murkrow/Repos/MagicSquare/magic-square-software
+CMAKE_SOURCE_DIR = /home/murkrow/Repos/mosaico/mosaico-software/matrix
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/murkrow/Repos/MagicSquare/magic-square-software
+CMAKE_BINARY_DIR = /home/murkrow/Repos/mosaico/mosaico-software/matrix
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/murkrow/Repos/MagicSquare/magic-square-software/CMakeFiles /home/murkrow/Repos/MagicSquare/magic-square-software//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/murkrow/Repos/mosaico/mosaico-software/matrix/CMakeFiles /home/murkrow/Repos/mosaico/mosaico-software/matrix//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/murkrow/Repos/MagicSquare/magic-square-software/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/murkrow/Repos/mosaico/mosaico-software/matrix/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -775,30 +775,6 @@ matrix/runners/matrix-runner.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/matrix-runner.cpp.s
 .PHONY : matrix/runners/matrix-runner.cpp.s
 
-networking/client/api-client.o: networking/client/api-client.cpp.o
-.PHONY : networking/client/api-client.o
-
-# target to build an object file
-networking/client/api-client.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/networking/client/api-client.cpp.o
-.PHONY : networking/client/api-client.cpp.o
-
-networking/client/api-client.i: networking/client/api-client.cpp.i
-.PHONY : networking/client/api-client.i
-
-# target to preprocess a source file
-networking/client/api-client.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/networking/client/api-client.cpp.i
-.PHONY : networking/client/api-client.cpp.i
-
-networking/client/api-client.s: networking/client/api-client.cpp.s
-.PHONY : networking/client/api-client.s
-
-# target to generate assembly for a file
-networking/client/api-client.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/networking/client/api-client.cpp.s
-.PHONY : networking/client/api-client.cpp.s
-
 networking/server/ble/ble-server.o: networking/server/ble/ble-server.cpp.o
 .PHONY : networking/server/ble/ble-server.o
 
@@ -822,30 +798,6 @@ networking/server/ble/ble-server.s: networking/server/ble/ble-server.cpp.s
 networking/server/ble/ble-server.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/networking/server/ble/ble-server.cpp.s
 .PHONY : networking/server/ble/ble-server.cpp.s
-
-networking/server/udp-server.o: networking/server/udp-server.cpp.o
-.PHONY : networking/server/udp-server.o
-
-# target to build an object file
-networking/server/udp-server.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/networking/server/udp-server.cpp.o
-.PHONY : networking/server/udp-server.cpp.o
-
-networking/server/udp-server.i: networking/server/udp-server.cpp.i
-.PHONY : networking/server/udp-server.i
-
-# target to preprocess a source file
-networking/server/udp-server.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/networking/server/udp-server.cpp.i
-.PHONY : networking/server/udp-server.cpp.i
-
-networking/server/udp-server.s: networking/server/udp-server.cpp.s
-.PHONY : networking/server/udp-server.s
-
-# target to generate assembly for a file
-networking/server/udp-server.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/networking/server/udp-server.cpp.s
-.PHONY : networking/server/udp-server.cpp.s
 
 # Help Target
 help:
@@ -935,15 +887,9 @@ help:
 	@echo "... matrix/runners/matrix-runner.o"
 	@echo "... matrix/runners/matrix-runner.i"
 	@echo "... matrix/runners/matrix-runner.s"
-	@echo "... networking/client/api-client.o"
-	@echo "... networking/client/api-client.i"
-	@echo "... networking/client/api-client.s"
 	@echo "... networking/server/ble/ble-server.o"
 	@echo "... networking/server/ble/ble-server.i"
 	@echo "... networking/server/ble/ble-server.s"
-	@echo "... networking/server/udp-server.o"
-	@echo "... networking/server/udp-server.i"
-	@echo "... networking/server/udp-server.s"
 .PHONY : help
 
 

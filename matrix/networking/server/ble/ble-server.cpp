@@ -10,6 +10,7 @@
 #include "../../../logger/logger.h"
 #include <cstring>
 #include <signal.h>
+#include <sstream>
 
 class BleServer {
 private:
@@ -17,10 +18,9 @@ private:
     pid_t python_pid = 0;
 
     void startBleServer() {
-        FILE *pipe = popen("python3 networking/server/ble/ble-server.py & echo $!", "r");
+        FILE *pipe = popen("python3 ../gatt/ble-server.py & echo $!", "r");
         if (!pipe) {
             Logger::logFatal("Failed to start Python BLE server");
-            return;
         }
 
         char buffer[128];
@@ -28,6 +28,9 @@ private:
         if (fgets(buffer, 128, pipe) != nullptr) {
             python_pid = atoi(buffer);
             Logger::logInfo("Python BLE server started with PID: " + std::to_string(python_pid));
+        }
+        else {
+            Logger::logFatal("Failed to start Python BLE server");
         }
 
         pclose(pipe);
@@ -90,6 +93,32 @@ private:
         return 0;
     }
 
+    void sendResponse(const char *response) {
+        // Send response back to Python
+        send(new_socket, response, strlen(response), 0);
+    }
+
+    void handleCommand(const std::string& command, const std::string& data) {
+
+        // Handle different commands
+        if (command == "CMD1") {
+            // Do something with data for command 1
+            std::cout << "Received CMD1 with data: " << data << std::endl;
+            // Send response back to Python
+            sendResponse("Response to CMD1");
+        } else if (command == "CMD2") {
+            // Do something with data for command 2
+            std::cout << "Received CMD2 with data: " << data << std::endl;
+            // Send response back to Python
+            sendResponse("Response to CMD2");
+        } else {
+            // Unknown command
+            std::cerr << "Unknown command: " << command << std::endl;
+            // Send error response back to Python
+            sendResponse("Unknown command");
+        }
+    }
+
     void closeSocket(int server_fd) {
         close(server_fd);
     }
@@ -103,10 +132,9 @@ public:
     char buffer[1024] = {0};
 
     BleServer() {
+
         // Start python server in background
         startBleServer();
-
-
 
         // Create socket
         if (createSocket(server_fd) != 0) {
@@ -149,7 +177,17 @@ public:
             }
 
             // Print received data
-            printf("%s\n", buffer);
+            std::string receivedData(buffer);
+            if (!receivedData.empty()) {
+                // Parse command and data
+                std::istringstream iss(receivedData);
+                std::string command;
+                std::string data;
+                iss >> command >> data;
+
+                // Handle command
+                handleCommand(command, data);
+            }
         }
     }
 

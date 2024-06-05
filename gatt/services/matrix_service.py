@@ -6,14 +6,21 @@
 
 from bless import (
     GATTCharacteristicProperties,
-    BlessServer,
     GATTAttributePermissions,
 )
-
 from .service_dispatcher import AsyncInitMixin
+import logging
+from .interop import send_data_to_cpp
 
-def write_active_service(data, characteristic_uuid):
-    print(f"MatrixService received data: {data} to characteristic: {characteristic_uuid}")
+logger = logging.getLogger(name=__name__)
+
+def write_active_service(data):
+    response = send_data_to_cpp("CMD1", data)
+    logger.debug(f"active service write: {data} and response: {response}")
+
+def read_active_service():
+    logger.debug(f"active service read")
+    return b"active service read"
 
 
 class MatrixService(AsyncInitMixin):
@@ -31,15 +38,7 @@ class MatrixService(AsyncInitMixin):
             "value": None,
             "permissions": GATTAttributePermissions.readable | GATTAttributePermissions.writeable,
             "write_action": write_active_service,
-        },
-        "9d0e35da-bc0f-473e-a32c-25d33eaae17b": {
-            "name": "active",
-            "properties":
-                GATTCharacteristicProperties.read
-                | GATTCharacteristicProperties.write,
-            "value": None,
-            "permissions": GATTAttributePermissions.readable | GATTAttributePermissions.writeable,
-            "write_action": write_active_service,
+            "read_action": read_active_service,
         },
 
 

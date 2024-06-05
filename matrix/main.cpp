@@ -1,6 +1,5 @@
 #include <thread>
 #include "logger/logger.h"
-#include "networking/server/tcp-server.cpp"
 #include "networking/server/ble/ble-server.cpp"
 #include "matrix/matrix-slideshow.cpp"
 #include "matrix/matrices/matrix-device.cpp"

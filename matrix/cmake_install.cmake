@@ -1,4 +1,4 @@
-# Install script for directory: /home/murkrow/Repos/MagicSquare/magic-square-software
+# Install script for directory: /home/murkrow/Repos/mosaico/mosaico-software/matrix
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/murkrow/Repos/MagicSquare/magic-square-software/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/murkrow/Repos/mosaico/mosaico-software/matrix/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

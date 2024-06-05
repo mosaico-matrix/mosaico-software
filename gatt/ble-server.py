@@ -2,11 +2,10 @@ import sys
 import logging
 import asyncio
 import threading
-import socket
+
 
 from services.matrix_service import MatrixService
 from services.service_dispatcher import ServiceDispatcher
-from services.runner_service import RunnerService
 from db import init as init_db
 from typing import Any, Dict, Union
 
@@ -27,26 +26,12 @@ if sys.platform in ["darwin", "win32"]:
 else:
     trigger = asyncio.Event()
 
-
-def send_data_to_cpp(data):
-    # Create a TCP/IP socket
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_address = ('localhost', 10000)
-    try:
-        sock.connect(server_address)
-        sock.sendall(data)
-    finally:
-        # Clean up
-        sock.close()
-
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
-    logger.debug(f"Read request for characteristic: {characteristic.uuid}")
     return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
 
 
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
-    print(f"Write request for characteristic: {characteristic.uuid} with value: {value}")
-    #service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
+    service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
 
 async def run(loop):
 
