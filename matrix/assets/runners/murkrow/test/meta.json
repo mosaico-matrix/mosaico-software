@@ -1,4 +1,5 @@
 {
+  "info": "in realta sto pensando sta roba dovrebbe stare su api, seplicemente poi viene scaricata su disco per non fare ogni volta call dalla matrix",
   "author": "murkrow",
   "name": "test",
   "version": 0.1,
