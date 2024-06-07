@@ -3,28 +3,30 @@ import logging
 import asyncio
 import threading
 
-
 from services.matrix_service import MatrixService
 from services.service_dispatcher import ServiceDispatcher
-from db import init as init_db
-from typing import Any, Dict, Union
+from typing import Any, Union
+from data.db import init as init_db
 
 from bless import (
     BlessServer,
     BlessGATTCharacteristic,
-    GATTCharacteristicProperties,
-    GATTAttributePermissions,
 )
 
+# Logger
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(name=__name__)
+
+# Service dispatcher
 service_dispatcher = ServiceDispatcher()
 
+# Trigger
 trigger: Union[asyncio.Event, threading.Event]
 if sys.platform in ["darwin", "win32"]:
     trigger = threading.Event()
 else:
     trigger = asyncio.Event()
+
 
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
     return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
@@ -33,8 +35,8 @@ def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
     service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
 
-async def run(loop):
 
+async def run(loop):
     trigger.clear()
     # Configure server
     server = BlessServer(name="Mosaico", loop=loop)
@@ -44,7 +46,6 @@ async def run(loop):
     # Enum all the possible services and initialize them
     services = [
         # We cannot initialize more than one service at a time since this lib is bugged :(
-        #await RunnerService.create(server),
         await MatrixService.create(server)
     ]
 
@@ -61,8 +62,12 @@ async def run(loop):
     await asyncio.sleep(5)
     await server.stop()
 
+
 # Init database
 init_db()
+
+# Restart bluetooth service
+#subprocess.run(["sudo", "systemctl", "restart", "bluetooth"])
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(run(loop))
