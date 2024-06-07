@@ -7,3 +7,9 @@ gatt/.idea/
 .idea/
 
 gatt/__pycache__/
+
+gatt/api/__pycache__/
+
+gatt/api/services/__pycache__/
+
+gatt/data/__pycache__/

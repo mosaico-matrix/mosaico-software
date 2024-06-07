@@ -10,9 +10,14 @@ from bless import (
 )
 from .service_dispatcher import AsyncInitMixin
 import logging
-from .interop import call_matrix
+from interop import call_matrix
+from api.services.widget_service import WidgetService
+from api.client import RestClient
+from data import db
 
 logger = logging.getLogger(name=__name__)
+rest_client = RestClient()
+widget_service = WidgetService(rest_client)
 
 
 def preview_widget(data):
@@ -30,12 +35,25 @@ def get_active_widget():
 
 
 def install_widget(data):
+
     """
     This function is called when user wants to install a new widget from the app store.
     Simply an <id> is passed so that we can download the widget from the app store and update local files and db
     """
-    widget_id = data['widget_id']
+    widget_id = int.from_bytes(data)
+    logger.debug(f"Installing widget with id: {widget_id}")
 
+    # Check if already installed
+    widget = db.get_widget_by_id(widget_id)
+    if widget:
+        logger.warning(f"Widget with id: {widget_id} is already installed, skipping")
+        return
+
+    # Get the widget from the app store
+    widget = widget_service.get_widget(widget_id)
+
+    # Save the widget to the db
+    db.add_widget(widget["id"], widget["name"])
 
 def get_installed_widgets():
     logger.debug(f"installed service read")
@@ -46,7 +64,6 @@ class MatrixService(AsyncInitMixin):
     server = None
     service_uuid = "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2"
     characteristics = {
-
 
         # Widgets
         "9d0e35da-bc0f-473e-a32c-25d33eaae17a": {
@@ -66,8 +83,8 @@ class MatrixService(AsyncInitMixin):
                 | GATTCharacteristicProperties.write,
             "value": None,
             "permissions": GATTAttributePermissions.readable | GATTAttributePermissions.writeable,
-            "write_action": preview_widget,
-            "read_action": get_installed_widgets(),
+            "write_action": install_widget,
+            "read_action": get_installed_widgets,
         }
 
         # Slideshows
@@ -81,7 +98,6 @@ class MatrixService(AsyncInitMixin):
         #     "write_action": write_active_service,
         #     "read_action": read_active_service,
         # },
-
 
         # Matrix
         # "": {
