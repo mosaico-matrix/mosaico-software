@@ -8,14 +8,12 @@ from bless import (
     GATTCharacteristicProperties,
     GATTAttributePermissions,
 )
-from .service_dispatcher import AsyncInitMixin
+from gatt.service_dispatcher import AsyncInitMixin
 import logging
-from rest.services.widget_service import WidgetService
-from rest.client import RestClient
 
 logger = logging.getLogger(name=__name__)
 
-class MatrixService(AsyncInitMixin):
+class MatrixControl(AsyncInitMixin):
     server = None
     service_uuid = "d34fdcd0-83dd-4abe-9c16-1230e89ad2f2"
     characteristics = {

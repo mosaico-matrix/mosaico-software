@@ -2,17 +2,17 @@ import sys
 import logging
 import asyncio
 import threading
-from aiocoap import Context, Message, resource, GET
+from aiocoap import Context, resource
 from typing import Any, Union
 from data.db import init as init_db
-
 from bless import (
     BlessServer,
     BlessGATTCharacteristic,
 )
-from gatt.services.matrix_service import MatrixService
-from gatt.services.service_dispatcher import ServiceDispatcher
-from coap.services.widget_service import InstalledWidgetsService
+
+from gatt.services.matrix_control import MatrixControl
+from gatt.service_dispatcher import ServiceDispatcher
+from coap.services.installed_widgets import InstalledWidgets
 
 # Logger
 logging.basicConfig(level=logging.DEBUG)
@@ -45,13 +45,13 @@ async def run(loop):
     gatt_server = BlessServer(name="Mosaico", loop=loop)
     gatt_server.read_request_func = read_request
     gatt_server.write_request_func = write_request
-    await MatrixService.create(gatt_server)
+    await MatrixControl.create(gatt_server)
 
     # Create CoAP context and add resources
     root = resource.Site()
-    root.add_resource(['.well-known', 'core'],
-                      resource.WKCResource(root.get_resources_as_linkheader))
-    root.add_resource(['widgets'], InstalledWidgetsService())
+    # root.add_resource(['.well-known', 'core'],
+    #                   resource.WKCResource(root.get_resources_as_linkheader))
+    root.add_resource(['installed_widgets'], InstalledWidgets())
 
     # Start CoAP server
     coap_context = await Context.create_server_context(root)
