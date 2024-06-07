@@ -2,9 +2,7 @@ import sys
 import logging
 import asyncio
 import threading
-
-from services.matrix_service import MatrixService
-from services.service_dispatcher import ServiceDispatcher
+from aiocoap import Context, Message, resource, GET
 from typing import Any, Union
 from data.db import init as init_db
 
@@ -12,6 +10,9 @@ from bless import (
     BlessServer,
     BlessGATTCharacteristic,
 )
+from gatt.services.matrix_service import MatrixService
+from gatt.services.service_dispatcher import ServiceDispatcher
+from coap.services.widget_service import InstalledWidgetsService
 
 # Logger
 logging.basicConfig(level=logging.DEBUG)
@@ -28,6 +29,7 @@ else:
     trigger = asyncio.Event()
 
 
+# GATT server callbacks
 def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
     return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
 
@@ -38,36 +40,38 @@ def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs)
 
 async def run(loop):
     trigger.clear()
-    # Configure server
-    server = BlessServer(name="Mosaico", loop=loop)
-    server.read_request_func = read_request
-    server.write_request_func = write_request
 
-    # Enum all the possible services and initialize them
-    services = [
-        # We cannot initialize more than one service at a time since this lib is bugged :(
-        await MatrixService.create(server)
-    ]
+    # Configure GATT server
+    gatt_server = BlessServer(name="Mosaico", loop=loop)
+    gatt_server.read_request_func = read_request
+    gatt_server.write_request_func = write_request
+    await MatrixService.create(gatt_server)
 
-    # Register services with the dispatcher in order to dispatch read and write requests to the appropriate service.
-    service_dispatcher.register_services(services)
+    # Create CoAP context and add resources
+    root = resource.Site()
+    root.add_resource(['.well-known', 'core'],
+                      resource.WKCResource(root.get_resources_as_linkheader))
+    root.add_resource(['widgets'], InstalledWidgetsService())
 
-    # Start server
-    await server.start()
+    # Start CoAP server
+    coap_context = await Context.create_server_context(root)
+
+    # Start GATT server
+    await gatt_server.start()
     logger.debug("Advertising")
+
+    # Wait for trigger
     if trigger.__module__ == "threading":
         trigger.wait()
     else:
         await trigger.wait()
     await asyncio.sleep(5)
-    await server.stop()
+    await gatt_server.stop()
+    await coap_context.shutdown()
 
 
 # Init database
 init_db()
-
-# Restart bluetooth service
-#subprocess.run(["sudo", "systemctl", "restart", "bluetooth"])
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(run(loop))
