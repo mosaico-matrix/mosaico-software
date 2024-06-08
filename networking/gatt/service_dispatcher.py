@@ -28,7 +28,7 @@ class ServiceDispatcher:
             raise ValueError(f"No service registered for UUID: {service_uuid}")
 
 
-# Used as a mixin to initialize services asynchronously and register all the characteristics with the server
+# Used as a mixin to initialize repositories asynchronously and register all the characteristics with the server
 class AsyncInitMixin:
     logger = logging.getLogger(name=__name__)
 

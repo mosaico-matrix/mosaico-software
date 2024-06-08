@@ -1,7 +1,7 @@
 #####################################
 # This is the main service that will be used to serve BLE requests
 # For now it is the only one since the library used is bugged and cannot handle more than one service at a time
-# As a temporary solution, we have a lot of characteristics that should ideally be placed in separate services
+# As a temporary solution, we have a lot of characteristics that should ideally be placed in separate repositories
 #####################################
 
 from bless import (
