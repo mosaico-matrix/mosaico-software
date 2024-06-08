@@ -4,6 +4,7 @@ import aiocoap
 import logging
 import json
 from data import db
+from rest.services.widget_service import get_widget
 
 logger = logging.getLogger(name="coap.services.installed_widgets")
 
@@ -27,10 +28,9 @@ class InstalledWidgets(resource.Resource):
         else:
             # Get the widget from the app store
             logger.debug(f"Installing widget with id: {widget_id}")
-            #widget = widget_service.get_widget(widget_id)
+            widget = get_widget(widget_id)
 
             # Save the widget to the db
-            #db.add_widget(widget["id"], widget["name"])
-            db.add_widget(widget_id, "Test Widget")
+            db.add_widget(widget["id"], widget["name"])
 
         return aiocoap.Message(payload="F".encode("ASCII"), code=aiocoap.CHANGED)

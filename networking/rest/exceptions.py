@@ -3,7 +3,7 @@ logger = logging.getLogger(name=__name__)
 
 class APIClientError(Exception):
     """General API Client Error"""
-    logger.error("An error occurred")
+    pass
 
 class APIClientResponseError(APIClientError):
     """Raised when a response contains an HTTP error status"""

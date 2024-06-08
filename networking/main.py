@@ -37,7 +37,6 @@ def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray
 def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
     service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
 
-
 async def run(loop):
     trigger.clear()
 
@@ -49,8 +48,6 @@ async def run(loop):
 
     # Create CoAP context and add resources
     root = resource.Site()
-    # root.add_resource(['.well-known', 'core'],
-    #                   resource.WKCResource(root.get_resources_as_linkheader))
     root.add_resource(['installed_widgets'], InstalledWidgets())
 
     # Start CoAP server
@@ -69,9 +66,10 @@ async def run(loop):
     await gatt_server.stop()
     await coap_context.shutdown()
 
-
 # Init database
 init_db()
 
-loop = asyncio.get_event_loop()
+# Create a new event loop
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 loop.run_until_complete(run(loop))

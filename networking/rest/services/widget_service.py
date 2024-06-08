@@ -1,11 +1,7 @@
-from ..client import RestClient
+from rest.client import get
 import json
 
 
-class WidgetService:
-    def __init__(self, client: RestClient):
-        self.client = client
-
-    def get_widget(self, widget_id):
-        response = self.client.get(f"widgets/{widget_id}")
-        return response
+def get_widget(widget_id):
+    response = get(f"widgets/{widget_id}")
+    return response
