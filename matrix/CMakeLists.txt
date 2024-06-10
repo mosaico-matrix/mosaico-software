@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(MatrixExample)
+project(Mosaico_Software)
 
 # Set matrix dimensions
 set(MATRIX_ROWS 64)

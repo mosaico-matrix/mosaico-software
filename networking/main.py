@@ -4,6 +4,8 @@ import asyncio
 import threading
 from aiocoap import Context, resource
 from typing import Any, Union
+
+from coap.services.active_widget import ActiveWidget
 from data.db import init as init_db
 from bless import (
     BlessServer,
@@ -49,6 +51,7 @@ async def run(loop):
     # Create CoAP context and add resources
     root = resource.Site()
     root.add_resource(['installed_widgets'], InstalledWidgets())
+    root.add_resource(['active_widget'], ActiveWidget())
 
     # Start CoAP server
     coap_context = await Context.create_server_context(root)

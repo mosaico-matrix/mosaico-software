@@ -1,5 +1,5 @@
 import sqlite3
-
+from configs import get_db_path
 
 def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
     data = {}
@@ -8,12 +8,11 @@ def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
     return data
 
 
-db_path = "data/db.sqlite"
-conn = sqlite3.connect(db_path)
+conn = sqlite3.connect(get_db_path())
 conn.row_factory = row_to_dict
 
-def create_tables():
 
+def create_tables():
     c = conn.cursor()
 
     # Return if installed_widgets table already exists
@@ -42,5 +41,6 @@ def seed_db():
 
 
 def init():
+    from configs import get_widgets_path
     create_tables()
     seed_db()

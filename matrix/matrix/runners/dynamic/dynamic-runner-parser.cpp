@@ -78,11 +78,11 @@ private:
 
 public:
 
-    DynamicRunnerParser(string author, string runner) {
+    explicit DynamicRunnerParser(const string& runnerDirPath) {
+        
         // Get path to the runner
-        runnerDirPath = Configs::getRunnersPath() + author + "/" + runner;
         scriptPath = runnerDirPath + "/runner.chai";
-        metadataPath = runnerDirPath + "/meta.json";
+        metadataPath = runnerDirPath + "/mosaico.json";
 
         // Load various files
         loadMetadata();

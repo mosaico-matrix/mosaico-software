@@ -7,6 +7,7 @@ from data import db
 from data.repositories.widgets import *
 from rest.services.widgets import get_widget
 from coap.responses import *
+from interop import call_matrix
 
 logger = logging.getLogger(name="coap.repositories.installed_widgets")
 
@@ -19,4 +20,17 @@ class ActiveWidget(resource.Resource):
 
 
     async def render_post(self, request):
-        pass
+        """
+        Set the active widget
+        """
+        logger.debug("Received POST request to active_widget")
+
+        # Deserialize the request
+        payload = json.loads(request.payload.decode())
+        widget_id = payload["widget_id"]
+        config_id = payload["config_id"]
+
+        # Set widget on matrix
+        call_matrix("LOAD_WIDGET", get_widget_path(widget_id))
+
+        return success_response(None, "Widget set successfully")

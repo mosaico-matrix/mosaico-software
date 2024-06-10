@@ -1,4 +1,5 @@
 from data.db import conn
+from configs import get_widgets_path
 
 
 def add_widget(id, name, author):
@@ -23,3 +24,17 @@ def get_widget_by_id(id):
     SELECT * FROM installed_widgets WHERE id = ?
     ''', (id,))
     return c.fetchone()
+
+
+def get_widget_path(id):
+    c = conn.cursor()
+
+    # Only get name and author
+    c.execute('''
+    SELECT name, author FROM installed_widgets WHERE id = ?
+    ''', (id,))
+
+    widget = c.fetchone()
+
+    if widget:
+        return f"{get_widgets_path()}/{widget['author']}/{widget['name']}"
