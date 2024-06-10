@@ -14,12 +14,19 @@ logger = logging.getLogger(name="coap.repositories.installed_widgets")
 class InstalledWidgets(resource.Resource):
 
     async def render_get(self, request):
+        """
+        Get all installed widgets from local db
+        """
         logger.debug("Received GET request to installed_widgets")
         widgets = get_installed_widgets()
         return success_response(widgets)
 
 
     async def render_post(self, request):
+        """
+        Install a widget from the app store to the local db
+        """
+
         logger.debug("Received POST request to installed_widgets")
 
         # Get widget_id from request
