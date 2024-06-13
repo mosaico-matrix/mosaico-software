@@ -1,10 +1,12 @@
 #include <thread>
 #include "logger/logger.h"
-#include "networking/server/ble/ble-server.cpp"
+#include "python-socket.cpp"
 #include "matrix/matrix-slideshow.cpp"
 #include "matrix/matrices/matrix-device.cpp"
 #include "matrix/matrices/matrix-builder.cpp"
 #include <csignal>
+#include "external/json/json.hpp"
+using json = nlohmann::json;
 
 // Global variables
 bool matrixFullyInitialized = false;
@@ -15,41 +17,42 @@ RGBMatrix::Options matrix_options;
 rgb_matrix::RuntimeOptions runtime_opt;
 MatrixDevice *matrix;
 
-// BLE server
-BleServer *bleServer;
+// Python server socket
+PythonSocket *pythonSocket;
 
 // Signal handler function
 void signalHandler(int signal) {
     if (signal == SIGINT || signal == SIGTERM || signal == SIGKILL  || signal == SIGABRT) {
         delete matrix;
-        delete bleServer;
+        delete pythonSocket;
         exit(0);
     }
 }
 
 // Handle commands received from Python through BLE
-void commandHandler(const std::string& command, const std::string& data) {
+// Note that the socket expects a response so make sure to send a response back at the end of the function
+void commandHandler(const std::string& command, const json &data) {
 
     // Handle different commands
     if (command == "LOAD_WIDGET") {
 
         // Create new slideshow
         newSlideshowReceived = new MatrixSlideshow(matrix);
-        newSlideshowReceived->setDynamicRunner(data);
+        newSlideshowReceived->setDynamicRunner(data["widget_path"]);
 
-        // Send response back to Python
-        bleServer->sendResponse("Response to CMD1");
     } else if (command == "CMD2") {
         // Do something with data for command 2
         std::cout << "Received CMD2 with data: " << data << std::endl;
         // Send response back to Python
-        bleServer->sendResponse("Response to CMD2");
+        pythonSocket->sendResponse("Response to CMD2");
     } else {
         // Unknown command
         std::cerr << "Unknown command: " << command << std::endl;
         // Send error response back to Python
-        bleServer->sendResponse("Unknown command");
+        pythonSocket->sendResponse("Unknown command");
     }
+
+    pythonSocket->sendResponse();
 }
 
 
@@ -76,11 +79,11 @@ void initStuffBackground() {
 //  newSlideshowReceived->setGame(MatrixGameEnum::TETRIS);
     newSlideshowReceived->showLoading();
 
-    // Start BLE server
-    bleServer = new BleServer();
+    // Start python server
+    pythonSocket = new PythonSocket();
     while (true)
     {
-        auto command = bleServer->waitNextCommand();
+        auto command = pythonSocket->waitNextCommand();
         commandHandler(command.first, command.second);
     }
 }

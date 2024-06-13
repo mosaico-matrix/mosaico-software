@@ -26,15 +26,18 @@ def get_widget_by_id(id):
     return c.fetchone()
 
 
-def get_widget_path(id):
+def get_widget_path(id: int) -> str:
     c = conn.cursor()
 
     # Only get name and author
     c.execute('''
-    SELECT name, author FROM installed_widgets WHERE id = ?
-    ''', (id,))
+       SELECT name, author FROM installed_widgets WHERE id = ?
+       ''', (id,))
 
     widget = c.fetchone()
 
     if widget:
         return f"{get_widgets_path()}/{widget['author']}/{widget['name']}"
+    else:
+        return ""
+
