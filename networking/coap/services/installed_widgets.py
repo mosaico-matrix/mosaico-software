@@ -41,12 +41,17 @@ class InstalledWidgets(resource.Resource):
         if widget:
             logger.warning(f"Widget with id: {widget_id} is already installed, skipping")
 
-            # Do not return error, just log and return success
-            #return error_response(None, "Widget already installed")
+            # Just return success response even if already installed
         else:
             # Get the widget from the app store
             logger.info(f"Installing widget with id: {widget_id}")
-            widget = get_widget(widget_id)
+
+            widget = None
+            try:  # Always catch API exceptions to inform the user
+                widget = get_widget(widget_id)
+            except Exception as e:
+                logger.error(f"Error getting widget with id: {widget_id}")
+                return error_response(None, f"Could not get widget from app store")
 
             # Save the widget to the db
             add_widget(widget["id"], widget["name"], widget["user"]["username"])

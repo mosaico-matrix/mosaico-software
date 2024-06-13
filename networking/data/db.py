@@ -25,10 +25,20 @@ def create_tables():
 
     # Create installed_widgets table
     c.execute('''
-    CREATE TABLE installed_widgets (
+    CREATE TABLE widgets (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
         author TEXT NOT NULL
+    )
+    ''')
+
+    # Create widget_configurations table
+    c.execute('''
+    CREATE TABLE widget_configurations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        widget_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        FOREIGN KEY (widget_id) REFERENCES widgets (id)
     )
     ''')
 

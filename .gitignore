@@ -15,3 +15,7 @@ gatt/api/services/__pycache__/
 gatt/data/__pycache__/
 
 *.pyc
+
+*.cbp
+
+matrix/Testing/Temporary/

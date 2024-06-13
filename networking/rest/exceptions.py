@@ -2,8 +2,13 @@ import logging
 logger = logging.getLogger(name=__name__)
 
 class APIClientError(Exception):
-    """General API Client Error"""
-    pass
+
+    def __init__(self, message):
+        self.message = message
+        super().__init__(self.message)
+
+    def __str__(self):
+        return self.message
 
 class APIClientResponseError(APIClientError):
     """Raised when a response contains an HTTP error status"""
