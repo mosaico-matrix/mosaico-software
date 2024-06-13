@@ -110,6 +110,7 @@ target_include_directories(restclient PUBLIC ${PROJECT_SOURCE_DIR}/external/rest
 set(SOURCES
         main.cpp
         configs.cpp
+        python-socket.cpp
 
         # Logger
         logger/console-logger.cpp
@@ -146,12 +147,10 @@ set(SOURCES
         matrix/matrices/matrix-builder.cpp
 
         # Networking
-        networking/server/ble/ble-server.cpp
         #networking/server/database.cpp
 
         ${MATRIX_DEVICE}
         ${RESTCLIENT_SOURCES}
-        playgrounds/database/database.no
 )
 
 # Executable

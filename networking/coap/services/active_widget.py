@@ -14,10 +14,8 @@ logger = logging.getLogger(name="coap.repositories.installed_widgets")
 
 class ActiveWidget(resource.Resource):
 
-
     async def render_get(self, request):
         pass
-
 
     async def render_post(self, request):
         """
@@ -31,6 +29,6 @@ class ActiveWidget(resource.Resource):
         config_id = payload["config_id"]
 
         # Set widget on matrix
-        call_matrix("LOAD_WIDGET", get_widget_path(widget_id))
+        call_matrix("LOAD_WIDGET", {"widget_path": get_widget_path(widget_id)})
 
         return success_response(None, "Widget set successfully")
