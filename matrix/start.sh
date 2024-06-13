@@ -31,10 +31,10 @@ if ! [ -x "$(command -v pip3)" ]; then
   fi
 fi
 
-## Install bless package for bluetooth --break-system-packages
-pip3 install bless --break-system-packages
+## Create virtual env and install dependencies
+#cd ../networking
 
-echo 'Bless package installed'
+
 
 ## Compile the application
 cmake .

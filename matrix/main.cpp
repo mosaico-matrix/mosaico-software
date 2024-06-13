@@ -31,14 +31,12 @@ void signalHandler(int signal) {
 void commandHandler(const std::string& command, const std::string& data) {
 
     // Handle different commands
-    if (command == "CMD1") {
+    if (command == "LOAD_WIDGET") {
 
         // Create new slideshow
         newSlideshowReceived = new MatrixSlideshow(matrix);
-        newSlideshowReceived->setDynamicRunner();
+        newSlideshowReceived->setDynamicRunner(data);
 
-        // Do something with data for command 1
-        std::cout << "Received CMD1 with data: " << data << std::endl;
         // Send response back to Python
         bleServer->sendResponse("Response to CMD1");
     } else if (command == "CMD2") {

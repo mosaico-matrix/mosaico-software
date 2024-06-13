@@ -11,6 +11,7 @@
 #include <cstring>
 #include <signal.h>
 #include <sstream>
+#include "../../../configs.cpp"
 
 class BleServer {
 private:
@@ -18,7 +19,10 @@ private:
     pid_t python_pid = 0;
 
     void startBleServer() {
-        FILE *pipe = popen("python3 ../gatt/ble-server.py & echo $!", "r");
+
+        string pythonScriptPath = Configs::getPythonScriptPath();
+        string command = "source " + pythonScriptPath + "/venv/bin/activate && python3 " + pythonScriptPath + "/main.py & echo $!";
+        FILE *pipe = popen(command.c_str(), "r");
         if (!pipe) {
             Logger::logFatal("Failed to start Python BLE server");
         }

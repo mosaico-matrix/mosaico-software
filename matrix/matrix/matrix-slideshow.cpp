@@ -165,15 +165,15 @@ public:
 
     void showLoading() {
         clearRunners();
-        runners.push_back(std::make_pair(0, new LoadingRunner(CanvasLayerPosition::FULL)));
+        runners.emplace_back(0, new LoadingRunner(CanvasLayerPosition::FULL));
     }
 
-    void setDynamicRunner() {
+    void setDynamicRunner(const string& runnerDirPath) {
         clearRunners();
 
         // Parse sample file
-        auto *parser = new DynamicRunnerParser("murkrow","test");
-        runners.push_back(std::make_pair(0, new DynamicRunner(parser->getFrameRate(), CanvasLayerPosition::FULL, parser)));
+        auto *parser = new DynamicRunnerParser(runnerDirPath);
+        runners.emplace_back(0, new DynamicRunner(parser->getFrameRate(), CanvasLayerPosition::FULL, parser));
     }
 
     void setTestRunner() {

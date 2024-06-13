@@ -1,0 +1,4 @@
+aiocoap~=0.4.9
+bless~=0.2.6
+requests~=2.32.3
+GitPython~=3.1.43

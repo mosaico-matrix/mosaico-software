@@ -15,10 +15,14 @@ public:
         return PROJECT_ROOT;
     }
 
-    static std::string getRunnersPath()
-    {
-        return Configs::getProjectRoot() + "assets/runners/";
+    static std::string getPythonScriptPath() {
+        return Configs::getProjectRoot() + "../networking";
     }
+
+//    static std::string getWidgetsPath()
+//    {
+//        return Configs::getProjectRoot() + "
+//    }
 
     static std::string getFontsPath() {
         return Configs::getProjectRoot() + "external/rpi-rgb-led-matrix/fonts/";
