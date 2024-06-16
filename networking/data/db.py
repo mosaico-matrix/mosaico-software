@@ -38,6 +38,7 @@ def create_tables():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         widget_id INTEGER NOT NULL,
         name TEXT NOT NULL,
+        folder_name TEXT NOT NULL,
         FOREIGN KEY (widget_id) REFERENCES widgets (id)
     )
     ''')
