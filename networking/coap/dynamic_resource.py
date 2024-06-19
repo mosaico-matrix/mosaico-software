@@ -9,8 +9,11 @@ class DynamicResource(Resource, PathCapable):
 
     async def render(self, request):
 
+        # request.opt.uri_path is a tuple of strings like ('key=value', 'key2=value2'), create a dictionary
+        args = dict([arg.split('=') for arg in request.opt.uri_path])
+
         # Split the dynamic part in case it has multiple values
-        return await self.handle_dynamic_request(request, request.opt.uri_path)
+        return await self.handle_dynamic_request(request,args)
 
     async def handle_dynamic_request(self, request, args):
         # This method can be customized to handle different dynamic values

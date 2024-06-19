@@ -132,7 +132,7 @@ class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
         """
 
         # Get widget
-        widget_id = args[0]
+        widget_id = args["widget_id"]
         widget = local_widgets.get_widget(widget_id)
         if widget is None:
             return error_response("Widget not found")

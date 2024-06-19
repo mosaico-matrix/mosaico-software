@@ -28,7 +28,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
             return error_response("Invalid payload format")
 
         # Get the widget_id
-        widget_id = args[0]
+        widget_id = args['widget_id']
 
         # Get the config_name
         config_name = payload_split[0]
@@ -96,7 +96,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         This method will delete the configuration with the given ID and all its files
         """
         logger.info("Received DELETE request to widget_configurations")
-        configuration_id = args[0]
+        configuration_id = args['configuration_id']
 
         # Get the configuration
         configuration = get_widget_configuration(configuration_id)
@@ -128,7 +128,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         Get the configurations for the widget with the given ID
         """
         logger.info("Received GET request to widget_configurations")
-        widget_id = args[0]
+        widget_id = args['widget_id']
 
         # Get the widget
         widget = get_widget(widget_id)
