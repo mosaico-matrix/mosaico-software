@@ -4,8 +4,6 @@ import asyncio
 import threading
 from aiocoap import Context, resource
 from typing import Any, Union
-
-from coap.services.active_widget import ActiveWidget
 from coap.services.widget_configurations import WidgetConfigurations
 from data.db import init as init_db
 from bless import (
@@ -15,13 +13,13 @@ from bless import (
 
 from gatt.services.matrix_control import MatrixControl
 from gatt.service_dispatcher import ServiceDispatcher
-from coap.services.installed_widgets import InstalledWidgets
+from coap.services.widgets import *
 
 # Logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(name=__name__)
 
-# Service dispatcher
+# GATT Service dispatcher
 service_dispatcher = ServiceDispatcher()
 
 # Mode of operation
@@ -57,8 +55,9 @@ async def run(loop):
 
     # Create CoAP context and add resources
     root = resource.Site()
-    root.add_resource(['installed_widgets'], InstalledWidgets())
-    root.add_resource(['active_widget'], ActiveWidget())
+    root.add_resource(['widgets', 'installed'], InstalledWidgets())
+    root.add_resource(['widgets', 'active'], ActiveWidget())
+    root.add_resource(['widgets', 'configuration_form'], WidgetConfigurationForm())
     root.add_resource(['widget_configurations'], WidgetConfigurations())
 
     # Start CoAP server

@@ -25,6 +25,12 @@ def get_widget(id):
     ''', (id,))
     return c.fetchone()
 
+def get_widget_by_store_id(store_id):
+    c = conn.cursor()
+    c.execute('''
+    SELECT * FROM widgets WHERE store_id = ?
+    ''', (store_id,))
+    return c.fetchone()
 
 def get_widget_configurations(widget_id: int) -> list:
     c = conn.cursor()
@@ -32,3 +38,11 @@ def get_widget_configurations(widget_id: int) -> list:
     SELECT * FROM widget_configurations WHERE widget_id = ?
     ''', (widget_id,))
     return c.fetchall()
+
+
+def delete_widget(widget_store_id: int):
+    c = conn.cursor()
+    c.execute('''
+    DELETE FROM widgets WHERE store_id = ?
+    ''', (widget_store_id,))
+    conn.commit()

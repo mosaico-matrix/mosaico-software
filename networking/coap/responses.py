@@ -1,7 +1,10 @@
 import json
+import logging
 import aiocoap
 from aiocoap import ContentFormat
 
+
+logger = logging.getLogger(name="coap.responses")
 
 def base_response(data, message, code):
     # Create a dictionary with the data and the message
@@ -18,8 +21,10 @@ def base_response(data, message, code):
 
 
 def error_response(message=""):
+    logger.error("COAP ERROR: {}".format(message))
     return base_response(None, message, aiocoap.BAD_REQUEST)
 
 
 def success_response(data, message=""):
+    logger.debug("COAP SUCCESS: {}".format(message))
     return base_response(data, message, aiocoap.CHANGED)
