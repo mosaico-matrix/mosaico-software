@@ -1,17 +1,15 @@
 .DS_STORE
 
+venv/
 gatt/services/__pycache__/
-
 gatt/.idea/
-
 .idea/
-
 gatt/__pycache__/
-
 gatt/api/__pycache__/
-
 gatt/api/services/__pycache__/
-
 gatt/data/__pycache__/
-
 *.pyc
+*.cbp
+matrix/Testing/Temporary/
+
+networking/data/db.sqlite

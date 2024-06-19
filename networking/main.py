@@ -6,6 +6,7 @@ from aiocoap import Context, resource
 from typing import Any, Union
 
 from coap.services.active_widget import ActiveWidget
+from coap.services.widget_configurations import WidgetConfigurations
 from data.db import init as init_db
 from bless import (
     BlessServer,
@@ -17,11 +18,14 @@ from gatt.service_dispatcher import ServiceDispatcher
 from coap.services.installed_widgets import InstalledWidgets
 
 # Logger
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(name=__name__)
 
 # Service dispatcher
 service_dispatcher = ServiceDispatcher()
+
+# Mode of operation
+mode = "default"  # this could be either "NORMAL", "SIMULATION"
 
 # Trigger
 trigger: Union[asyncio.Event, threading.Event]
@@ -43,22 +47,22 @@ async def run(loop):
     trigger.clear()
 
     # Configure GATT server
-    gatt_server = BlessServer(name="Mosaico", loop=loop)
-    gatt_server.read_request_func = read_request
-    gatt_server.write_request_func = write_request
-    await MatrixControl.create(gatt_server)
+    if mode == "default":
+        gatt_server = BlessServer(name="Mosaico", loop=loop)
+        gatt_server.read_request_func = read_request
+        gatt_server.write_request_func = write_request
+        await MatrixControl.create(gatt_server)
+        await gatt_server.start()
+        logger.info("Advertising")
 
     # Create CoAP context and add resources
     root = resource.Site()
     root.add_resource(['installed_widgets'], InstalledWidgets())
     root.add_resource(['active_widget'], ActiveWidget())
+    root.add_resource(['widget_configurations'], WidgetConfigurations())
 
     # Start CoAP server
     coap_context = await Context.create_server_context(root)
-
-    # Start GATT server
-    await gatt_server.start()
-    logger.debug("Advertising")
 
     # Wait for trigger
     if trigger.__module__ == "threading":
@@ -66,11 +70,24 @@ async def run(loop):
     else:
         await trigger.wait()
     await asyncio.sleep(5)
-    await gatt_server.stop()
+    if mode == "default":
+        await gatt_server.stop()
     await coap_context.shutdown()
 
 # Init database
 init_db()
+
+# Get the mode of operation
+if len(sys.argv) > 1:
+    mode = sys.argv[1]
+
+# Log the mode of operation
+if mode == "simulation":
+    logger.warning("The system is running in simulation mode")
+    logger.warning("The GATT server will not be started")
+else:
+    logger.warning("The system is running in normal mode")
+    logger.warning("The GATT server will be started")
 
 # Create a new event loop
 loop = asyncio.new_event_loop()

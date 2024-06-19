@@ -6,6 +6,7 @@ import aiocoap
 import logging
 import json
 from data import db
+from data.repositories import widgets
 from data.repositories.widgets import *
 from rest.services.widgets import get_widget
 from coap.responses import *
@@ -17,11 +18,16 @@ logger = logging.getLogger(name="coap.repositories.installed_widgets")
 
 class InstalledWidgets(resource.Resource):
 
+    async def render_delete(self, request):
+        """
+        Delete selected widget from local db but keep the files and configurations
+        """
+
     async def render_get(self, request):
         """
         Get all installed widgets from local db
         """
-        logger.debug("Received GET request to installed_widgets")
+        logger.info("Received GET request to installed_widgets")
         widgets = get_installed_widgets()
         return success_response(widgets)
 
@@ -30,27 +36,31 @@ class InstalledWidgets(resource.Resource):
         """
         Install a widget from the app store to the local db
         """
-        logger.debug("Received POST request to installed_widgets")
+        logger.info("Received POST request to installed_widgets")
 
-        # Get widget_id from request
-        widget_id = json.loads(request.payload.decode())["id"]
+        # Get widget_store_id from request
+        widget_store_id = json.loads(request.payload.decode())["id"]
 
         # Check if already installed
-        widget = get_widget_by_id(widget_id)
+        widget = widgets.get_widget(widget_store_id)
 
         if widget:
-            logger.warning(f"Widget with id: {widget_id} is already installed, skipping")
+            logger.warning(f"Widget with id: {widget_store_id} is already installed, skipping")
 
-            # Do not return error, just log and return success
-            #return error_response(None, "Widget already installed")
+            # Just return success response even if already installed
         else:
             # Get the widget from the app store
-            logger.info(f"Installing widget with id: {widget_id}")
-            widget = get_widget(widget_id)
+            logger.info(f"Installing widget with id: {widget_store_id}")
 
-            # Save the widget to the db
-            add_widget(widget["id"], widget["name"], widget["user"]["username"])
-            widget_path = get_widget_path(widget["id"])
+            widget = None
+            try:  # Always catch API exceptions to inform the user
+                widget = get_widget(widget_store_id)
+            except Exception as e:
+                logger.error(f"Error getting widget with id: {widget_store_id}")
+                return error_response(f"Could not get widget from app store")
+
+            # Get the widget path
+            widget_path = configs.get_widget_path(widget["user"]["username"], widget["name"])
 
             # Git clone the widget from provided repository
             repo_url = widget["repository_url"]
@@ -64,7 +74,10 @@ class InstalledWidgets(resource.Resource):
             os.makedirs(widget_path)
 
             # Clone the repo with depth 1
-            git.Repo.clone_from(repo_url, widget_path, depth=1)
+            #git.Repo.clone_from(repo_url, widget_path, depth=1)
             logger.info(f"Cloned widget from: {repo_url}")
+
+            # Save the widget to the db
+            add_widget(widget["id"], widget["name"], widget["user"]["username"])
 
         return success_response(None, "Widget installed successfully")

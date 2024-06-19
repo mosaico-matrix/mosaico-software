@@ -17,18 +17,29 @@ def create_tables():
 
     # Return if installed_widgets table already exists
     c.execute('''
-    SELECT name FROM sqlite_master WHERE type='table' AND name='installed_widgets'
+    SELECT name FROM sqlite_master WHERE type='table' AND name='widgets'
     ''')
 
     if c.fetchone():
         return
 
-    # Create installed_widgets table
+    # Create widgets table
     c.execute('''
-    CREATE TABLE installed_widgets (
-        id INTEGER PRIMARY KEY,
+    CREATE TABLE widgets (
+        id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        store_id INTEGER UNIQUE, 
         name TEXT NOT NULL,
         author TEXT NOT NULL
+    )
+    ''')
+
+    # Create widget_configurations table
+    c.execute('''
+    CREATE TABLE widget_configurations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        widget_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        FOREIGN KEY (widget_id) REFERENCES widgets (id)
     )
     ''')
 
