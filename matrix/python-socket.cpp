@@ -1,8 +1,7 @@
 //
 // Created by Marco Coppola (and ChatGPT lol)
 // This is actually a simple socket listener for the python scripts that actually handle the BLE communication.
-//
-
+// It's a simple socket listener that listens for commands from the Python scripts and sends responses back.
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -22,11 +21,26 @@ class PythonSocket {
 private:
 
     pid_t python_pid = 0;
+    std::string pythonScriptArguments =
+#if SIMULATION
+            "simulation";
+#elif WEB
+            "web";
+#else
+            "";
+#endif
 
     void startPythonServer() {
 
         string pythonScriptPath = Configs::getPythonScriptPath();
-        string command = "source " + pythonScriptPath + "/venv/bin/activate && python3 " + pythonScriptPath + "/main.py & echo $!";
+        string command = ". "
+                         + pythonScriptPath
+                         + "/venv/bin/activate && python3 "
+                         + pythonScriptPath
+                         + "/main.py "
+                         + pythonScriptArguments
+                         + " & echo $!";
+        Logger::logInfo("Starting Python server with command: " + command);
         FILE *pipe = popen(command.c_str(), "r");
         if (!pipe) {
             Logger::logFatal("Failed to start Python server");
@@ -37,8 +51,7 @@ private:
         if (fgets(buffer, 128, pipe) != nullptr) {
             python_pid = atoi(buffer);
             Logger::logInfo("Python server started with PID: " + std::to_string(python_pid));
-        }
-        else {
+        } else {
             Logger::logFatal("Failed to start Python server");
         }
 
@@ -85,7 +98,7 @@ private:
 
     static int acceptConnection(int server_fd, int &new_socket, struct sockaddr_in &address, int &addrlen) {
         // Accept connection
-        if ((new_socket = accept(server_fd, (struct sockaddr *) &address, (socklen_t *) &addrlen)) < 0) {
+        if ((new_socket = accept(server_fd, (struct sockaddr *) &address, (socklen_t * ) & addrlen)) < 0) {
             perror("accept");
             return -1;
         }
@@ -146,7 +159,7 @@ public:
     }
 
 
-    std::pair<std::string, json> waitNextCommand() {
+    std::pair <std::string, json> waitNextCommand() {
         // Accept connection
         if (acceptConnection(server_fd, new_socket, address, addrlen) != 0) {
             Logger::logFatal("Failed to accept connection");
@@ -181,7 +194,7 @@ public:
     }
 
 
-    void sendResponse(const json& response = json()) const {
+    void sendResponse(const json &response = json()) const {
 
         // Convert response to string
         std::string responseStr = response.dump();

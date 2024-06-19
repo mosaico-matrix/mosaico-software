@@ -25,7 +25,7 @@ logger = logging.getLogger(name=__name__)
 service_dispatcher = ServiceDispatcher()
 
 # Mode of operation
-mode = "default"  # this could be either "NORMAL", "SIMULATION"
+mode = "default"
 
 # Trigger
 trigger: Union[asyncio.Event, threading.Event]
@@ -82,11 +82,11 @@ if len(sys.argv) > 1:
     mode = sys.argv[1]
 
 # Log the mode of operation
-if mode == "simulation":
-    logger.warning("The system is running in simulation mode")
+if mode == "web" or mode == "simulation":
+    logger.warning("Networking module started in light mode")
     logger.warning("The GATT server will not be started")
 else:
-    logger.warning("The system is running in normal mode")
+    logger.warning("The system is running in default mode")
     logger.warning("The GATT server will be started")
 
 # Create a new event loop
