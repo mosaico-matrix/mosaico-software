@@ -17,8 +17,8 @@ def base_response(data, message, code):
     )
 
 
-def error_response(data, message=""):
-    return base_response(data, message, aiocoap.BAD_REQUEST)
+def error_response(message=""):
+    return base_response(None, message, aiocoap.BAD_REQUEST)
 
 
 def success_response(data, message=""):

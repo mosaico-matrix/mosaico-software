@@ -21,7 +21,7 @@ class ActiveWidget(resource.Resource):
         """
         Set the active widget
         """
-        logger.debug("Received POST request to active_widget")
+        logger.info("Received POST request to active_widget")
 
         # Deserialize the request
         payload = json.loads(request.payload.decode())

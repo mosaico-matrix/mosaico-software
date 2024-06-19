@@ -39,7 +39,7 @@ class AsyncInitMixin:
 
         # Register the characteristics
         for characteristic_key, characteristic in self.characteristics.items():
-            self.logger.debug(f"Registering characteristic: {characteristic_key}")
+            self.logger.info(f"Registering characteristic: {characteristic_key}")
             await self.server.add_new_characteristic(
                 self.service_uuid,
                 characteristic_key,

@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 project(Mosaico_Software)
 
+
+# Set compilation mode, exit if not set
+if(NOT DEFINED COMPILE_MODE)
+    message(FATAL_ERROR "Please set the COMPILE_MODE variable to either simulation, cross-compile or normal")
+endif()
+
 # Set matrix dimensions
 set(MATRIX_ROWS 64)
 set(MATRIX_COLS 64)
@@ -8,32 +14,18 @@ set(MATRIX_COLS 64)
 # Set frame render rate
 set(MATRIX_REFRESH_RATE 30)
 
-# Set various url endpoints
-set(API_URL  '"http://host.orb.internal:8000/api/"')
-
-# Set compilation mode
-# - NORMAL: Compile for the host machine and output to the RGB LED Matrix
-# - SIMULATION: Compile for the host machine and output to x11 window
-# - CROSS_COMPILE: Cross compile for the Raspberry Pi and output to the RGB LED Matrix
-set(COMPILE_MODE "SIMULATION")
-set(DEBUG true)
+# Print the current compilation mode
+message("Compiling in ${COMPILE_MODE} mode")
 
 # Compiler flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -static-libstdc++")
 # Matrix flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -DMATRIX_ROWS=${MATRIX_ROWS} -DMATRIX_COLS=${MATRIX_COLS} -DMATRIX_REFRESH_RATE=${MATRIX_REFRESH_RATE}")
-# Api url
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAPI_URL=${API_URL}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMATRIX_ROWS=${MATRIX_ROWS} -DMATRIX_COLS=${MATRIX_COLS} -DMATRIX_REFRESH_RATE=${MATRIX_REFRESH_RATE}")
 # Improve chai script performance by disabling threading
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCHAISCRIPT_NO_THREADS")
-if (DEBUG)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG")
-endif ()
 
 # SIMULATION
-if(COMPILE_MODE STREQUAL "SIMULATION")
-
-    message("Compiling the project for the host machine in simulation mode")
+if(COMPILE_MODE STREQUAL "simulation")
 
     # Compile x11 matrix
     set(MATRIX_DEVICE matrix/matrices/x11-matrix.cpp)
@@ -45,17 +37,15 @@ if(COMPILE_MODE STREQUAL "SIMULATION")
     # LibCurl
     find_package(CURL REQUIRED)
 
-    # Export debug symbols and define simulation mode
+    # Define simulation flag
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DSIMULATION")
 
     # Set compiler
-    set(ENV{CXX} clang++) # Clang is much faster to compile chaiscript
+    set(ENV{CXX} g++) # clang++ Clang is much faster to compile chaiscript
     set(ENV{CC} gcc)
 
 # Cross compile for Raspberry Pi
-elseif(COMPILE_MODE STREQUAL "CROSS_COMPILE")
-
-    message("Cross compiling the project for the Raspberry Pi")
+elseif(COMPILE_MODE STREQUAL "cross-compile")
 
     # Compile hardware matrix
     set(MATRIX_DEVICE matrix/matrices/hardware-matrix.cpp)
@@ -71,8 +61,8 @@ elseif(COMPILE_MODE STREQUAL "CROSS_COMPILE")
     set(CURL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/curl/include")
     include_directories(${CURL_INCLUDE_DIR})
 
-# Standard compilation
-elseif (COMPILE_MODE STREQUAL "NORMAL")
+    # Standard compilation
+elseif (COMPILE_MODE STREQUAL "normal")
 
     # Compile hardware matrix
     set(MATRIX_DEVICE matrix/matrices/hardware-matrix.cpp)
@@ -83,6 +73,24 @@ elseif (COMPILE_MODE STREQUAL "NORMAL")
     # Set compiler
     set(ENV{CXX} g++)
     set(ENV{CC} gcc)
+
+elseif (COMPILE_MODE STREQUAL "web")
+
+    # Compile hardware matrix
+    set(MATRIX_DEVICE matrix/matrices/web-matrix.cpp)
+
+    # LibCurl
+    find_package(CURL REQUIRED)
+
+    # Define web flag
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWEB")
+
+    # Set compiler
+    set(ENV{CXX} clang++)
+    set(ENV{CC} clang)
+
+else ()
+    message(FATAL_ERROR "Invalid COMPILE_MODE")
 endif ()
 
 # Compile RGB LED Matrix library
@@ -104,7 +112,6 @@ set(RESTCLIENT_SOURCES
 # Add restclient library
 add_library(restclient STATIC ${RESTCLIENT_SOURCES})
 target_include_directories(restclient PUBLIC ${PROJECT_SOURCE_DIR}/external/restclient/include)
-
 
 # Source files
 set(SOURCES
@@ -160,7 +167,7 @@ add_executable(main ${SOURCES})
 target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/include)
 
 # Link libraries
-if (COMPILE_MODE STREQUAL "SIMULATION")
+if (COMPILE_MODE STREQUAL "simulation")
     target_link_libraries(main PRIVATE ${RGB_LIBRARY} restclient rt m pthread ${CURL_LIBRARIES} ${X11_LIBRARIES} -lX11 -ldl -fuse-ld=gold) # ${LUA_LIBRARIES}
 else ()
     target_link_libraries(main PRIVATE ${RGB_LIBRARY} restclient rt m pthread ${CURL_LIBRARY} -ldl)

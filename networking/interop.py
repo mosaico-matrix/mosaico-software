@@ -14,7 +14,7 @@ def call_matrix(command, data: dict) -> dict:
 
     # Convert data to json
     data = json.dumps(data)
-    logger.debug(f"Sending {command} with data {data}")
+    logger.info(f"Sending {command} with data {data}")
 
     # Send the message
     message = f"{command} {data}"
@@ -25,7 +25,7 @@ def call_matrix(command, data: dict) -> dict:
     # Convert the response to a dictionary if actual data is returned
     response = response.decode()
     if response:
-        logger.debug(f"Received response {response}")
+        logger.info(f"Received response {response}")
         response = json.loads(response)
         return response
     else:

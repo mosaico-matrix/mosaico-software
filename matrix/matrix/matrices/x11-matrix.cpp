@@ -20,7 +20,7 @@ namespace x11matrix {
 #define MATRIX_HEIGHT (MATRIX_ROWS * PIXEL_SIZE)
 
 
-    class MockFrameCanvas : public rgb_matrix::Canvas {
+    class X11FrameCanvas : public rgb_matrix::Canvas {
     private:
         Display *display;
         Window window;
@@ -28,12 +28,12 @@ namespace x11matrix {
     public:
         Pixmap buffer;
 
-        MockFrameCanvas(Display *display, Visual *visual, int depth, Window window) : display(display), window(window),
+        X11FrameCanvas(Display *display, Visual *visual, int depth, Window window) : display(display), window(window),
                                                                                       buffer(None) {
             buffer = XCreatePixmap(display, window, MATRIX_WIDTH, MATRIX_HEIGHT, depth);
         }
 
-        ~MockFrameCanvas() {
+        ~X11FrameCanvas() {
 
             // Destroy the buffer pixmap if it's created
             if (buffer != None) {
@@ -106,12 +106,12 @@ namespace x11matrix {
         }
 
         Canvas *CreateFrameCanvas() {
-            return new MockFrameCanvas(display, visual, depth, window);
+            return new X11FrameCanvas(display, visual, depth, window);
         }
 
         void SwapFrameCanvas(Canvas *canvas) {
             // Copy the buffer to the window
-            MockFrameCanvas *mockCanvas = (MockFrameCanvas *)(canvas);
+            X11FrameCanvas *mockCanvas = (X11FrameCanvas *)(canvas);
             XCopyArea(display, mockCanvas->buffer, window, gc, 0, 0, MATRIX_WIDTH, MATRIX_HEIGHT, 0, 0);
 
             // Flush graphics requests to the server
