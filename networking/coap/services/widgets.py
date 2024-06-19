@@ -1,6 +1,8 @@
 import os
 
 import aiocoap.resource as resource
+
+import coap.dynamic_resource
 import rest.services.widgets as rest_widgets_api
 import data.repositories.widgets as local_widgets
 from interop import call_matrix
@@ -118,28 +120,24 @@ class ActiveWidget(resource.Resource):
 
         return success_response(None, "Widget set successfully")
 
-class WidgetConfigurationForm(resource.Resource):
+class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
     """
     The purpose of this service is to provide the widget configuration form .json from the file system
     It is composed by only the get method which returns the json file used to build the configuration form
     """
 
-    async def render_post(self, request):
+    async def render_get(self, request, args):
         """
         Get the widget configuration form from the file system
         """
 
-        # Deserialize the request
-        payload = json.loads(request.payload.decode())
-        widget_id = payload["widget_id"]
-
         # Get widget
+        widget_id = args[0]
         widget = local_widgets.get_widget(widget_id)
         if widget is None:
             return error_response("Widget not found")
 
         # Get the widget installation path
-        print(widget)
         widget_path = configs.get_widget_path(widget["author"], widget["name"])
 
         # Get the configuration form

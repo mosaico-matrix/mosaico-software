@@ -4,6 +4,7 @@ import asyncio
 import threading
 from aiocoap import Context, resource
 from typing import Any, Union
+
 from coap.services.widget_configurations import WidgetConfigurations
 from data.db import init as init_db
 from bless import (
