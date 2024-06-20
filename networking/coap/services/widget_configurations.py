@@ -58,7 +58,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
             return error_response("Failed to decode base64 for configuration file")
 
         # Get the path to save the configuration
-        config_path = get_widget_configuration_path(widget["author"], widget["name"])
+        config_path = get_widget_configuration_path(widget["author"], widget["name"], config_name)
 
         # Create the directory if it does not exist
         try:
@@ -113,7 +113,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         delete_widget_configuration(configuration_id)
 
         # Get the path to the configuration
-        config_path = get_widget_configuration_path(widget["author"], widget["name"])
+        config_path = get_widget_configuration_path(widget["author"], widget["name"], configuration["name"])
 
         # Remove the directory
         try:
