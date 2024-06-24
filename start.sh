@@ -86,7 +86,9 @@ source venv/bin/activate
 
 # Install the required python packages
 echo -e "${YELLOW}Installing python packages${NC}"
+cd ../networking
 run_command pip3 install -r requirements.txt
+cd ../matrix
 echo -e "${GREEN}Python packages installed${NC}"
 
 # Compile the application

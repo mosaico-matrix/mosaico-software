@@ -21,7 +21,7 @@ class DrawableText : public ConfigurableDrawable {
 
 public:
 
-    DrawableText(MatrixRunner *runner, DynamicRunnerParser *parser = NULL) : ConfigurableDrawable(runner) {
+    DrawableText(MatrixWidget *runner, DynamicWidgetParser *parser = NULL) : ConfigurableDrawable(runner) {
 
         if (fonts.empty())
         {

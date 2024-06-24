@@ -38,7 +38,7 @@ void commandHandler(const std::string& command, const json &data) {
 
         // Create new slideshow
         newSlideshowReceived = new MatrixSlideshow(matrix);
-        newSlideshowReceived->setDynamicRunner(data["widget_path"]);
+        newSlideshowReceived->setDynamicWidget(data["widget_path"], data["config_path"]);
 
     } else if (command == "CMD2") {
         // Do something with data for command 2

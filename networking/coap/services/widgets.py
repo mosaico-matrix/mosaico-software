@@ -100,6 +100,7 @@ class ActiveWidget(resource.Resource):
         pass
 
     async def render_post(self, request):
+
         """
         Set the active widget
         """
@@ -149,3 +150,18 @@ class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
                 return success_response(json.load(f))
         except Exception as e:
             return error_response("Could not get configuration form for widget")
+
+
+class CustomWidget(resource.Resource):
+    """
+    This service allows developers to create a custom widget package and upload it directly to the system
+    This skips the app store and the download from the git repository
+    """
+
+    async def render_post(self, request):
+        """
+        Upload a custom widget package in .tar.gz format
+        """
+        logger.info("Received POST request to custom_widget")
+
+        pass

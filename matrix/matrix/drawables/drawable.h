@@ -2,7 +2,7 @@
 #define DRAWABLE_H
 
 #include "../../external/rpi-rgb-led-matrix/include/graphics.h"
-#include "../runners/dynamic/dynamic-runner-parser.cpp"
+#include "../widgets/dynamic/dynamic-widget-parser.cpp"
 #include "../../logger/logger.h"
 #include "../../configs.cpp"
 #include <chrono>
@@ -12,7 +12,7 @@
 
 using namespace std;
 using namespace rgb_matrix;
-class MatrixRunner;
+class MatrixWidget;
 
 class Drawable {
 protected:
@@ -47,7 +47,7 @@ public:
         uint8_t blue;
     };
 
-    Drawable(MatrixRunner *runner);
+    Drawable(MatrixWidget *runner);
     virtual ~Drawable();
 
     void setFrameDuration(unsigned int frameDurationMs);
@@ -74,10 +74,10 @@ public:
 class ConfigurableDrawable : public Drawable {
 
 protected:
-    DynamicRunnerParser *parser = NULL;
+    DynamicWidgetParser *parser = NULL;
 
 public:
-    ConfigurableDrawable(MatrixRunner *runner, DynamicRunnerParser *parser = NULL) : Drawable(runner), parser(parser) {}
+    ConfigurableDrawable(MatrixWidget *runner, DynamicWidgetParser *parser = NULL) : Drawable(runner), parser(parser) {}
     virtual ~ConfigurableDrawable() {}
     virtual void loadConfig(string key) = 0;
 };

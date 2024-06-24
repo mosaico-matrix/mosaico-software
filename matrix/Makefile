@@ -60,7 +60,7 @@ EQUALS = =
 CMAKE_SOURCE_DIR = /Users/murkrow/Desktop/Repos/mosaico/mosaico-software/matrix
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/murkrow/Desktop/Repos/mosaico/mosaico-software/matrix
+CMAKE_BINARY_DIR = /home/murkrow/working/matrix
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/murkrow/Desktop/Repos/mosaico/mosaico-software/matrix/CMakeFiles /Users/murkrow/Desktop/Repos/mosaico/mosaico-software/matrix//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/murkrow/working/matrix/CMakeFiles /home/murkrow/working/matrix//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/murkrow/Desktop/Repos/mosaico/mosaico-software/matrix/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/murkrow/working/matrix/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -511,29 +511,29 @@ matrix/matrices/matrix-device.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrices/matrix-device.cpp.s
 .PHONY : matrix/matrices/matrix-device.cpp.s
 
-matrix/matrices/web-matrix.o: matrix/matrices/web-matrix.cpp.o
-.PHONY : matrix/matrices/web-matrix.o
+matrix/matrices/x11-matrix.o: matrix/matrices/x11-matrix.cpp.o
+.PHONY : matrix/matrices/x11-matrix.o
 
 # target to build an object file
-matrix/matrices/web-matrix.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrices/web-matrix.cpp.o
-.PHONY : matrix/matrices/web-matrix.cpp.o
+matrix/matrices/x11-matrix.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrices/x11-matrix.cpp.o
+.PHONY : matrix/matrices/x11-matrix.cpp.o
 
-matrix/matrices/web-matrix.i: matrix/matrices/web-matrix.cpp.i
-.PHONY : matrix/matrices/web-matrix.i
+matrix/matrices/x11-matrix.i: matrix/matrices/x11-matrix.cpp.i
+.PHONY : matrix/matrices/x11-matrix.i
 
 # target to preprocess a source file
-matrix/matrices/web-matrix.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrices/web-matrix.cpp.i
-.PHONY : matrix/matrices/web-matrix.cpp.i
+matrix/matrices/x11-matrix.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrices/x11-matrix.cpp.i
+.PHONY : matrix/matrices/x11-matrix.cpp.i
 
-matrix/matrices/web-matrix.s: matrix/matrices/web-matrix.cpp.s
-.PHONY : matrix/matrices/web-matrix.s
+matrix/matrices/x11-matrix.s: matrix/matrices/x11-matrix.cpp.s
+.PHONY : matrix/matrices/x11-matrix.s
 
 # target to generate assembly for a file
-matrix/matrices/web-matrix.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrices/web-matrix.cpp.s
-.PHONY : matrix/matrices/web-matrix.cpp.s
+matrix/matrices/x11-matrix.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrices/x11-matrix.cpp.s
+.PHONY : matrix/matrices/x11-matrix.cpp.s
 
 matrix/matrix-slideshow.o: matrix/matrix-slideshow.cpp.o
 .PHONY : matrix/matrix-slideshow.o
@@ -559,221 +559,221 @@ matrix/matrix-slideshow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/matrix-slideshow.cpp.s
 .PHONY : matrix/matrix-slideshow.cpp.s
 
-matrix/runners/dynamic/dynamic-runner-metadata.o: matrix/runners/dynamic/dynamic-runner-metadata.cpp.o
-.PHONY : matrix/runners/dynamic/dynamic-runner-metadata.o
+matrix/widgets/dynamic/dynamic-widget-metadata.o: matrix/widgets/dynamic/dynamic-widget-metadata.cpp.o
+.PHONY : matrix/widgets/dynamic/dynamic-widget-metadata.o
 
 # target to build an object file
-matrix/runners/dynamic/dynamic-runner-metadata.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner-metadata.cpp.o
-.PHONY : matrix/runners/dynamic/dynamic-runner-metadata.cpp.o
+matrix/widgets/dynamic/dynamic-widget-metadata.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget-metadata.cpp.o
+.PHONY : matrix/widgets/dynamic/dynamic-widget-metadata.cpp.o
 
-matrix/runners/dynamic/dynamic-runner-metadata.i: matrix/runners/dynamic/dynamic-runner-metadata.cpp.i
-.PHONY : matrix/runners/dynamic/dynamic-runner-metadata.i
+matrix/widgets/dynamic/dynamic-widget-metadata.i: matrix/widgets/dynamic/dynamic-widget-metadata.cpp.i
+.PHONY : matrix/widgets/dynamic/dynamic-widget-metadata.i
 
 # target to preprocess a source file
-matrix/runners/dynamic/dynamic-runner-metadata.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner-metadata.cpp.i
-.PHONY : matrix/runners/dynamic/dynamic-runner-metadata.cpp.i
+matrix/widgets/dynamic/dynamic-widget-metadata.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget-metadata.cpp.i
+.PHONY : matrix/widgets/dynamic/dynamic-widget-metadata.cpp.i
 
-matrix/runners/dynamic/dynamic-runner-metadata.s: matrix/runners/dynamic/dynamic-runner-metadata.cpp.s
-.PHONY : matrix/runners/dynamic/dynamic-runner-metadata.s
+matrix/widgets/dynamic/dynamic-widget-metadata.s: matrix/widgets/dynamic/dynamic-widget-metadata.cpp.s
+.PHONY : matrix/widgets/dynamic/dynamic-widget-metadata.s
 
 # target to generate assembly for a file
-matrix/runners/dynamic/dynamic-runner-metadata.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner-metadata.cpp.s
-.PHONY : matrix/runners/dynamic/dynamic-runner-metadata.cpp.s
+matrix/widgets/dynamic/dynamic-widget-metadata.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget-metadata.cpp.s
+.PHONY : matrix/widgets/dynamic/dynamic-widget-metadata.cpp.s
 
-matrix/runners/dynamic/dynamic-runner-parser.o: matrix/runners/dynamic/dynamic-runner-parser.cpp.o
-.PHONY : matrix/runners/dynamic/dynamic-runner-parser.o
+matrix/widgets/dynamic/dynamic-widget-parser.o: matrix/widgets/dynamic/dynamic-widget-parser.cpp.o
+.PHONY : matrix/widgets/dynamic/dynamic-widget-parser.o
 
 # target to build an object file
-matrix/runners/dynamic/dynamic-runner-parser.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner-parser.cpp.o
-.PHONY : matrix/runners/dynamic/dynamic-runner-parser.cpp.o
+matrix/widgets/dynamic/dynamic-widget-parser.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget-parser.cpp.o
+.PHONY : matrix/widgets/dynamic/dynamic-widget-parser.cpp.o
 
-matrix/runners/dynamic/dynamic-runner-parser.i: matrix/runners/dynamic/dynamic-runner-parser.cpp.i
-.PHONY : matrix/runners/dynamic/dynamic-runner-parser.i
+matrix/widgets/dynamic/dynamic-widget-parser.i: matrix/widgets/dynamic/dynamic-widget-parser.cpp.i
+.PHONY : matrix/widgets/dynamic/dynamic-widget-parser.i
 
 # target to preprocess a source file
-matrix/runners/dynamic/dynamic-runner-parser.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner-parser.cpp.i
-.PHONY : matrix/runners/dynamic/dynamic-runner-parser.cpp.i
+matrix/widgets/dynamic/dynamic-widget-parser.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget-parser.cpp.i
+.PHONY : matrix/widgets/dynamic/dynamic-widget-parser.cpp.i
 
-matrix/runners/dynamic/dynamic-runner-parser.s: matrix/runners/dynamic/dynamic-runner-parser.cpp.s
-.PHONY : matrix/runners/dynamic/dynamic-runner-parser.s
+matrix/widgets/dynamic/dynamic-widget-parser.s: matrix/widgets/dynamic/dynamic-widget-parser.cpp.s
+.PHONY : matrix/widgets/dynamic/dynamic-widget-parser.s
 
 # target to generate assembly for a file
-matrix/runners/dynamic/dynamic-runner-parser.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner-parser.cpp.s
-.PHONY : matrix/runners/dynamic/dynamic-runner-parser.cpp.s
+matrix/widgets/dynamic/dynamic-widget-parser.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget-parser.cpp.s
+.PHONY : matrix/widgets/dynamic/dynamic-widget-parser.cpp.s
 
-matrix/runners/dynamic/dynamic-runner.o: matrix/runners/dynamic/dynamic-runner.cpp.o
-.PHONY : matrix/runners/dynamic/dynamic-runner.o
+matrix/widgets/dynamic/dynamic-widget.o: matrix/widgets/dynamic/dynamic-widget.cpp.o
+.PHONY : matrix/widgets/dynamic/dynamic-widget.o
 
 # target to build an object file
-matrix/runners/dynamic/dynamic-runner.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner.cpp.o
-.PHONY : matrix/runners/dynamic/dynamic-runner.cpp.o
+matrix/widgets/dynamic/dynamic-widget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget.cpp.o
+.PHONY : matrix/widgets/dynamic/dynamic-widget.cpp.o
 
-matrix/runners/dynamic/dynamic-runner.i: matrix/runners/dynamic/dynamic-runner.cpp.i
-.PHONY : matrix/runners/dynamic/dynamic-runner.i
+matrix/widgets/dynamic/dynamic-widget.i: matrix/widgets/dynamic/dynamic-widget.cpp.i
+.PHONY : matrix/widgets/dynamic/dynamic-widget.i
 
 # target to preprocess a source file
-matrix/runners/dynamic/dynamic-runner.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner.cpp.i
-.PHONY : matrix/runners/dynamic/dynamic-runner.cpp.i
+matrix/widgets/dynamic/dynamic-widget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget.cpp.i
+.PHONY : matrix/widgets/dynamic/dynamic-widget.cpp.i
 
-matrix/runners/dynamic/dynamic-runner.s: matrix/runners/dynamic/dynamic-runner.cpp.s
-.PHONY : matrix/runners/dynamic/dynamic-runner.s
+matrix/widgets/dynamic/dynamic-widget.s: matrix/widgets/dynamic/dynamic-widget.cpp.s
+.PHONY : matrix/widgets/dynamic/dynamic-widget.s
 
 # target to generate assembly for a file
-matrix/runners/dynamic/dynamic-runner.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/dynamic-runner.cpp.s
-.PHONY : matrix/runners/dynamic/dynamic-runner.cpp.s
+matrix/widgets/dynamic/dynamic-widget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/dynamic-widget.cpp.s
+.PHONY : matrix/widgets/dynamic/dynamic-widget.cpp.s
 
-matrix/runners/dynamic/modules/rest-module.o: matrix/runners/dynamic/modules/rest-module.cpp.o
-.PHONY : matrix/runners/dynamic/modules/rest-module.o
+matrix/widgets/dynamic/modules/rest-module.o: matrix/widgets/dynamic/modules/rest-module.cpp.o
+.PHONY : matrix/widgets/dynamic/modules/rest-module.o
 
 # target to build an object file
-matrix/runners/dynamic/modules/rest-module.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/modules/rest-module.cpp.o
-.PHONY : matrix/runners/dynamic/modules/rest-module.cpp.o
+matrix/widgets/dynamic/modules/rest-module.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/modules/rest-module.cpp.o
+.PHONY : matrix/widgets/dynamic/modules/rest-module.cpp.o
 
-matrix/runners/dynamic/modules/rest-module.i: matrix/runners/dynamic/modules/rest-module.cpp.i
-.PHONY : matrix/runners/dynamic/modules/rest-module.i
+matrix/widgets/dynamic/modules/rest-module.i: matrix/widgets/dynamic/modules/rest-module.cpp.i
+.PHONY : matrix/widgets/dynamic/modules/rest-module.i
 
 # target to preprocess a source file
-matrix/runners/dynamic/modules/rest-module.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/modules/rest-module.cpp.i
-.PHONY : matrix/runners/dynamic/modules/rest-module.cpp.i
+matrix/widgets/dynamic/modules/rest-module.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/modules/rest-module.cpp.i
+.PHONY : matrix/widgets/dynamic/modules/rest-module.cpp.i
 
-matrix/runners/dynamic/modules/rest-module.s: matrix/runners/dynamic/modules/rest-module.cpp.s
-.PHONY : matrix/runners/dynamic/modules/rest-module.s
+matrix/widgets/dynamic/modules/rest-module.s: matrix/widgets/dynamic/modules/rest-module.cpp.s
+.PHONY : matrix/widgets/dynamic/modules/rest-module.s
 
 # target to generate assembly for a file
-matrix/runners/dynamic/modules/rest-module.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/dynamic/modules/rest-module.cpp.s
-.PHONY : matrix/runners/dynamic/modules/rest-module.cpp.s
+matrix/widgets/dynamic/modules/rest-module.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/dynamic/modules/rest-module.cpp.s
+.PHONY : matrix/widgets/dynamic/modules/rest-module.cpp.s
 
-matrix/runners/games/flappy-bird.o: matrix/runners/games/flappy-bird.cpp.o
-.PHONY : matrix/runners/games/flappy-bird.o
+matrix/widgets/games/flappy-bird.o: matrix/widgets/games/flappy-bird.cpp.o
+.PHONY : matrix/widgets/games/flappy-bird.o
 
 # target to build an object file
-matrix/runners/games/flappy-bird.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/flappy-bird.cpp.o
-.PHONY : matrix/runners/games/flappy-bird.cpp.o
+matrix/widgets/games/flappy-bird.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/flappy-bird.cpp.o
+.PHONY : matrix/widgets/games/flappy-bird.cpp.o
 
-matrix/runners/games/flappy-bird.i: matrix/runners/games/flappy-bird.cpp.i
-.PHONY : matrix/runners/games/flappy-bird.i
+matrix/widgets/games/flappy-bird.i: matrix/widgets/games/flappy-bird.cpp.i
+.PHONY : matrix/widgets/games/flappy-bird.i
 
 # target to preprocess a source file
-matrix/runners/games/flappy-bird.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/flappy-bird.cpp.i
-.PHONY : matrix/runners/games/flappy-bird.cpp.i
+matrix/widgets/games/flappy-bird.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/flappy-bird.cpp.i
+.PHONY : matrix/widgets/games/flappy-bird.cpp.i
 
-matrix/runners/games/flappy-bird.s: matrix/runners/games/flappy-bird.cpp.s
-.PHONY : matrix/runners/games/flappy-bird.s
+matrix/widgets/games/flappy-bird.s: matrix/widgets/games/flappy-bird.cpp.s
+.PHONY : matrix/widgets/games/flappy-bird.s
 
 # target to generate assembly for a file
-matrix/runners/games/flappy-bird.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/flappy-bird.cpp.s
-.PHONY : matrix/runners/games/flappy-bird.cpp.s
+matrix/widgets/games/flappy-bird.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/flappy-bird.cpp.s
+.PHONY : matrix/widgets/games/flappy-bird.cpp.s
 
-matrix/runners/games/pixel-mover.o: matrix/runners/games/pixel-mover.cpp.o
-.PHONY : matrix/runners/games/pixel-mover.o
+matrix/widgets/games/pixel-mover.o: matrix/widgets/games/pixel-mover.cpp.o
+.PHONY : matrix/widgets/games/pixel-mover.o
 
 # target to build an object file
-matrix/runners/games/pixel-mover.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/pixel-mover.cpp.o
-.PHONY : matrix/runners/games/pixel-mover.cpp.o
+matrix/widgets/games/pixel-mover.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/pixel-mover.cpp.o
+.PHONY : matrix/widgets/games/pixel-mover.cpp.o
 
-matrix/runners/games/pixel-mover.i: matrix/runners/games/pixel-mover.cpp.i
-.PHONY : matrix/runners/games/pixel-mover.i
+matrix/widgets/games/pixel-mover.i: matrix/widgets/games/pixel-mover.cpp.i
+.PHONY : matrix/widgets/games/pixel-mover.i
 
 # target to preprocess a source file
-matrix/runners/games/pixel-mover.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/pixel-mover.cpp.i
-.PHONY : matrix/runners/games/pixel-mover.cpp.i
+matrix/widgets/games/pixel-mover.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/pixel-mover.cpp.i
+.PHONY : matrix/widgets/games/pixel-mover.cpp.i
 
-matrix/runners/games/pixel-mover.s: matrix/runners/games/pixel-mover.cpp.s
-.PHONY : matrix/runners/games/pixel-mover.s
+matrix/widgets/games/pixel-mover.s: matrix/widgets/games/pixel-mover.cpp.s
+.PHONY : matrix/widgets/games/pixel-mover.s
 
 # target to generate assembly for a file
-matrix/runners/games/pixel-mover.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/pixel-mover.cpp.s
-.PHONY : matrix/runners/games/pixel-mover.cpp.s
+matrix/widgets/games/pixel-mover.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/pixel-mover.cpp.s
+.PHONY : matrix/widgets/games/pixel-mover.cpp.s
 
-matrix/runners/games/tetris.o: matrix/runners/games/tetris.cpp.o
-.PHONY : matrix/runners/games/tetris.o
+matrix/widgets/games/tetris.o: matrix/widgets/games/tetris.cpp.o
+.PHONY : matrix/widgets/games/tetris.o
 
 # target to build an object file
-matrix/runners/games/tetris.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/tetris.cpp.o
-.PHONY : matrix/runners/games/tetris.cpp.o
+matrix/widgets/games/tetris.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/tetris.cpp.o
+.PHONY : matrix/widgets/games/tetris.cpp.o
 
-matrix/runners/games/tetris.i: matrix/runners/games/tetris.cpp.i
-.PHONY : matrix/runners/games/tetris.i
+matrix/widgets/games/tetris.i: matrix/widgets/games/tetris.cpp.i
+.PHONY : matrix/widgets/games/tetris.i
 
 # target to preprocess a source file
-matrix/runners/games/tetris.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/tetris.cpp.i
-.PHONY : matrix/runners/games/tetris.cpp.i
+matrix/widgets/games/tetris.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/tetris.cpp.i
+.PHONY : matrix/widgets/games/tetris.cpp.i
 
-matrix/runners/games/tetris.s: matrix/runners/games/tetris.cpp.s
-.PHONY : matrix/runners/games/tetris.s
+matrix/widgets/games/tetris.s: matrix/widgets/games/tetris.cpp.s
+.PHONY : matrix/widgets/games/tetris.s
 
 # target to generate assembly for a file
-matrix/runners/games/tetris.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/games/tetris.cpp.s
-.PHONY : matrix/runners/games/tetris.cpp.s
+matrix/widgets/games/tetris.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/games/tetris.cpp.s
+.PHONY : matrix/widgets/games/tetris.cpp.s
 
-matrix/runners/loading-runner.o: matrix/runners/loading-runner.cpp.o
-.PHONY : matrix/runners/loading-runner.o
+matrix/widgets/loading-runner.o: matrix/widgets/loading-runner.cpp.o
+.PHONY : matrix/widgets/loading-runner.o
 
 # target to build an object file
-matrix/runners/loading-runner.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/loading-runner.cpp.o
-.PHONY : matrix/runners/loading-runner.cpp.o
+matrix/widgets/loading-runner.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/loading-runner.cpp.o
+.PHONY : matrix/widgets/loading-runner.cpp.o
 
-matrix/runners/loading-runner.i: matrix/runners/loading-runner.cpp.i
-.PHONY : matrix/runners/loading-runner.i
+matrix/widgets/loading-runner.i: matrix/widgets/loading-runner.cpp.i
+.PHONY : matrix/widgets/loading-runner.i
 
 # target to preprocess a source file
-matrix/runners/loading-runner.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/loading-runner.cpp.i
-.PHONY : matrix/runners/loading-runner.cpp.i
+matrix/widgets/loading-runner.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/loading-runner.cpp.i
+.PHONY : matrix/widgets/loading-runner.cpp.i
 
-matrix/runners/loading-runner.s: matrix/runners/loading-runner.cpp.s
-.PHONY : matrix/runners/loading-runner.s
+matrix/widgets/loading-runner.s: matrix/widgets/loading-runner.cpp.s
+.PHONY : matrix/widgets/loading-runner.s
 
 # target to generate assembly for a file
-matrix/runners/loading-runner.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/loading-runner.cpp.s
-.PHONY : matrix/runners/loading-runner.cpp.s
+matrix/widgets/loading-runner.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/loading-runner.cpp.s
+.PHONY : matrix/widgets/loading-runner.cpp.s
 
-matrix/runners/matrix-runner.o: matrix/runners/matrix-runner.cpp.o
-.PHONY : matrix/runners/matrix-runner.o
+matrix/widgets/matrix-widget.o: matrix/widgets/matrix-widget.cpp.o
+.PHONY : matrix/widgets/matrix-widget.o
 
 # target to build an object file
-matrix/runners/matrix-runner.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/matrix-runner.cpp.o
-.PHONY : matrix/runners/matrix-runner.cpp.o
+matrix/widgets/matrix-widget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/matrix-widget.cpp.o
+.PHONY : matrix/widgets/matrix-widget.cpp.o
 
-matrix/runners/matrix-runner.i: matrix/runners/matrix-runner.cpp.i
-.PHONY : matrix/runners/matrix-runner.i
+matrix/widgets/matrix-widget.i: matrix/widgets/matrix-widget.cpp.i
+.PHONY : matrix/widgets/matrix-widget.i
 
 # target to preprocess a source file
-matrix/runners/matrix-runner.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/matrix-runner.cpp.i
-.PHONY : matrix/runners/matrix-runner.cpp.i
+matrix/widgets/matrix-widget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/matrix-widget.cpp.i
+.PHONY : matrix/widgets/matrix-widget.cpp.i
 
-matrix/runners/matrix-runner.s: matrix/runners/matrix-runner.cpp.s
-.PHONY : matrix/runners/matrix-runner.s
+matrix/widgets/matrix-widget.s: matrix/widgets/matrix-widget.cpp.s
+.PHONY : matrix/widgets/matrix-widget.s
 
 # target to generate assembly for a file
-matrix/runners/matrix-runner.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/runners/matrix-runner.cpp.s
-.PHONY : matrix/runners/matrix-runner.cpp.s
+matrix/widgets/matrix-widget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/matrix/widgets/matrix-widget.cpp.s
+.PHONY : matrix/widgets/matrix-widget.cpp.s
 
 python-socket.o: python-socket.cpp.o
 .PHONY : python-socket.o
@@ -854,39 +854,39 @@ help:
 	@echo "... matrix/matrices/matrix-device.o"
 	@echo "... matrix/matrices/matrix-device.i"
 	@echo "... matrix/matrices/matrix-device.s"
-	@echo "... matrix/matrices/web-matrix.o"
-	@echo "... matrix/matrices/web-matrix.i"
-	@echo "... matrix/matrices/web-matrix.s"
+	@echo "... matrix/matrices/x11-matrix.o"
+	@echo "... matrix/matrices/x11-matrix.i"
+	@echo "... matrix/matrices/x11-matrix.s"
 	@echo "... matrix/matrix-slideshow.o"
 	@echo "... matrix/matrix-slideshow.i"
 	@echo "... matrix/matrix-slideshow.s"
-	@echo "... matrix/runners/dynamic/dynamic-runner-metadata.o"
-	@echo "... matrix/runners/dynamic/dynamic-runner-metadata.i"
-	@echo "... matrix/runners/dynamic/dynamic-runner-metadata.s"
-	@echo "... matrix/runners/dynamic/dynamic-runner-parser.o"
-	@echo "... matrix/runners/dynamic/dynamic-runner-parser.i"
-	@echo "... matrix/runners/dynamic/dynamic-runner-parser.s"
-	@echo "... matrix/runners/dynamic/dynamic-runner.o"
-	@echo "... matrix/runners/dynamic/dynamic-runner.i"
-	@echo "... matrix/runners/dynamic/dynamic-runner.s"
-	@echo "... matrix/runners/dynamic/modules/rest-module.o"
-	@echo "... matrix/runners/dynamic/modules/rest-module.i"
-	@echo "... matrix/runners/dynamic/modules/rest-module.s"
-	@echo "... matrix/runners/games/flappy-bird.o"
-	@echo "... matrix/runners/games/flappy-bird.i"
-	@echo "... matrix/runners/games/flappy-bird.s"
-	@echo "... matrix/runners/games/pixel-mover.o"
-	@echo "... matrix/runners/games/pixel-mover.i"
-	@echo "... matrix/runners/games/pixel-mover.s"
-	@echo "... matrix/runners/games/tetris.o"
-	@echo "... matrix/runners/games/tetris.i"
-	@echo "... matrix/runners/games/tetris.s"
-	@echo "... matrix/runners/loading-runner.o"
-	@echo "... matrix/runners/loading-runner.i"
-	@echo "... matrix/runners/loading-runner.s"
-	@echo "... matrix/runners/matrix-runner.o"
-	@echo "... matrix/runners/matrix-runner.i"
-	@echo "... matrix/runners/matrix-runner.s"
+	@echo "... matrix/widgets/dynamic/dynamic-widget-metadata.o"
+	@echo "... matrix/widgets/dynamic/dynamic-widget-metadata.i"
+	@echo "... matrix/widgets/dynamic/dynamic-widget-metadata.s"
+	@echo "... matrix/widgets/dynamic/dynamic-widget-parser.o"
+	@echo "... matrix/widgets/dynamic/dynamic-widget-parser.i"
+	@echo "... matrix/widgets/dynamic/dynamic-widget-parser.s"
+	@echo "... matrix/widgets/dynamic/dynamic-widget.o"
+	@echo "... matrix/widgets/dynamic/dynamic-widget.i"
+	@echo "... matrix/widgets/dynamic/dynamic-widget.s"
+	@echo "... matrix/widgets/dynamic/modules/rest-module.o"
+	@echo "... matrix/widgets/dynamic/modules/rest-module.i"
+	@echo "... matrix/widgets/dynamic/modules/rest-module.s"
+	@echo "... matrix/widgets/games/flappy-bird.o"
+	@echo "... matrix/widgets/games/flappy-bird.i"
+	@echo "... matrix/widgets/games/flappy-bird.s"
+	@echo "... matrix/widgets/games/pixel-mover.o"
+	@echo "... matrix/widgets/games/pixel-mover.i"
+	@echo "... matrix/widgets/games/pixel-mover.s"
+	@echo "... matrix/widgets/games/tetris.o"
+	@echo "... matrix/widgets/games/tetris.i"
+	@echo "... matrix/widgets/games/tetris.s"
+	@echo "... matrix/widgets/loading-runner.o"
+	@echo "... matrix/widgets/loading-runner.i"
+	@echo "... matrix/widgets/loading-runner.s"
+	@echo "... matrix/widgets/matrix-widget.o"
+	@echo "... matrix/widgets/matrix-widget.i"
+	@echo "... matrix/widgets/matrix-widget.s"
 	@echo "... python-socket.o"
 	@echo "... python-socket.i"
 	@echo "... python-socket.s"

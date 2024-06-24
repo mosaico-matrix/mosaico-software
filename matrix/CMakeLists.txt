@@ -128,18 +128,18 @@ set(SOURCES
         matrix/canvas-buffer.cpp
 
         # Runners
-        matrix/runners/matrix-runner.h
-        matrix/runners/matrix-runner.cpp
-        matrix/runners/loading-runner.cpp
+        matrix/widgets/matrix-widget.h
+        matrix/widgets/matrix-widget.cpp
+        matrix/widgets/loading-runner.cpp
 
-        matrix/runners/dynamic/dynamic-runner.cpp
-        matrix/runners/dynamic/dynamic-runner-metadata.cpp
-        matrix/runners/dynamic/dynamic-runner-parser.cpp
-        matrix/runners/dynamic/modules/rest-module.cpp
+        matrix/widgets/dynamic/dynamic-widget.cpp
+        matrix/widgets/dynamic/dynamic-widget-metadata.cpp
+        matrix/widgets/dynamic/dynamic-widget-parser.cpp
+        matrix/widgets/dynamic/modules/rest-module.cpp
 
-        matrix/runners/games/pixel-mover.cpp
-        matrix/runners/games/flappy-bird.cpp
-        matrix/runners/games/tetris.cpp
+        matrix/widgets/games/pixel-mover.cpp
+        matrix/widgets/games/flappy-bird.cpp
+        matrix/widgets/games/tetris.cpp
 
         # Drawables
         matrix/drawables/drawable.h
