@@ -58,35 +58,13 @@ private:
         Logger::logDebug("Script loaded successfully");
     }
 
-    // Used only in debug, reloads the script if it has changed on disk
-    void reloadScriptIfChanged() {
-        if (!parser->scriptChanged()) {
-            return;
-        }
-        delete chai;
-
-        // Parses the script file, again
-        parser->reloadScript();
-
-        // Resets runner state by clearing drawables
-        clearDrawables();
-
-        // Reloads script environment
-        initEnvironmentAndLoadScript();
-    }
-
     // Loop
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
-
-#if DEBUG
-        reloadScriptIfChanged();
-#endif
 
         // If script is invalid don't try to render
         if(!validScript) {
             return;
         }
-
 
         // Try to evaluate the loop function
         try {

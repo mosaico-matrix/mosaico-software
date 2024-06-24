@@ -25,15 +25,15 @@ private:
     std::string runnerDirPath;
 
     // Script
-    std::string script;
+    std::string widgetScript;         // chai
     std::string scriptPath;
-    time_t scriptLastModified;
 
     // Metadata
     DynamicRunnerMetadata metadata;
     std::string metadataPath;
 
     // Config
+    std::string configScript;           // chai
     std::string configDirPath;
 
     // Generic function to read file content into a string
@@ -53,12 +53,9 @@ private:
         file.close();
     }
 
-    time_t getScriptLastModified() {
-        struct stat fileInfo;
-        if (stat(scriptPath.c_str(), &fileInfo) != 0) {
-            Logger::logError("Could not get file info for dynamic runner file: " + scriptPath);
-        }
-        return fileInfo.st_mtime;
+    // Generic function to check if a file exists
+    bool fileExists(const std::string& name) {
+        return ( access( name.c_str(), F_OK ) != -1 );
     }
 
     void loadMetadata() {
@@ -74,22 +71,42 @@ private:
     }
 
     void loadScript() {
-        readFile(scriptPath, script);
+        readFile(scriptPath, widgetScript);
         scriptLastModified = getScriptLastModified();
-        Logger::logDebug("Parsed dynamic runner file: " + scriptPath);
+        Logger::logDebug("Parsed dynamic widget script file: " + scriptPath);
+    }
+
+    void loadConfig() {
+
+        // Check if data.json exists
+        string dataPath = configDirPath + "/data.json";
+        if (!fileExists(dataPath)) {
+            Logger::logDebug("Configuration data file not found, skipping: " + dataPath);
+        }
+        else
+        {
+            // data should already be in .chai form
+        }
+
+
+        Logger::logDebug("Parsed dynamic widget config file: " + configDirPath);
     }
 
 public:
 
     explicit DynamicWidgetParser(const string& runnerDirPath, const string& configDirPath) {
         
-        // Get path to the runner
+        // Create file paths
         scriptPath = runnerDirPath + "/runner.chai";
         metadataPath = runnerDirPath + "/mosaico.json";
 
         // Load various files
         loadMetadata();
         loadScript();
+        if (!configDirPath.empty()) {
+            this->configDirPath = configDirPath;
+            loadConfig();
+        }
     }
 
     bool scriptChanged() {
@@ -106,7 +123,7 @@ public:
     }
 
     std::string getScript() {
-        return script;
+        return widgetScript;
     }
 
     void reloadScript()
