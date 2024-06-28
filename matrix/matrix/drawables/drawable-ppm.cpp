@@ -52,7 +52,7 @@ private:
     }
 
 public:
-    DrawablePPM(const char *filename, MatrixRunner *runner) : Drawable(runner) {
+    DrawablePPM(const char *filename, MatrixWidget *runner) : Drawable(runner) {
 
         // Search in the images folder
 //        std::string filePath = Configs::getImagePath(filename);

@@ -5,36 +5,49 @@ import aiocoap.resource as resource
 import coap.dynamic_resource
 import rest.services.widgets as rest_widgets_api
 import data.repositories.widgets as local_widgets
+from data.repositories.widget_configurations import get_widget_configuration
 from interop import call_matrix
 from coap.responses import *
 import configs
+import git
 
 logger = logging.getLogger(name="coap.repositories.widgets")
 
 
-class InstalledWidgets(resource.Resource):
+class InstalledWidgets(coap.dynamic_resource.DynamicResource):
 
-    async def render_delete(self, request):
+    async def render_delete(self, request, args):
         """
         Delete selected widget from local db but keep the files and configurations
         """
         logger.info("Received DELETE request to installed_widgets")
 
         # Get widget_id from request
-        widget_id = json.loads(request.payload.decode())["widget_id"]
+        widget_id = args["widget_id"]
 
-        # Check if already installed
+        logger.info(f"Deleting widget with id: {widget_id}")
+
+        # Get widget
         widget = local_widgets.get_widget(widget_id)
+        if widget is None:
+            return error_response("Widget not found")
 
-        if widget:
-            logger.info(f"Deleting widget with id: {widget_id}")
-            local_widgets.delete_widget(widget_id)
+        # Get widget folder path
+        widget_path = configs.get_widget_path(widget["author"], widget["name"])
+
+        # Delete widget from db
+        local_widgets.delete_widget(widget_id)
+
+        # Delete widget data
+        if os.path.exists(widget_path):
+            os.system(f"rm -rf {widget_path}")
+            logger.info(f"Deleted widget data at: {widget_path}")
         else:
-            logger.warning(f"Widget with id: {widget_id} not found, skipping")
+            logger.warning(f"Widget path: {widget_path} does not exist, skipping")
 
         return success_response(None, "Widget deleted successfully")
 
-    async def render_get(self, request):
+    async def render_get(self, request, args):
         """
         Get all installed widgets from local db
         """
@@ -42,15 +55,15 @@ class InstalledWidgets(resource.Resource):
         widgets = local_widgets.get_installed_widgets()
         return success_response(widgets)
 
-    async def render_post(self, request):
+    async def render_post(self, request, args):
 
         """
         Install a widget from the app store to the local db
         """
         logger.info("Received POST request to installed_widgets")
 
-        # Get widget_store_id from request
-        widget_store_id = json.loads(request.payload.decode())["widget_store_id"]
+        # Get widget_store_id from args
+        widget_store_id = args["widget_store_id"]
 
         # Check if already installed
         widget = local_widgets.get_widget_by_store_id(widget_store_id)
@@ -85,7 +98,7 @@ class InstalledWidgets(resource.Resource):
             os.makedirs(widget_path)
 
             # Clone the repo with depth 1
-            #git.Repo.clone_from(repo_url, widget_path, depth=1)
+            git.Repo.clone_from(repo_url, widget_path, depth=1)
             logger.info(f"Cloned widget from: {repo_url}")
 
             # Save the widget to the db
@@ -100,6 +113,7 @@ class ActiveWidget(resource.Resource):
         pass
 
     async def render_post(self, request):
+
         """
         Set the active widget
         """
@@ -115,10 +129,20 @@ class ActiveWidget(resource.Resource):
         if widget is None:
             return error_response("Widget not found")
 
+        # Get widget configuration
+        widget_config = get_widget_configuration(config_id)
+        if widget_config is None:
+            return error_response("Provided widget configuration not found")
+
         # Set widget on matrix
-        call_matrix("LOAD_WIDGET", {"widget_path": configs.get_widget_path(widget["author"], widget["name"])})
+        call_matrix("LOAD_WIDGET",
+                    {
+                        "widget_path": configs.get_widget_path(widget["author"], widget["name"]),
+                        "config_path": configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
+                     })
 
         return success_response(None, "Widget set successfully")
+
 
 class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
     """
@@ -149,3 +173,18 @@ class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
                 return success_response(json.load(f))
         except Exception as e:
             return error_response("Could not get configuration form for widget")
+
+
+class CustomWidget(resource.Resource):
+    """
+    This service allows developers to create a custom widget package and upload it directly to the system
+    This skips the app store and the download from the git repository
+    """
+
+    async def render_post(self, request):
+        """
+        Upload a custom widget package in .tar.gz format
+        """
+        logger.info("Received POST request to custom_widget")
+
+        pass

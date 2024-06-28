@@ -3,16 +3,15 @@
 
 #include <unistd.h>
 #include <list>
-#include "runners/matrix-runner.h"
+#include "widgets/matrix-widget.h"
 #include "../networking/client/api-client.cpp"
-#include "runners/loading-runner.cpp"
+#include "widgets/loading-runner.cpp"
 #include "../matrix/matrices/matrix-device.cpp"
 #include <thread>
 #include "canvas-buffer.cpp"
 #include "canvas-layer.cpp"
 #include "../networking/client/models.cpp"
-#include "runners/dynamic/dynamic-runner.cpp"
-#include "runners/dynamic/dynamic-runner-parser.cpp"
+#include "widgets/dynamic/dynamic-widget.cpp"
 
 using namespace rgb_matrix;
 
@@ -23,8 +22,8 @@ class MatrixSlideshow {
 
 private:
 
-    std::list<std::pair<int, MatrixRunner*>> runners;   // The actual runners that will be displayed with their order of appearance
-    std::vector<MatrixRunner*> currentRunnersGroup;     // The current runners that are displayed
+    std::list<std::pair<int, MatrixWidget*>> runners;   // The actual runners that will be displayed with their order of appearance
+    std::vector<MatrixWidget*> currentRunnersGroup;     // The current runners that are displayed
     std::vector<int> framesUntilNextRefresh;            // The frames until the next refresh for each runner [0,5,2] means the first runner will be refreshed in 0 frames, the second in 5 and the third in 2
     int currentRunnerGroupTimeSec           = 0;        // The time the current runner has been running
     int currentRunnerGroupIndex             = 0;        // The index of the current runner
@@ -165,15 +164,12 @@ public:
 
     void showLoading() {
         clearRunners();
-        runners.emplace_back(0, new LoadingRunner(CanvasLayerPosition::FULL));
+        runners.emplace_back(0, new LoadingRunner());
     }
 
-    void setDynamicRunner(const string& runnerDirPath) {
+    void setDynamicWidget(const string& widgetDirPath, const string& configDirPath) {
         clearRunners();
-
-        // Parse sample file
-        auto *parser = new DynamicRunnerParser(runnerDirPath);
-        runners.emplace_back(0, new DynamicRunner(parser->getFrameRate(), CanvasLayerPosition::FULL, parser));
+        runners.emplace_back(0, new DynamicWidget(widgetDirPath, configDirPath));
     }
 
     void setTestRunner() {

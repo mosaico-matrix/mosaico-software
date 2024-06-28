@@ -43,7 +43,7 @@ private:
     int originalWidth;              // The width of the layer without padding
     int originalHeight;             // The height of the layer without padding
     std::list<Pixel> pixels;        // The pixels to be painted on the final canvas
-    Point positionInMatrix;               // The start point of the layer in relation to the matrix
+    Point positionInMatrix;         // The start point of the layer in relation to the matrix
     bool bordered = false;          // If the layer should have a border
     Color borderColor = Color(255, 255, 255); // The color of the border
     int padding = 0;                    // The padding of the layer
@@ -159,9 +159,9 @@ public:
                 positionInMatrix = {MATRIX_COLS / 2, 0};
                 break;
             default:
-                _width = 32;
+                _width = 64;
                 _height = 64;
-                positionInMatrix = {5, 0};
+                positionInMatrix = {0, 0};
                 break;
         }
         originalWidth = _width;
@@ -181,9 +181,6 @@ public:
         return _height;
     }
 
-    void SetPixel(int x, int y, uint8_t red, uint8_t green, uint8_t blue) {
-        _setPixel(x, y, red, green, blue);
-    }
 
     // Merge to actual canvas
     void paintOntoCanvas(Canvas *canvas) {
@@ -202,20 +199,31 @@ public:
         }
     }
 
-    // Fill screen with given 24bpp color.
-    void Fill(uint8_t red, uint8_t green, uint8_t blue) {
+    void Fill(Color color) {
+        Fill(color.r, color.g, color.b);
+    }
+
+    void Fill(uint8_t r, uint8_t g, uint8_t b) override {
 
         // If the color is black, clear the pixels for optimization
-        if(red == 0 && green == 0 && blue == 0) {
+        if(r == 0 && g == 0 && b == 0) {
             pixels.clear();
             return;
         }
 
         for (int x = 0; x < _width; x++) {
             for (int y = 0; y < _height; y++) {
-                SetPixel(x, y, red, green, blue);
+                SetPixel(x, y, r, g, b);
             }
         }
+    }
+
+    void SetPixel(int x, int y, Color color) {
+        SetPixel(x, y, color.r, color.g, color.b);
+    }
+
+    void SetPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b) override {
+        _setPixel(x, y, r, g, b);
     }
 
     // Clear screen to be all black.

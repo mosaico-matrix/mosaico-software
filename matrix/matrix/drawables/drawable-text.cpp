@@ -17,11 +17,11 @@ enum TextScrollingSpeed {
     FAST = 1000
 };
 
-class DrawableText : public ConfigurableDrawable {
+class DrawableText : public Drawable {
 
 public:
 
-    DrawableText(MatrixRunner *runner, DynamicRunnerParser *parser = NULL) : ConfigurableDrawable(runner) {
+    DrawableText(MatrixWidget *widget) : Drawable(widget) {
 
         if (fonts.empty())
         {
@@ -32,10 +32,6 @@ public:
         //DrawableText::loadFonts();
     }
 
-    void loadConfig(std::string key) override {
-
-
-    }
 
     void setText(const std::string text) {
         this->text = text;

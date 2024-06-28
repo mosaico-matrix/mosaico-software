@@ -59,6 +59,7 @@ async def run(loop):
     root.add_resource(['widgets', 'installed'], InstalledWidgets())
     root.add_resource(['widgets', 'active'], ActiveWidget())
     root.add_resource(['widgets', 'configuration_form'], WidgetConfigurationForm())
+    #root.add_resource(['widgets', 'custom'], WidgetConfiguration())
     root.add_resource(['widget_configurations'], WidgetConfigurations())
 
     # Start CoAP server

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(Mosaico_Software)
 
-
 # Set compilation mode, exit if not set
 if(NOT DEFINED COMPILE_MODE)
-    message(FATAL_ERROR "Please set the COMPILE_MODE variable to either simulation, cross-compile or normal")
+    message(WARNING "Please set the COMPILE_MODE variable to either simulation, cross-compile or normal, falling back to normal")
+    set(COMPILE_MODE "normal")
 endif()
 
 # Set matrix dimensions
@@ -38,6 +38,7 @@ if(COMPILE_MODE STREQUAL "simulation")
     find_package(CURL REQUIRED)
 
     # Define simulation flag
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DSIMULATION")
 
     # Set compiler
@@ -128,18 +129,17 @@ set(SOURCES
         matrix/canvas-buffer.cpp
 
         # Runners
-        matrix/runners/matrix-runner.h
-        matrix/runners/matrix-runner.cpp
-        matrix/runners/loading-runner.cpp
+        matrix/widgets/matrix-widget.h
+        matrix/widgets/matrix-widget.cpp
+        matrix/widgets/loading-runner.cpp
 
-        matrix/runners/dynamic/dynamic-runner.cpp
-        matrix/runners/dynamic/dynamic-runner-metadata.cpp
-        matrix/runners/dynamic/dynamic-runner-parser.cpp
-        matrix/runners/dynamic/modules/rest-module.cpp
+        matrix/widgets/dynamic/dynamic-widget.cpp
+        matrix/widgets/dynamic/dynamic-widget-metadata.cpp
+        matrix/widgets/dynamic/modules/rest-module.cpp
 
-        matrix/runners/games/pixel-mover.cpp
-        matrix/runners/games/flappy-bird.cpp
-        matrix/runners/games/tetris.cpp
+        matrix/widgets/games/pixel-mover.cpp
+        matrix/widgets/games/flappy-bird.cpp
+        matrix/widgets/games/tetris.cpp
 
         # Drawables
         matrix/drawables/drawable.h
@@ -158,6 +158,7 @@ set(SOURCES
 
         ${MATRIX_DEVICE}
         ${RESTCLIENT_SOURCES}
+        utils.cpp
 )
 
 # Executable

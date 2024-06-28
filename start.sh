@@ -80,7 +80,7 @@ if [ "$MODE" == "simulation" ]; then
 fi
 
 # Create python virtual environment
-cd matrix
+cd networking
 run_command python3 -m venv venv
 source venv/bin/activate
 
@@ -90,6 +90,7 @@ run_command pip3 install -r requirements.txt
 echo -e "${GREEN}Python packages installed${NC}"
 
 # Compile the application
+cd ../matrix
 echo -e "${YELLOW}Compiling the application${NC}"
 run_command cmake -DCOMPILE_MODE=${MODE} .
 run_command make
