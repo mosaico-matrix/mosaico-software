@@ -43,7 +43,7 @@ private:
     int originalWidth;              // The width of the layer without padding
     int originalHeight;             // The height of the layer without padding
     std::list<Pixel> pixels;        // The pixels to be painted on the final canvas
-    Point positionInMatrix;               // The start point of the layer in relation to the matrix
+    Point positionInMatrix;         // The start point of the layer in relation to the matrix
     bool bordered = false;          // If the layer should have a border
     Color borderColor = Color(255, 255, 255); // The color of the border
     int padding = 0;                    // The padding of the layer
@@ -159,9 +159,9 @@ public:
                 positionInMatrix = {MATRIX_COLS / 2, 0};
                 break;
             default:
-                _width = 32;
+                _width = 64;
                 _height = 64;
-                positionInMatrix = {5, 0};
+                positionInMatrix = {0, 0};
                 break;
         }
         originalWidth = _width;

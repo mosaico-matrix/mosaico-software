@@ -31,21 +31,42 @@ private:
     void incrementFrameIndex();
 
 public:
+
+    /// Sets the frame rate of the widget
+    void setFps(unsigned int fps) { framesPerSecond = fps; }
+
+    /// Sets the position of the canvas on the matrix
+    void setCanvasPosition(CanvasLayerPosition position) { runnerPosition = position; }
+
+    /// This does some checks before calling the renderNextCanvasLayer method in the child class
     CanvasLayer* renderCanvasLayer();
-    int getFrameRate() const { return framesPerSecond; }
-    int getRenderedFrameCount() const { return renderedFrameCount; }
+
+    /// Returns the widget's frame rate
+    [[nodiscard]] unsigned int getFrameRate() const { return framesPerSecond; }
+
+    /// Returns the number of frames rendered (this is reset to prevent overflow)
+    [[nodiscard]] unsigned int getRenderedFrameCount() const { return renderedFrameCount; }
+
+    /// Resets the frame count
     void resetRenderedFrameCount();
+
+    /// Add a new drawable to the widget drawable list
     void registerDrawable(Drawable* drawable);
-    ~MatrixWidget() = default;
+
+    /// Clear all drawables
     void clearDrawables();
-    CanvasLayer* getCanvasTemplate() const { return lastRenderedFrame; }
-    CanvasLayer* getLastRenderedFrame() const { return lastRenderedFrame; }
+
+    /// Returns the last rendered frame
+    [[nodiscard]] CanvasLayer* getLastRenderedFrame() const { return lastRenderedFrame; }
+
+    /// This basically returns the last rendered frame, but has a different name because can serve a different purpose
+    [[nodiscard]] CanvasLayer* getCanvasTemplate() const { return lastRenderedFrame; }
+
+    ~MatrixWidget() = default;
 
 protected:
-    CanvasLayerPosition runnerPosition;
-
-    // Constructor with FPS and position
-    MatrixWidget(int framesPerSecond = 30, CanvasLayerPosition position = FULL);
+    CanvasLayerPosition runnerPosition = CanvasLayerPosition::FULL;
+    MatrixWidget();
 
     // Pure virtual method to be overridden for rendering
     virtual void renderNextCanvasLayer(CanvasLayer* canvas) = 0;

@@ -12,7 +12,6 @@
 #include "canvas-layer.cpp"
 #include "../networking/client/models.cpp"
 #include "widgets/dynamic/dynamic-widget.cpp"
-#include "widgets/dynamic/dynamic-widget-parser.cpp"
 
 using namespace rgb_matrix;
 
@@ -165,15 +164,12 @@ public:
 
     void showLoading() {
         clearRunners();
-        runners.emplace_back(0, new LoadingRunner(CanvasLayerPosition::FULL));
+        runners.emplace_back(0, new LoadingRunner());
     }
 
     void setDynamicWidget(const string& widgetDirPath, const string& configDirPath) {
         clearRunners();
-
-        // Parse sample file
-        auto *parser = new DynamicWidgetParser(widgetDirPath, configDirPath);
-        runners.emplace_back(0, new DynamicWidget(parser->getFrameRate(), CanvasLayerPosition::FULL, parser));
+        runners.emplace_back(0, new DynamicWidget(widgetDirPath, configDirPath));
     }
 
     void setTestRunner() {

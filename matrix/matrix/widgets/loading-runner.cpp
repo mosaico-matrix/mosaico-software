@@ -12,7 +12,7 @@
 class LoadingRunner : public MatrixWidget {
 
 private:
-    int squareSize = 8;
+    int squareSize = 4;
     int squaresCount = 20;
 
 private:
@@ -73,25 +73,18 @@ public:
 
     std::vector<DrawableRectangle *> squares;
 
-    LoadingRunner(CanvasLayerPosition position) : MatrixWidget(2, position) {
+    LoadingRunner() : MatrixWidget() {
+
+        // Configure
+        setFps(2);
+        setCanvasPosition(CanvasLayerPosition::FULL);
 
         // Initialize random seed
         srand(time(NULL));
-
-//        // Create squares
-//        for (int i = 0; i < squaresCount; i++) {
-//            auto square = new DrawableRectangle(squareSize, squareSize);
-//            square->setColor(RandomColor());
-//            square->moveTo(rand() % 64, rand() % 64);
-//            registerDrawable(square);
-//            squares.push_back(square);
-//        }
     }
 
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
-        //bouncingSquares(canvas);
         randomSquares(canvas);
-        //renderSquareForeachColor(canvas);
     }
 
 };

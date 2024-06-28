@@ -2,7 +2,6 @@
 #define DRAWABLE_H
 
 #include "../../external/rpi-rgb-led-matrix/include/graphics.h"
-#include "../widgets/dynamic/dynamic-widget-parser.cpp"
 #include "../../logger/logger.h"
 #include "../../configs.cpp"
 #include <chrono>
@@ -69,17 +68,6 @@ public:
     int getX();
     int getY();
     void draw(Canvas *canvas);
-};
-
-class ConfigurableDrawable : public Drawable {
-
-protected:
-    DynamicWidgetParser *parser = NULL;
-
-public:
-    ConfigurableDrawable(MatrixWidget *runner, DynamicWidgetParser *parser = NULL) : Drawable(runner), parser(parser) {}
-    virtual ~ConfigurableDrawable() {}
-    virtual void loadConfig(string key) = 0;
 };
 
 

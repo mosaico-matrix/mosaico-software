@@ -3,14 +3,9 @@
 #include "matrix-widget.h"
 
 
-MatrixWidget::MatrixWidget(int framesPerSecond, CanvasLayerPosition position)
-        : framesPerSecond(framesPerSecond), runnerPosition(position) {
-    if (framesPerSecond > MATRIX_REFRESH_RATE) {
-        Logger::logFatal("Requested frames per second is higher than the matrix refresh rate");
-    }
+MatrixWidget::MatrixWidget() {
 
     Logger::logDebug("Matrix widget created");
-    lastRenderedFrame = new CanvasLayer(runnerPosition);
 }
 
 void MatrixWidget::incrementFrameIndex() {
@@ -21,6 +16,11 @@ void MatrixWidget::incrementFrameIndex() {
 }
 
 CanvasLayer* MatrixWidget::renderCanvasLayer() {
+
+    // Check if lastRenderedFrame has been initialized
+    if (lastRenderedFrame == nullptr) {
+        lastRenderedFrame = new CanvasLayer(runnerPosition);
+    }
 
     // If framesPerSecond is 0, we should only render the first frame
     if (framesPerSecond == 0 && !firstRender) {

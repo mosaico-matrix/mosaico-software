@@ -40,9 +40,8 @@ def get_widget_configurations(widget_id: int) -> list:
     return c.fetchall()
 
 
-def delete_widget(widget_store_id: int):
+def delete_widget(widget_id: int):
     c = conn.cursor()
     c.execute('''
-    DELETE FROM widgets WHERE store_id = ?
-    ''', (widget_store_id,))
-    conn.commit()
+    DELETE FROM widgets WHERE id = ?
+    ''', (widget_id,))

@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.5)
 project(Mosaico_Software)
 
-
 # Set compilation mode, exit if not set
 if(NOT DEFINED COMPILE_MODE)
-    message(FATAL_ERROR "Please set the COMPILE_MODE variable to either simulation, cross-compile or normal")
+    message(WARNING "Please set the COMPILE_MODE variable to either simulation, cross-compile or normal, falling back to normal")
+    set(COMPILE_MODE "normal")
 endif()
 
 # Set matrix dimensions
@@ -134,7 +134,6 @@ set(SOURCES
 
         matrix/widgets/dynamic/dynamic-widget.cpp
         matrix/widgets/dynamic/dynamic-widget-metadata.cpp
-        matrix/widgets/dynamic/dynamic-widget-parser.cpp
         matrix/widgets/dynamic/modules/rest-module.cpp
 
         matrix/widgets/games/pixel-mover.cpp
@@ -158,6 +157,7 @@ set(SOURCES
 
         ${MATRIX_DEVICE}
         ${RESTCLIENT_SOURCES}
+        utils.cpp
 )
 
 # Executable
