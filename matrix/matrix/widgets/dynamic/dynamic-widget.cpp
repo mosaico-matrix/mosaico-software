@@ -11,6 +11,7 @@
 #include <variant>
 #include "../../../external/chaiscript/chaiscript.hpp"
 #include "../../../utils.cpp"
+#include "dynamic-widget-metadata.cpp"
 
 using namespace chaiscript;
 
@@ -20,15 +21,56 @@ public:
 
     DynamicWidget(const string& widgetDirPath, const string& configDirPath) : MatrixWidget() {
 
-        // Create paths to files
-        this->widgetDirPath = widgetDirPath;
-        widgetScriptPath = widgetDirPath + "/widget.chai";
-        widgetMetadataPath = widgetDirPath + "/mosaico.json";
+        // Paths
+        std::string widgetMetadataPath = widgetDirPath + "/mosaico.json";
+        std::string widgetScriptPath = widgetDirPath + "/widget.chai";
+        std::string configScriptPath = configDirPath + "/config.chai";
 
-        // Read actual widget script
-        Utils::readFile(widgetScriptPath, widgetScript);
+        // File contents
+        std::string metadataString;
+        Utils::readFile(widgetMetadataPath, metadataString);
+        std::string widgetScriptString;
+        Utils::readFile(widgetScriptPath, widgetScriptString);
+        std::string configScriptString;
+        if(!configDirPath.empty()) {
+            Utils::readFile(configScriptPath, configScriptString);
+        }
 
-        initEnvironmentAndLoadScript();
+        // Read script metadata
+        json j = json::parse(metadataString);
+        auto metadata = j.template get<DynamicWidgetMetadata>();
+        Logger::logDebug("Parsed dynamic runner metadata: " + widgetMetadataPath);
+#ifdef DEBUG
+        metadata.dump();
+#endif
+
+        // Configure script based on metadata
+        setFps(metadata.fps);
+        // TODO: Set canvas size
+
+        // Create new ChaiScript instance
+        chaiInstance = new ChaiScript();
+        registerModules();
+        registerGraphics();
+
+        // Try to evaluate the config script
+        try {
+            chaiInstance->eval(configScriptString);
+        } catch (const chaiscript::exception::eval_error &e) {
+            Logger::logError("Error while evaluating config script: " + std::string(e.what()));
+            return;
+        }
+
+        // Try to evaluate the script
+        try {
+            chaiInstance->eval(widgetScriptString);
+        } catch (const chaiscript::exception::eval_error &e) {
+            Logger::logError("Error while evaluating script: " + std::string(e.what()));
+            return;
+        }
+
+        validScript = true;
+        Logger::logDebug("Script loaded successfully");
     }
 
     ~DynamicWidget() {
@@ -37,15 +79,7 @@ public:
 
 private:
 
-    // Widget
-    std::string widgetDirPath;      // Widget, assets, metadata location
-    std::string widgetMetadataPath; // Widget metadata location
-    std::string widgetScriptPath;   // Widget script location
-    std::string widgetScript;       // Widget script content
 
-    // Config
-    std::string configDirPath;
-    std::string configScript;
 
     // Script
     ChaiScript *chaiInstance;
@@ -56,31 +90,13 @@ private:
         chaiInstance->add(RestModule::bootstrap());
     }
 
-    // Map C++ objects to chai, load colors, modules etc.
-    void initEnvironmentAndLoadScript() {
-
-        chaiInstance = new ChaiScript();
-        registerModules();
-        registerGraphics();
-
-        // Try to evaluate the script
-        try {
-            chaiInstance->eval(widgetScript);
-        } catch (const chaiscript::exception::eval_error &e) {
-            Logger::logError("Error while evaluating script: " + std::string(e.what()));
-            return;
-        }
-
-        validScript = true;
-        Logger::logDebug("Script loaded successfully");
-    }
 
     // Loop
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
 
         // If script is invalid don't try to render
         if(!validScript) {
-            return;
+            canvas->Fill(RED_COLOR);
         }
 
         // Try to evaluate the loop function
@@ -123,7 +139,8 @@ private:
         chaiInstance->add(fun(&RandomColor), "RANDOM_COLOR");
 
         // Register basic canvas functions and bind them to the canvas object
-        chaiInstance->add(fun(&CanvasLayer::SetPixel, getCanvasTemplate()), "_setPixel");
+//        chaiInstance->add(fun(&CanvasLayer::FillColor, getCanvasTemplate()), "_fillColor");
+//        chaiInstance->add(fun(&CanvasLayer::Fill, getCanvasTemplate()), "_fillRGB");
         chaiInstance->add(fun(&CanvasLayer::Clear, getCanvasTemplate()), "_clear");
         chaiInstance->add(fun(&CanvasLayer::width, getCanvasTemplate()), "_canvasWidth");
         chaiInstance->add(fun(&CanvasLayer::height, getCanvasTemplate()), "_canvasHeight");

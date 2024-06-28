@@ -48,7 +48,7 @@ class DynamicWidgetParser {
             readFile(metadataPath, metadataString);
             json j = json::parse(metadataString);
             std::cout << metadataString << std::endl;
-            metadata =  j.template get<DynamicRunnerMetadata>();
+            metadata =  j.template get<DynamicWidgetMetadata>();
             Logger::logDebug("Parsed dynamic runner metadata: " + metadataPath);
 #ifdef DEBUG
             metadata.dump();

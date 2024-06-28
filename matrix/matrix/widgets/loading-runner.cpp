@@ -39,37 +39,15 @@ public:
                 }
 
                 // Draw the square
-                Color color = RandomColor();
+                auto color = RandomColor();
                 for (int x = i; x < i + squareSize; x++) {
                     for (int y = j; y < j + squareSize; y++) {
-                        canvas->SetPixel(x, y, color.r, color.g, color.b);
+                        canvas->SetPixel(x, y, color);
                     }
                 }
             }
         }
     }
-
-    void renderSquareForeachColor(CanvasLayer *canvas) {
-        canvas->Clear();
-        int startX = 0;
-        int startY = 0;
-        for (int i = 0; i < COLORS.size(); i++) {
-            // Draw a square for each color
-            Color color = COLORS[i];
-            for (int x = startX; x < startX + squareSize; x++) {
-                for (int y = startY; y < startY + squareSize; y++) {
-                    canvas->SetPixel(x, y, color.r, color.g, color.b);
-                }
-            }
-
-            startX += squareSize;
-            if (startX >= canvas->width()) {
-                startX = 0;
-                startY += squareSize;
-            }
-        }
-    }
-
 
     std::vector<DrawableRectangle *> squares;
 

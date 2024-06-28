@@ -5,6 +5,7 @@ import aiocoap.resource as resource
 import coap.dynamic_resource
 import rest.services.widgets as rest_widgets_api
 import data.repositories.widgets as local_widgets
+from data.repositories.widget_configurations import get_widget_configuration
 from interop import call_matrix
 from coap.responses import *
 import configs
@@ -128,8 +129,17 @@ class ActiveWidget(resource.Resource):
         if widget is None:
             return error_response("Widget not found")
 
+        # Get widget configuration
+        widget_config = get_widget_configuration(config_id)
+        if widget_config is None:
+            return error_response("Provided widget configuration not found")
+
         # Set widget on matrix
-        call_matrix("LOAD_WIDGET", {"widget_path": configs.get_widget_path(widget["author"], widget["name"])})
+        call_matrix("LOAD_WIDGET",
+                    {
+                        "widget_path": configs.get_widget_path(widget["author"], widget["name"]),
+                        "config_path": configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
+                     })
 
         return success_response(None, "Widget set successfully")
 

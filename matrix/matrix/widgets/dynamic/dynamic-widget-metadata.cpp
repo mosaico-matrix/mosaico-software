@@ -19,7 +19,7 @@ struct UserInput {
     std::vector<InputField> formTemplate;
 };
 
-struct DynamicRunnerMetadata {
+struct DynamicWidgetMetadata {
     std::string author;
     std::string name;
     double version;
@@ -43,6 +43,7 @@ struct DynamicRunnerMetadata {
             std::cout << "  default: " << field.defaultValue << std::endl;
         }
     }
+
 };
 
 inline void from_json(const json& j, InputField& inputField) {
@@ -59,7 +60,7 @@ inline void from_json(const json& j, UserInput& userInput) {
     j.at("form_template").get_to(userInput.formTemplate);
 }
 
-inline void from_json(const json& j, DynamicRunnerMetadata& metadata) {
+inline void from_json(const json& j, DynamicWidgetMetadata& metadata) {
     j.at("author").get_to(metadata.author);
     j.at("name").get_to(metadata.name);
     j.at("version").get_to(metadata.version);

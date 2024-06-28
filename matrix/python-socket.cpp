@@ -40,6 +40,7 @@ private:
                          + "/main.py "
                          + pythonScriptArguments
                          + " & echo $!";
+
         Logger::logInfo("Starting Python server with command: " + command);
         FILE *pipe = popen(command.c_str(), "r");
         if (!pipe) {
