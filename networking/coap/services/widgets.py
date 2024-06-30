@@ -186,5 +186,3 @@ class CustomWidget(resource.Resource):
         Upload a custom widget package in .tar.gz format
         """
         logger.info("Received POST request to custom_widget")
-
-        pass
