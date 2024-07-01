@@ -1,8 +1,7 @@
 from data.db import conn
-from configs import get_widgets_path
 
 
-def add_widget(store_id: int, name: str, author: str):
+def add_widget(store_id, name: str, author: str):
     c = conn.cursor()
     c.execute('''
     INSERT INTO widgets (store_id, name, author) VALUES (?, ?, ?)
@@ -16,6 +15,13 @@ def get_installed_widgets():
     SELECT * FROM widgets
     ''')
     return c.fetchall()
+
+def get_widget_by_name_author(name: str, author: str):
+    c = conn.cursor()
+    c.execute('''
+    SELECT * FROM widgets WHERE name = ? AND author = ?
+    ''', (name, author))
+    return c.fetchone()
 
 
 def get_widget(id):

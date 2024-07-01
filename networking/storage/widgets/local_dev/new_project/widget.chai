@@ -1,0 +1,11 @@
+global standardText = _DrawableText();
+global text2 = _DrawableText();
+text2.setText("Rocco");
+text2.moveTo(1,1);
+text2.setFontHeight(20);
+standardText.setText("Michele deve pisciare");
+def loop()
+{
+  standardText.setColor(RANDOM_COLOR());
+}
+        

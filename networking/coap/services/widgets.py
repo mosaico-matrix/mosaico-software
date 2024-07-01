@@ -1,3 +1,4 @@
+import base64
 import os
 
 import aiocoap.resource as resource
@@ -6,9 +7,9 @@ import coap.dynamic_resource
 import rest.services.widgets as rest_widgets_api
 import data.repositories.widgets as local_widgets
 from data.repositories.widget_configurations import get_widget_configuration
-from interop import call_matrix
+from core.interop import call_matrix
 from coap.responses import *
-import configs
+from core import configs, utils
 import git
 
 logger = logging.getLogger(name="coap.repositories.widgets")
@@ -120,6 +121,7 @@ class ActiveWidget(resource.Resource):
         logger.info("Received POST request to active_widget")
 
         # Deserialize the request
+        logger.info(f"Request payload: {request.payload}")
         payload = json.loads(request.payload.decode())
         widget_id = payload["widget_id"]
         config_id = payload["config_id"]
@@ -131,14 +133,16 @@ class ActiveWidget(resource.Resource):
 
         # Get widget configuration
         widget_config = get_widget_configuration(config_id)
-        if widget_config is None:
-            return error_response("Provided widget configuration not found")
 
         # Set widget on matrix
         call_matrix("LOAD_WIDGET",
                     {
                         "widget_path": configs.get_widget_path(widget["author"], widget["name"]),
-                        "config_path": configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
+                        "config_path":
+                            ""
+                            if not widget_config
+                            else
+                            configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
                      })
 
         return success_response(None, "Widget set successfully")
@@ -175,14 +179,59 @@ class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
             return error_response("Could not get configuration form for widget")
 
 
-class CustomWidget(resource.Resource):
+class DevelopedWidgets(resource.Resource):
     """
     This service allows developers to create a custom widget package and upload it directly to the system
     This skips the app store and the download from the git repository
     """
-
+    local_dev_username = "local_dev"
     async def render_post(self, request):
         """
-        Upload a custom widget package in .tar.gz format
+        Upload a custom widget package in .tar.gz format which contains a folder named "widget" with the widget files
+        Extract the package and save the widget to the database
         """
-        logger.info("Received POST request to custom_widget")
+        logger.info("Received POST request to developed_widgets")
+
+        # The request is of the kind widget_name, file_base64
+        payload = request.payload.decode()
+
+        # Split the payload
+        payload_split = payload.split(",")
+        if len(payload_split) != 2:
+            return error_response("Invalid payload format")
+
+        # Get the widget_name and file_base64
+        widget_name = payload_split[0]
+        file_base64 = payload_split[1]
+
+        # Create output path
+        output_path = configs.get_widget_path(self.local_dev_username, widget_name)
+
+        # Check if widget with same name already exists for local user
+        widget_conflict = local_widgets.get_widget_by_name_author(widget_name, self.local_dev_username)
+        if widget_conflict:
+            logger.warning(f"Widget with name: {widget_name} already exists for local user, overwriting files")
+
+        # Remove previous files
+        if os.path.exists(output_path):
+            os.system(f"rm -rf {output_path}")
+
+        # Create the directory if it does not exist
+        try:
+            os.makedirs(output_path)
+        except Exception as e:
+            return error_response("Failed to create widget directory")
+
+        try:
+            utils.extract_archive_from_base64_bytes(file_base64, output_path)
+        except Exception as e:
+            return error_response("Failed to save widget to the disk")
+        
+        # Add the widget to the database
+        if widget_conflict is None:
+            local_widgets.add_widget(None, widget_name, self.local_dev_username)
+
+        # Retrieve the widget from the database
+        widget = local_widgets.get_widget_by_name_author(widget_name, self.local_dev_username)
+
+        return success_response(widget, "Widget uploaded successfully")

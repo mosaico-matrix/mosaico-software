@@ -21,6 +21,14 @@ public:
 
     DynamicWidget(const string& widgetDirPath, const string& configDirPath) : MatrixWidget() {
 
+        // Default fps if something goes wrong
+        setFps(1);
+
+        // Create new ChaiScript instance
+        chaiInstance = new ChaiScript();
+        registerModules();
+        registerGraphics();
+
         // Paths
         std::string widgetMetadataPath = widgetDirPath + "/mosaico.json";
         std::string widgetScriptPath = widgetDirPath + "/widget.chai";
@@ -37,8 +45,16 @@ public:
         }
 
         // Read script metadata
-        json j = json::parse(metadataString);
-        auto metadata = j.template get<DynamicWidgetMetadata>();
+        DynamicWidgetMetadata metadata;
+        try {
+            json j = json::parse(metadataString);
+            metadata = j.template get<DynamicWidgetMetadata>();
+        }
+        catch (const nlohmann::json::exception &e) {
+            Logger::logError("Error while parsing metadata: " + std::string(e.what()));
+            return;
+        }
+
         Logger::logDebug("Parsed dynamic runner metadata: " + widgetMetadataPath);
 #ifdef DEBUG
         metadata.dump();
@@ -47,11 +63,6 @@ public:
         // Configure script based on metadata
         setFps(metadata.fps);
         // TODO: Set canvas size
-
-        // Create new ChaiScript instance
-        chaiInstance = new ChaiScript();
-        registerModules();
-        registerGraphics();
 
         // Try to evaluate the config script
         try {
@@ -69,8 +80,9 @@ public:
             return;
         }
 
-        validScript = true;
-        Logger::logDebug("Script loaded successfully");
+        // If we got here, the widget is valid
+        validWidget = true;
+        Logger::logDebug("Widget loaded successfully");
     }
 
     ~DynamicWidget() {
@@ -83,7 +95,7 @@ private:
 
     // Script
     ChaiScript *chaiInstance;
-    bool validScript = false;
+    bool validWidget = false;
 
     // Register here all the modules that will be available in the script
     void registerModules() {
@@ -95,8 +107,9 @@ private:
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
 
         // If script is invalid don't try to render
-        if(!validScript) {
+        if(!validWidget) {
             canvas->Fill(RED_COLOR);
+            return;
         }
 
         // Try to evaluate the loop function
@@ -104,7 +117,7 @@ private:
             chaiInstance->eval("loop()");
         } catch (const chaiscript::exception::eval_error &e) {
             Logger::logError("Error while evaluating loop: " + std::string(e.what()));
-            validScript = false;
+            validWidget = false;
             return;
         }
     }
@@ -164,6 +177,7 @@ private:
         chaiInstance->add(user_type < DrawableText > (), "DrawableText");
         chaiInstance->add(fun(&DynamicWidget::createDrawableText, this), "_DrawableText");
         chaiInstance->add(fun(&DrawableText::setText), "setText");
+        chaiInstance->add(fun(&DrawableText::setFontHeight), "setFontHeight");
 
         // SHAPES
         chaiInstance->add(chaiscript::base_class<Drawable, DrawableShape>());
