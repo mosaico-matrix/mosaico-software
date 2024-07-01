@@ -1,8 +1,9 @@
-import logging
 import os
 
 import base64
-from configs import get_widget_configuration_path
+
+from core import utils
+from core.configs import get_widget_configuration_path
 import data.repositories.widgets as local_widgets
 from data.repositories.widget_configurations import *
 from coap.responses import *
@@ -30,8 +31,10 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         # Get the widget_id
         widget_id = args['widget_id']
 
-        # Get the config_name
+        # Get the config_name and file_base64
         config_name = payload_split[0]
+        file_base64 = payload_split[1]
+
 
         # Log the values
         logger.info("Widget ID: {}".format(widget_id))
@@ -48,15 +51,6 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
             if config["name"] == config_name:
                 return error_response("Configuration with the same name already exists")
 
-        # Get the file_base64
-        file_base64 = payload_split[1]
-
-        # Convert the base64 to bytes
-        try:
-            config_archive_bytes = base64.b64decode(file_base64)
-        except Exception as e:
-            return error_response("Failed to decode base64 for configuration file")
-
         # Get the path to save the configuration
         config_path = get_widget_configuration_path(widget["author"], widget["name"], config_name)
 
@@ -67,24 +61,11 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         except Exception as e:
             return error_response("Failed to create configuration directory")
 
-        # Sanitize the config_name by keeping only alphanumeric characters
-        config_name = ''.join(e for e in config_name if e.isalnum())
-
         # Save the configuration to the disk
-        config_archive_path = os.path.join(config_path, config_name + ".tar.gz")
         try:
-            with open(config_archive_path, "wb") as file:
-                file.write(config_archive_bytes)
+            utils.extract_archive_from_base64_bytes(file_base64, config_path)
         except Exception as e:
-            return error_response("Failed to save configuration file")
-
-        # Extract the configuration
-        try:
-            command = "tar -xzf {} -C {}".format(config_archive_path, config_path)
-            logger.debug("Extracting configuration with command: {}".format(command))
-            os.system(command)
-        except Exception as e:
-            return error_response("Failed to extract configuration file")
+            return error_response("Failed to save configuration to the disk")
 
         # Add the configuration to the database
         add_widget_configuration(widget_id, config_name)

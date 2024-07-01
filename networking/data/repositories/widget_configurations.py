@@ -1,6 +1,4 @@
 from data.db import conn
-from configs import get_widget_configurations_path
-from data.repositories.widgets import get_widget
 
 
 def add_widget_configuration(widget_id: int, name: str) -> None:

@@ -1,5 +1,5 @@
 import sqlite3
-from configs import get_db_path
+from core.configs import get_db_path
 
 def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
     data = {}
@@ -52,6 +52,5 @@ def seed_db():
 
 
 def init():
-    from configs import get_widgets_path
     create_tables()
     seed_db()
