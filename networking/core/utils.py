@@ -1,6 +1,7 @@
 import base64
 import os
 import logging
+import socket
 import subprocess
 
 logger = logging.getLogger(__name__)
@@ -42,3 +43,19 @@ def extract_archive_from_base64_bytes(archive_bytes_b64, output_path):
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
         raise
+
+
+def get_local_ip():
+    # Create a UDP socket
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # Connect to an external address (Google's DNS server)
+        s.connect(("8.8.8.8", 80))
+        # Get the local IP address from the socket
+        local_ip = s.getsockname()[0]
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        local_ip = None
+    finally:
+        s.close()
+    return local_ip

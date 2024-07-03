@@ -5,6 +5,7 @@ import threading
 from aiocoap import Context, resource
 from typing import Any, Union
 
+from coap.services.matrix_control import MatrixControl as CoapMatrixControl
 from coap.services.widget_configurations import WidgetConfigurations
 from data.db import init as init_db
 from bless import (
@@ -12,7 +13,7 @@ from bless import (
     BlessGATTCharacteristic,
 )
 
-from gatt.services.matrix_control import MatrixControl
+from gatt.services.matrix_control import MatrixControl as BleMatrixControl
 from gatt.service_dispatcher import ServiceDispatcher
 from coap.services.widgets import *
 
@@ -46,12 +47,11 @@ async def run(loop):
     trigger.clear()
 
     # Configure GATT server
-    if mode == "default":
+    if mode != "web":
         gatt_server = BlessServer(name="Mosaico", loop=loop)
         gatt_server.read_request_func = ble_read_request
         gatt_server.write_request_func = ble_write_request
-        service_dispatcher.register_services([MatrixControl(gatt_server)])
-        await MatrixControl.create(gatt_server)
+        service_dispatcher.register_services([await BleMatrixControl.create(gatt_server)])
         await gatt_server.start()
         logger.info("Advertising")
 
@@ -62,9 +62,13 @@ async def run(loop):
     root.add_resource(['widgets', 'configuration_form'], WidgetConfigurationForm())
     root.add_resource(['widgets', 'developed'], DevelopedWidgets())
     root.add_resource(['widget_configurations'], WidgetConfigurations())
+    root.add_resource(['matrix', 'control'], CoapMatrixControl())
 
     # Start CoAP server
     coap_context = await Context.create_server_context(root)
+
+    # Restore active widget + configuration
+    set_active_widget(settings.get_active_widget_id(), settings.get_active_config_id())
 
     # Wait for trigger
     if trigger.__module__ == "threading":

@@ -6,6 +6,7 @@ import aiocoap.resource as resource
 import coap.dynamic_resource
 import rest.services.widgets as rest_widgets_api
 import data.repositories.widgets as local_widgets
+from data.repositories import settings
 from data.repositories.widget_configurations import get_widget_configuration
 from core.interop import call_matrix
 from coap.responses import *
@@ -111,10 +112,21 @@ class InstalledWidgets(coap.dynamic_resource.DynamicResource):
 class ActiveWidget(resource.Resource):
 
     async def render_get(self, request):
-        pass
+        """
+        Get the active widget
+        """
+        logger.info("Received GET request to active_widget")
+
+        # Get the active widget
+        active_widget = local_widgets.get_widget(settings.get_active_widget_id())
+        active_config = get_widget_configuration(settings.get_active_config_id())
+
+        return success_response({
+            "widget": active_widget,
+            "config": active_config
+        })
 
     async def render_post(self, request):
-
         """
         Set the active widget
         """
@@ -126,24 +138,8 @@ class ActiveWidget(resource.Resource):
         widget_id = payload["widget_id"]
         config_id = payload["config_id"]
 
-        # Get widget
-        widget = local_widgets.get_widget(widget_id)
-        if widget is None:
-            return error_response("Widget not found")
-
-        # Get widget configuration
-        widget_config = get_widget_configuration(config_id)
-
-        # Set widget on matrix
-        call_matrix("LOAD_WIDGET",
-                    {
-                        "widget_path": configs.get_widget_path(widget["author"], widget["name"]),
-                        "config_path":
-                            ""
-                            if not widget_config
-                            else
-                            configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
-                     })
+        # Set the active widget
+        set_active_widget(widget_id, config_id)
 
         return success_response(None, "Widget set successfully")
 
@@ -185,6 +181,7 @@ class DevelopedWidgets(resource.Resource):
     This skips the app store and the download from the git repository
     """
     local_dev_username = "local_dev"
+
     async def render_post(self, request):
         """
         Upload a custom widget package in .tar.gz format which contains a folder named "widget" with the widget files
@@ -226,7 +223,7 @@ class DevelopedWidgets(resource.Resource):
             utils.extract_archive_from_base64_bytes(file_base64, output_path)
         except Exception as e:
             return error_response("Failed to save widget to the disk")
-        
+
         # Add the widget to the database
         if widget_conflict is None:
             local_widgets.add_widget(None, widget_name, self.local_dev_username)
@@ -235,3 +232,33 @@ class DevelopedWidgets(resource.Resource):
         widget = local_widgets.get_widget_by_name_author(widget_name, self.local_dev_username)
 
         return success_response(widget, "Widget uploaded successfully")
+
+
+def set_active_widget(widget_id, config_id):
+    """
+    Set the active widget
+    """
+    logger.info("Setting active widget with id: " + str(widget_id) + " and config_id: " + str(config_id))
+
+    # Get widget
+    widget = local_widgets.get_widget(widget_id)
+    if widget is None:
+        return error_response("Widget not found")
+
+    # Get widget configuration
+    widget_config = get_widget_configuration(config_id)
+
+    # Set widget on matrix
+    call_matrix("LOAD_WIDGET",
+                {
+                    "widget_path": configs.get_widget_path(widget["author"], widget["name"]),
+                    "config_path":
+                        ""
+                        if not widget_config
+                        else
+                        configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
+                })
+
+    # Save the active widget to the database
+    settings.set_active_widget_id(widget_id)
+    settings.set_active_config_id(config_id)
