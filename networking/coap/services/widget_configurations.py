@@ -41,7 +41,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         logger.info("Config Name: {}".format(config_name))
 
         # Check if widget is found in the database
-        widget = get_widget(widget_id)
+        widget = local_widgets.get_widget(widget_id)
         if not widget:
             return error_response("Widget not found in the database")
 
@@ -86,7 +86,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
             return error_response("Configuration not found in the database")
 
         # Get the widget of the configuration
-        widget = get_widget(configuration["widget_id"])
+        widget = local_widgets.get_widget(configuration["widget_id"])
         if not widget:
             return error_response("Widget not found in the database")
 
@@ -112,7 +112,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         widget_id = args['widget_id']
 
         # Get the widget
-        widget = get_widget(widget_id)
+        widget = local_widgets.get_widget(widget_id)
         if not widget:
             return error_response("Widget not found in the database")
 

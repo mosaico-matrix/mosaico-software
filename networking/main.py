@@ -35,11 +35,11 @@ else:
 
 
 # GATT server callbacks
-def read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
+def ble_read_request(characteristic: BlessGATTCharacteristic, **kwargs) -> bytearray:
     return service_dispatcher.dispatch_read(characteristic.service_uuid, characteristic.uuid)
 
 
-def write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
+def ble_write_request(characteristic: BlessGATTCharacteristic, value: Any, **kwargs):
     service_dispatcher.dispatch_write(characteristic.service_uuid, characteristic.uuid, value)
 
 async def run(loop):
@@ -48,8 +48,9 @@ async def run(loop):
     # Configure GATT server
     if mode == "default":
         gatt_server = BlessServer(name="Mosaico", loop=loop)
-        gatt_server.read_request_func = read_request
-        gatt_server.write_request_func = write_request
+        gatt_server.read_request_func = ble_read_request
+        gatt_server.write_request_func = ble_write_request
+        service_dispatcher.register_services([MatrixControl(gatt_server)])
         await MatrixControl.create(gatt_server)
         await gatt_server.start()
         logger.info("Advertising")
@@ -83,7 +84,7 @@ if len(sys.argv) > 1:
     mode = sys.argv[1]
 
 # Log the mode of operation
-if mode == "web" or mode == "simulation":
+if mode == "web": # or mode == "simulation":
     logger.warning("Networking module started in light mode")
     logger.warning("The GATT server will not be started")
 else:

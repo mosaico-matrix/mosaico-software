@@ -4,6 +4,7 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Function to check command existence
@@ -19,7 +20,13 @@ run_command() {
     if [ "$VERBOSE" == "true" ]; then
         "$@"
     else
-        "$@" > /dev/null 2>&1
+        OUTPUT=$("$@" 2>&1)
+    fi
+
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}Command failed: $*${NC}"
+        echo -e "${RED}Output: ${OUTPUT}${NC}"
+        exit 1
     fi
 }
 
@@ -72,17 +79,23 @@ fi
 check_command "python3" "Python3"
 check_command "cmake" "CMake"
 check_command "pip3" "Pip3"
+
 if [ "$MODE" != "cross-compile" ]; then
     echo -e "${YELLOW}Make sure you have libcurl installed${NC}"
 fi
 if [ "$MODE" == "simulation" ]; then
     echo -e "${YELLOW}Make sure you have libx11-dev installed${NC}"
 fi
+if [ "$MODE" == "default" ] || [ "$MODE" == "cross-compile" ]; then
+    echo -e "${BLUE}This could take a while, please be patient ;)${NC}"
+fi
 
 # Create python virtual environment
+echo -e "${YELLOW}Checking python virtual environment${NC}"
 cd networking
 run_command python3 -m venv venv
-source venv/bin/activate
+run_command source venv/bin/activate
+echo -e "${GREEN}Python virtual environment OK${NC}"
 
 # Install the required python packages
 echo -e "${YELLOW}Installing python packages${NC}"
@@ -94,12 +107,6 @@ cd ../matrix
 echo -e "${YELLOW}Compiling the application${NC}"
 run_command cmake -DCOMPILE_MODE=${MODE} .
 run_command make
-
-# Exit if compilation failed
-if [ $? -ne 0 ]; then
-    echo -e "${RED}Compilation failed${NC}"
-    exit 1
-fi
 
 echo -e "${GREEN}Application compiled${NC}"
 

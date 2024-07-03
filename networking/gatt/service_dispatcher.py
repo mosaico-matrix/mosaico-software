@@ -16,7 +16,10 @@ class ServiceDispatcher:
     def dispatch_read(self, service_uuid, characteristic_uuid):
         if service_uuid in self.services:
             characteristic = self.services[service_uuid].characteristics[characteristic_uuid]
-            return characteristic["read_action"]()
+            if characteristic["read_action"]:
+                return characteristic["read_action"]()
+            else:
+                return ""
         else:
             raise ValueError(f"No service registered for UUID: {service_uuid}")
 
@@ -33,6 +36,7 @@ class AsyncInitMixin:
     logger = logging.getLogger(name=__name__)
 
     async def _async_init(self):
+
         # Register the service
         await self.server.add_new_service(self.service_uuid)
         logging.debug(f"Registered service: {self.service_uuid}")

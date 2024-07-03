@@ -63,7 +63,7 @@ elseif(COMPILE_MODE STREQUAL "cross-compile")
     include_directories(${CURL_INCLUDE_DIR})
 
     # Standard compilation
-elseif (COMPILE_MODE STREQUAL "normal")
+elseif (COMPILE_MODE STREQUAL "default")
 
     # Compile hardware matrix
     set(MATRIX_DEVICE matrix/matrices/hardware-matrix.cpp)

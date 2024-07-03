@@ -1,7 +1,7 @@
 # PATHS
 import os
 
-program_path = os.path.dirname(os.path.abspath(__file__)) + "/.."
+program_path = os.path.dirname(os.path.abspath(__file__)) + "/../"
 
 def get_widgets_path():
     return f"{program_path}/storage/widgets"
