@@ -1,7 +1,11 @@
 import sqlite3
 from core.configs import get_db_path
 
-def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row) -> dict:
+
+def row_to_dict(cursor: sqlite3.Cursor, row: sqlite3.Row):
+    if row is None:
+        return None
+
     data = {}
     for idx, col in enumerate(cursor.description):
         data[col[0]] = row[idx]
@@ -40,6 +44,14 @@ def create_tables():
         widget_id INTEGER NOT NULL,
         name TEXT NOT NULL,
         FOREIGN KEY (widget_id) REFERENCES widgets (id)
+    )
+    ''')
+
+    # Create settings table
+    c.execute('''
+    CREATE TABLE settings (
+        key TEXT PRIMARY KEY,
+        value TEXT
     )
     ''')
 
