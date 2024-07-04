@@ -1,6 +1,5 @@
 import logging
-logger = logging.getLogger(name=__name__)
-
+logger = logging.getLogger('mosaico_networking')
 class APIClientError(Exception):
 
     def __init__(self, message):

@@ -2,8 +2,7 @@ import json
 import socket
 import logging
 
-logger = logging.getLogger(__name__)
-
+logger = logging.getLogger('mosaico_networking')
 
 def call_matrix(command, data: dict) -> dict:
 

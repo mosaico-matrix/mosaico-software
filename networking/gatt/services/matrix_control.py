@@ -11,8 +11,7 @@ from bless import (
 from gatt.service_dispatcher import AsyncInitMixin
 import logging
 import core.utils as utils
-logger = logging.getLogger(name=__name__)
-
+logger = logging.getLogger('mosaico_networking')
 
 def write_wifi_credentials(value):
     logger.info(f"Received value: {value}")

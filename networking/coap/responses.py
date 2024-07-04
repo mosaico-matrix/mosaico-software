@@ -4,8 +4,7 @@ import aiocoap
 from aiocoap import ContentFormat
 
 
-logger = logging.getLogger(name="coap.responses")
-
+logger = logging.getLogger('mosaico_networking')
 def base_response(data, message, code):
     # Create a dictionary with the data and the message
     response = {

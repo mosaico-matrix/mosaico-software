@@ -18,8 +18,9 @@ from gatt.service_dispatcher import ServiceDispatcher
 from coap.services.widgets import *
 
 # Logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(name=__name__)
+logger = logging.getLogger('mosaico_networking')
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger().handlers[0].formatter = logging.Formatter('*NETWORKING* [%(levelname)s] %(message)s')
 
 # GATT Service dispatcher
 service_dispatcher = ServiceDispatcher()

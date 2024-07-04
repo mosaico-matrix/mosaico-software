@@ -8,8 +8,7 @@ import data.repositories.widgets as local_widgets
 from data.repositories.widget_configurations import *
 from coap.responses import *
 import coap.dynamic_resource
-logger = logging.getLogger(name="coap.services.widget_configurations")
-
+logger = logging.getLogger('mosaico_networking')
 
 class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
 
@@ -68,8 +67,9 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
             return error_response("Failed to save configuration to the disk")
 
         # Add the configuration to the database
-        add_widget_configuration(widget_id, config_name)
-        return success_response(None,"Configuration added successfully")
+        config = add_widget_configuration(widget_id, config_name)
+
+        return success_response(config)
 
     async def render_delete(self, request, args):
         """
@@ -102,7 +102,7 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         except Exception as e:
             return error_response("Failed to remove configuration directory, but configuration was deleted from the database")
 
-        return success_response(None, "Configuration deleted successfully")
+        return success_response(None)
 
     async def render_get(self, request, args):
         """

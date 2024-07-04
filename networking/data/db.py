@@ -33,8 +33,16 @@ def create_tables():
         id INTEGER PRIMARY KEY AUTOINCREMENT, 
         store_id INTEGER UNIQUE, 
         name TEXT NOT NULL,
-        author TEXT NOT NULL
+        author TEXT NOT NULL,
+        metadata TEXT NOT NULL,
+        hidden INTEGER DEFAULT 0
     )
+    ''')
+    c.execute('''
+    CREATE INDEX idx_widgets_hidden ON widgets (hidden)
+    ''')
+    c.execute('''
+    CREATE INDEX idx_widgets_name_author ON widgets (name, author)
     ''')
 
     # Create widget_configurations table

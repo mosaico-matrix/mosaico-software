@@ -13,8 +13,7 @@ from coap.responses import *
 from core import configs, utils
 import git
 
-logger = logging.getLogger(name="coap.repositories.widgets")
-
+logger = logging.getLogger('mosaico_networking')
 
 class InstalledWidgets(coap.dynamic_resource.DynamicResource):
 
@@ -38,7 +37,7 @@ class InstalledWidgets(coap.dynamic_resource.DynamicResource):
         widget_path = configs.get_widget_path(widget["author"], widget["name"])
 
         # Delete widget from db
-        local_widgets.delete_widget(widget_id)
+        local_widgets.disable_widget(widget_id)
 
         # Delete widget data
         if os.path.exists(widget_path):
@@ -67,44 +66,54 @@ class InstalledWidgets(coap.dynamic_resource.DynamicResource):
         # Get widget_store_id from args
         widget_store_id = args["widget_store_id"]
 
-        # Check if already installed
-        widget = local_widgets.get_widget_by_store_id(widget_store_id)
+        # Get the widget from the app store
+        logger.info(f"Installing widget with id: {widget_store_id}")
 
-        if widget:
-            logger.warning(f"Widget with id: {widget_store_id} is already installed, skipping")
+        # Always catch API exceptions to inform the user
+        try:
+            widget = rest_widgets_api.get_widget(widget_store_id)
+        except Exception as e:
+            logger.error(f"Error getting widget with id: {widget_store_id}")
+            return error_response(f"Could not get widget from app store")
 
-            # Just return success response even if already installed
-        else:
-            # Get the widget from the app store
-            logger.info(f"Installing widget with id: {widget_store_id}")
+        # Get the widget path
+        widget_path = configs.get_widget_path(widget["user"]["username"], widget["name"])
 
-            widget = None
-            try:  # Always catch API exceptions to inform the user
-                widget = rest_widgets_api.get_widget(widget_store_id)
-            except Exception as e:
-                logger.error(f"Error getting widget with id: {widget_store_id}")
-                return error_response(f"Could not get widget from app store")
+        # Remove if path already exists
+        if os.path.exists(widget_path):
+            logger.warning(f"Widget path: {widget_path} already exists, removing")
+            os.system(f"rm -rf {widget_path}")
 
-            # Get the widget path
-            widget_path = configs.get_widget_path(widget["user"]["username"], widget["name"])
+        # Create widget directory
+        os.makedirs(widget_path)
 
-            # Git clone the widget from provided repository
-            repo_url = widget["repository_url"]
-
-            # Remove if path already exists
-            if os.path.exists(widget_path):
-                logger.warning(f"Widget path: {widget_path} already exists, removing")
-                os.system(f"rm -rf {widget_path}")
-
-            # Create widget directory
-            os.makedirs(widget_path)
-
-            # Clone the repo with depth 1
+        # Git clone the widget from provided repository
+        repo_url = widget["repository_url"]
+        try:
             git.Repo.clone_from(repo_url, widget_path, depth=1)
             logger.info(f"Cloned widget from: {repo_url}")
+        except Exception as e:
+            logger.error(f"Error cloning widget from: {repo_url}")
+            return error_response(f"Could not clone widget from repository")
+
+        # Read the metadata from the widget folder
+        try:
+            metadata = read_widget_metadata(widget_path)
+        except Exception as e:
+            return error_response("Failed to read widget metadata")
+
+        # Check if already installed
+        conflict_widget = local_widgets.get_widget_by_store_id(widget_store_id)
+
+        if conflict_widget:
+            logger.warning(f"Widget with id: {widget_store_id} is already installed, enabling")
+
+            # Re-enable the widget (this was previously uninstalled)
+            local_widgets.enable_widget(conflict_widget["id"])
+        else:
 
             # Save the widget to the db
-            local_widgets.add_widget(widget["id"], widget["name"], widget["user"]["username"])
+            local_widgets.add_widget(widget["id"], widget["name"], widget["user"]["username"], metadata)
 
         return success_response(None, "Widget installed successfully")
 
@@ -224,9 +233,15 @@ class DevelopedWidgets(resource.Resource):
         except Exception as e:
             return error_response("Failed to save widget to the disk")
 
+        # Read the metadata from the widget folder
+        try:
+            metadata = read_widget_metadata(output_path)
+        except Exception as e:
+            return error_response("Failed to read widget metadata")
+
         # Add the widget to the database
         if widget_conflict is None:
-            local_widgets.add_widget(None, widget_name, self.local_dev_username)
+            local_widgets.add_widget(None, widget_name, self.local_dev_username, metadata)
 
         # Retrieve the widget from the database
         widget = local_widgets.get_widget_by_name_author(widget_name, self.local_dev_username)
@@ -243,7 +258,7 @@ def set_active_widget(widget_id, config_id):
     # Get widget
     widget = local_widgets.get_widget(widget_id)
     if widget is None:
-        return error_response("Widget not found")
+        return
 
     # Get widget configuration
     widget_config = get_widget_configuration(config_id)
@@ -262,3 +277,12 @@ def set_active_widget(widget_id, config_id):
     # Save the active widget to the database
     settings.set_active_widget_id(widget_id)
     settings.set_active_config_id(config_id)
+
+
+def read_widget_metadata(widget_path):
+    """
+    Read the widget metadata from the widget folder as a string
+    """
+    metadata_path = f"{widget_path}/mosaico.json"
+    with open(metadata_path, "r") as f:
+        return f.read()

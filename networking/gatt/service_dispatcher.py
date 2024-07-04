@@ -33,8 +33,7 @@ class ServiceDispatcher:
 
 # Used as a mixin to initialize repositories asynchronously and register all the characteristics with the server
 class AsyncInitMixin:
-    logger = logging.getLogger(name=__name__)
-
+    logger = logging.getLogger('mosaico_networking')
     async def _async_init(self):
 
         # Register the service
