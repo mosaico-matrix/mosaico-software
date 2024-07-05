@@ -153,6 +153,29 @@ class ActiveWidget(resource.Resource):
         return success_response(None, "Widget set successfully")
 
 
+    async def render_delete(self, request):
+        """
+        Unset the active widget
+        """
+        logger.info("Received DELETE request to active_widget")
+
+        # Get the active widget
+        active_widget = local_widgets.get_widget(settings.get_active_widget_id())
+        active_config = get_widget_configuration(settings.get_active_config_id())
+
+        # Unset the active widget
+        settings.set_active_widget_id(None)
+        settings.set_active_config_id(None)
+
+        # Unload the widget
+        call_matrix("UNLOAD_WIDGET", {})
+
+        return success_response({
+            "widget": active_widget,
+            "config": active_config
+        }, "Widget unset successfully")
+
+
 class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
     """
     The purpose of this service is to provide the widget configuration form .json from the file system
@@ -171,7 +194,7 @@ class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
             return error_response("Widget not found")
 
         # Get the widget installation path
-        widget_path = configs.get_widget_path(widget["author"], widget["name"])
+        widget_path = configs.get_widget_path(widget["user"], widget["name"])
 
         # Get the configuration form
         form_path = f"{widget_path}/config-form.json"
@@ -277,7 +300,6 @@ def set_active_widget(widget_id, config_id):
     # Save the active widget to the database
     settings.set_active_widget_id(widget_id)
     settings.set_active_config_id(config_id)
-
 
 def read_widget_metadata(widget_path):
     """

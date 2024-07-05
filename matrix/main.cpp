@@ -35,23 +35,14 @@ void commandHandler(const std::string& command, const json &data) {
 
     // Handle different commands
     if (command == "LOAD_WIDGET") {
-
-        // Create new slideshow
         newSlideshowReceived = new MatrixSlideshow(matrix);
         newSlideshowReceived->setDynamicWidget(data["widget_path"], data["config_path"]);
 
-    } else if (command == "CMD2") {
-        // Do something with data for command 2
-        std::cout << "Received CMD2 with data: " << data << std::endl;
-        // Send response back to Python
-        pythonSocket->sendResponse("Response to CMD2");
-    } else {
-        // Unknown command
-        std::cerr << "Unknown command: " << command << std::endl;
-        // Send error response back to Python
-        pythonSocket->sendResponse("Unknown command");
-    }
+    } else if (command == "UNLOAD_WIDGET") {
+        newSlideshowReceived = new MatrixSlideshow(matrix);
+        newSlideshowReceived->setIdle();
 
+    }
     pythonSocket->sendResponse();
 }
 

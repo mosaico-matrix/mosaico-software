@@ -69,7 +69,10 @@ async def run(loop):
     coap_context = await Context.create_server_context(root)
 
     # Restore active widget + configuration
-    set_active_widget(settings.get_active_widget_id(), settings.get_active_config_id())
+    try:
+        set_active_widget(settings.get_active_widget_id(), settings.get_active_config_id())
+    except Exception as e:
+        logger.error(f"Error while restoring active widget: {e}")
 
     # Wait for trigger
     if trigger.__module__ == "threading":
