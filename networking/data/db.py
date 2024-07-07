@@ -59,7 +59,7 @@ def create_tables():
     c.execute('''
     CREATE TABLE slideshows (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL
+        name TEXT NOT NULL UNIQUE
     )
     ''')
 

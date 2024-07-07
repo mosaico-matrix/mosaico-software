@@ -13,12 +13,29 @@ def get_slideshows() -> list:
 
     for slideshow in slideshows:
         c.execute('''
-        SELECT * FROM slideshow_items WHERE slideshow_id = ?
+        SELECT * FROM slideshow_items WHERE slideshow_id = ? ORDER BY position
         ''', (slideshow['id'],))
         slideshow['items'] = c.fetchall()
 
     return slideshows
 
+def get_slideshow_by_name(name: str) -> dict:
+    """
+    Return a single slideshow by name with its related items.
+    """
+    c = conn.cursor()
+    c.execute('''
+    SELECT * FROM slideshows WHERE name = ?
+    ''', (name,))
+    slideshow = c.fetchone()
+
+    if slideshow:
+        c.execute('''
+        SELECT * FROM slideshow_items WHERE slideshow_id = ? ORDER BY position
+        ''', (slideshow['id'],))
+        slideshow['items'] = c.fetchall()
+
+    return slideshow
 
 def get_slideshow(id: int) -> dict:
     """
@@ -32,7 +49,7 @@ def get_slideshow(id: int) -> dict:
 
     if slideshow:
         c.execute('''
-        SELECT * FROM slideshow_items WHERE slideshow_id = ?
+        SELECT * FROM slideshow_items WHERE slideshow_id = ? ORDER BY position
         ''', (id,))
         slideshow['items'] = c.fetchall()
 
@@ -53,7 +70,7 @@ def add_slideshow(name: str, items: list) -> dict:
         c.execute('''
         INSERT INTO slideshow_items (slideshow_id, widget_id, config_id, seconds_duration, position)
         VALUES (?, ?, ?, ?, ?)
-        ''', (slideshow_id, item.get('widget_id'), item.get('config_id'), item.get('seconds_duration', 10)))
+        ''', (slideshow_id, item.get('widgetId'), item.get('configId'), item.get('secondsDuration', 10), item.get('position')))
 
     conn.commit()
     return get_slideshow(slideshow_id)
@@ -76,7 +93,7 @@ def update_slideshow(id: int, name: str, items: list) -> dict:
         c.execute('''
         INSERT INTO slideshow_items (slideshow_id, widget_id, config_id, seconds_duration, position)
         VALUES (?, ?, ?, ?, ?)
-        ''', (id, item.get('widget_id'), item.get('config_id'), item.get('seconds_duration', 10)))
+        ''', (id, item.get('widgetId'), item.get('configId'), item.get('secondsDuration', 10), item.get('position')))
 
     conn.commit()
     return get_slideshow(id)

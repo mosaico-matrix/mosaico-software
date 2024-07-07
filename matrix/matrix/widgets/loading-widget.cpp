@@ -9,7 +9,7 @@
 #include <cmath> // For easing functions
 #include "../drawables/drawable-shape.cpp"
 
-class LoadingRunner : public MatrixWidget {
+class LoadingWidget : public MatrixWidget {
 
 private:
     int squareSize = 4;
@@ -51,7 +51,7 @@ public:
 
     std::vector<DrawableRectangle *> squares;
 
-    LoadingRunner() : MatrixWidget() {
+    LoadingWidget() : MatrixWidget() {
 
         // Configure
         setFps(2);

@@ -124,14 +124,14 @@ set(SOURCES
         logger/console-logger.cpp
 
         # Matrix
-        matrix/matrix-slideshow.cpp
+        matrix/widget-renderer.cpp
         matrix/canvas-layer.cpp
         matrix/canvas-buffer.cpp
 
         # Runners
         matrix/widgets/matrix-widget.h
         matrix/widgets/matrix-widget.cpp
-        matrix/widgets/loading-runner.cpp
+        matrix/widgets/loading-widget.cpp
 
         matrix/widgets/dynamic/dynamic-widget.cpp
         matrix/widgets/dynamic/dynamic-widget-metadata.cpp

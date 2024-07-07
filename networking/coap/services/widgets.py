@@ -8,7 +8,7 @@ from data.repositories import settings
 from data.repositories.widget_configurations import get_widget_configuration
 from core.interop import call_matrix
 from coap.responses import *
-from core import configs, utils, helpers
+from core import configs, utils, helpers, slideshow_manager
 import git
 
 logger = logging.getLogger('mosaico_networking')
@@ -142,7 +142,7 @@ class ActiveWidget(resource.Resource):
         config_id = payload["config_id"]
 
         # Set the active widget
-        set_active_widget(widget_id, config_id)
+        slideshow_manager.set_active_widget(widget_id, config_id)
 
         return success_response(None, "Widget set successfully")
 
@@ -257,34 +257,7 @@ class DevelopedWidgets(resource.Resource):
         return success_response(widget, "Widget uploaded successfully")
 
 
-def set_active_widget(widget_id, config_id):
-    """
-    Set the active widget
-    """
-    logger.info("Setting active widget with id: " + str(widget_id) + " and config_id: " + str(config_id))
 
-    # Get widget
-    widget = local_widgets.get_widget(widget_id)
-    if widget is None:
-        return
-
-    # Get widget configuration
-    widget_config = get_widget_configuration(config_id)
-
-    # Set widget on matrix
-    call_matrix("LOAD_WIDGET",
-                {
-                    "widget_path": configs.get_widget_path(widget["author"], widget["name"]),
-                    "config_path":
-                        ""
-                        if not widget_config
-                        else
-                        configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
-                })
-
-    # Save the active widget to the database
-    settings.set_active_widget_id(widget_id)
-    settings.set_active_config_id(config_id)
 
 def read_widget_metadata(widget_path):
     """

@@ -14,3 +14,9 @@ def get_active_configuration():
     Get the active widget configuration from the local db
     """
     return get_widget_configuration(settings.get_active_config_id())
+
+def get_active_slideshow():
+    """
+    Get the active slideshow from the local db
+    """
+    return local_widgets.get_widget(settings.get_active_widget_id())
