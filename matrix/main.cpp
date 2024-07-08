@@ -29,15 +29,21 @@ void signalHandler(int signal) {
     }
 }
 
-// Handle commands received from Python through BLE
+// Handle commands received from Python through BLE or COAP
 // Note that the socket expects a response so make sure to send a response back at the end of the function
 void commandHandler(const std::string& command, const json &data) {
 
     // Handle different commands
     if (command == "LOAD_WIDGET") {
-        auto newWidget = new WidgetRenderer(matrix);
-        newWidget->setDynamicWidget(data["widget_path"], data["config_path"]);
-        newWidgetReceived = newWidget;
+        try{
+            auto newWidget = new WidgetRenderer(matrix);
+            newWidget->setDynamicWidget(data["widget_path"], data["config_path"]);
+            newWidgetReceived = newWidget;
+        }catch (const std::exception &e) {
+            Logger::logError("Error while loading widget: " + std::string(e.what()));
+            return;
+        }
+
     } else if (command == "UNLOAD_WIDGET") {
         newWidgetReceived = new WidgetRenderer(matrix);
         newWidgetReceived->setIdle();
@@ -47,7 +53,7 @@ void commandHandler(const std::string& command, const json &data) {
 }
 
 
-// This is run while loading screena is shown
+// This is run while loading screen is shown
 void initStuffBackground() {
 
     // Fake loading
@@ -56,6 +62,8 @@ void initStuffBackground() {
     // Load fonts in memory to prevent lag when rendering text
     Logger::logInfo("Loading fonts...");
     DrawableText::loadFonts();
+
+    // Do other stuff here
 
     // Set matrix as fully initialized
     matrixFullyInitialized = true;
