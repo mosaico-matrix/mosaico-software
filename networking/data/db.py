@@ -55,6 +55,29 @@ def create_tables():
     )
     ''')
 
+    # Create slideshows table
+    c.execute('''
+    CREATE TABLE slideshows (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL UNIQUE
+    )
+    ''')
+
+    # Create slideshow_items table
+    c.execute('''
+    CREATE TABLE slideshow_items (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        slideshow_id INTEGER NOT NULL,
+        widget_id INTEGER NOT NULL,
+        config_id INTEGER,
+        position INTEGER NOT NULL,
+        seconds_duration INTEGER DEFAULT 10,
+        FOREIGN KEY (slideshow_id) REFERENCES slideshows (id),
+        FOREIGN KEY (widget_id) REFERENCES widgets (id),
+        FOREIGN KEY (config_id) REFERENCES widget_configurations (id)
+    )
+    ''')
+
     # Create settings table
     c.execute('''
     CREATE TABLE settings (

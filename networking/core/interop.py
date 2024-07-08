@@ -24,7 +24,7 @@ def call_matrix(command, data: dict) -> dict:
     # Convert the response to a dictionary if actual data is returned
     response = response.decode()
     if response:
-        logger.info(f"Received response {response}")
+        logger.info(f"Received response from C++: {response}")
         response = json.loads(response)
         return response
     else:

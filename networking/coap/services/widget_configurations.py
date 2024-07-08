@@ -118,5 +118,4 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
 
         # Get the configurations
         widget_configs = local_widgets.get_widget_configurations(widget_id)
-        logger.info("Retrieved widget configurations: {}".format(widget_configs))
         return success_response(widget_configs)

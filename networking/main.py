@@ -6,6 +6,7 @@ from aiocoap import Context, resource
 from typing import Any, Union
 
 from coap.services.matrix_control import MatrixControl as CoapMatrixControl
+from coap.services.slideshows import CreatedSlideshows, ActiveSlideshow
 from coap.services.widget_configurations import WidgetConfigurations
 from data.db import init as init_db
 from bless import (
@@ -63,16 +64,18 @@ async def run(loop):
     root.add_resource(['widgets', 'configuration_form'], WidgetConfigurationForm())
     root.add_resource(['widgets', 'developed'], DevelopedWidgets())
     root.add_resource(['widget_configurations'], WidgetConfigurations())
+    root.add_resource(['slideshows', 'created'], CreatedSlideshows())
+    root.add_resource(['slideshows', 'active'], ActiveSlideshow())
     root.add_resource(['matrix', 'control'], CoapMatrixControl())
 
     # Start CoAP server
     coap_context = await Context.create_server_context(root)
 
-    # Restore active widget + configuration
+    # Restore active widget/slideshow
     try:
-        set_active_widget(settings.get_active_widget_id(), settings.get_active_config_id())
+        await slideshow_manager.restore_last_session()
     except Exception as e:
-        logger.error(f"Error while restoring active widget: {e}")
+        logger.error(f"Error while restoring active widget/slideshow: {str(e)}")
 
     # Wait for trigger
     if trigger.__module__ == "threading":

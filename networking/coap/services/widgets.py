@@ -1,8 +1,6 @@
 import base64
 import os
-
 import aiocoap.resource as resource
-
 import coap.dynamic_resource
 import rest.services.widgets as rest_widgets_api
 import data.repositories.widgets as local_widgets
@@ -10,7 +8,7 @@ from data.repositories import settings
 from data.repositories.widget_configurations import get_widget_configuration
 from core.interop import call_matrix
 from coap.responses import *
-from core import configs, utils
+from core import configs, utils, helpers, slideshow_manager
 import git
 
 logger = logging.getLogger('mosaico_networking')
@@ -115,24 +113,21 @@ class InstalledWidgets(coap.dynamic_resource.DynamicResource):
             # Save the widget to the db
             local_widgets.add_widget(widget["id"], widget["name"], widget["user"]["username"], metadata)
 
-        return success_response(None, "Widget installed successfully")
+        return success_response(None)
 
 
 class ActiveWidget(resource.Resource):
 
     async def render_get(self, request):
+
         """
         Get the active widget
         """
         logger.info("Received GET request to active_widget")
 
-        # Get the active widget
-        active_widget = local_widgets.get_widget(settings.get_active_widget_id())
-        active_config = get_widget_configuration(settings.get_active_config_id())
-
         return success_response({
-            "widget": active_widget,
-            "config": active_config
+            "widget": helpers.get_active_widget(),
+            "config": helpers.get_active_configuration(),
         })
 
     async def render_post(self, request):
@@ -142,13 +137,12 @@ class ActiveWidget(resource.Resource):
         logger.info("Received POST request to active_widget")
 
         # Deserialize the request
-        logger.info(f"Request payload: {request.payload}")
         payload = json.loads(request.payload.decode())
         widget_id = payload["widget_id"]
         config_id = payload["config_id"]
 
         # Set the active widget
-        set_active_widget(widget_id, config_id)
+        slideshow_manager.set_active_widget(widget_id, config_id)
 
         return success_response(None, "Widget set successfully")
 
@@ -159,21 +153,12 @@ class ActiveWidget(resource.Resource):
         """
         logger.info("Received DELETE request to active_widget")
 
-        # Get the active widget
-        active_widget = local_widgets.get_widget(settings.get_active_widget_id())
-        active_config = get_widget_configuration(settings.get_active_config_id())
-
-        # Unset the active widget
+        # Unload the widget
         settings.set_active_widget_id(None)
         settings.set_active_config_id(None)
-
-        # Unload the widget
         call_matrix("UNLOAD_WIDGET", {})
 
-        return success_response({
-            "widget": active_widget,
-            "config": active_config
-        }, "Widget unset successfully")
+        return success_response(None, "Widget stopped")
 
 
 class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
@@ -194,7 +179,7 @@ class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):
             return error_response("Widget not found")
 
         # Get the widget installation path
-        widget_path = configs.get_widget_path(widget["user"], widget["name"])
+        widget_path = configs.get_widget_path(widget["author"], widget["name"])
 
         # Get the configuration form
         form_path = f"{widget_path}/config-form.json"
@@ -272,34 +257,7 @@ class DevelopedWidgets(resource.Resource):
         return success_response(widget, "Widget uploaded successfully")
 
 
-def set_active_widget(widget_id, config_id):
-    """
-    Set the active widget
-    """
-    logger.info("Setting active widget with id: " + str(widget_id) + " and config_id: " + str(config_id))
 
-    # Get widget
-    widget = local_widgets.get_widget(widget_id)
-    if widget is None:
-        return
-
-    # Get widget configuration
-    widget_config = get_widget_configuration(config_id)
-
-    # Set widget on matrix
-    call_matrix("LOAD_WIDGET",
-                {
-                    "widget_path": configs.get_widget_path(widget["author"], widget["name"]),
-                    "config_path":
-                        ""
-                        if not widget_config
-                        else
-                        configs.get_widget_configuration_path(widget["author"], widget["name"], widget_config["name"])
-                })
-
-    # Save the active widget to the database
-    settings.set_active_widget_id(widget_id)
-    settings.set_active_config_id(config_id)
 
 def read_widget_metadata(widget_path):
     """

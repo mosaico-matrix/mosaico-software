@@ -1,7 +1,7 @@
 #include <thread>
 #include "logger/logger.h"
 #include "python-socket.cpp"
-#include "matrix/matrix-slideshow.cpp"
+#include "matrix/widget-renderer.cpp"
 #include "matrix/matrices/matrix-device.cpp"
 #include "matrix/matrices/matrix-builder.cpp"
 #include <csignal>
@@ -10,7 +10,7 @@ using json = nlohmann::json;
 
 // Global variables
 bool matrixFullyInitialized = false;
-MatrixSlideshow *newSlideshowReceived = NULL;
+WidgetRenderer *newWidgetReceived = NULL;
 
 // Rgb matrix options
 RGBMatrix::Options matrix_options;
@@ -29,25 +29,31 @@ void signalHandler(int signal) {
     }
 }
 
-// Handle commands received from Python through BLE
+// Handle commands received from Python through BLE or COAP
 // Note that the socket expects a response so make sure to send a response back at the end of the function
 void commandHandler(const std::string& command, const json &data) {
 
     // Handle different commands
     if (command == "LOAD_WIDGET") {
-        newSlideshowReceived = new MatrixSlideshow(matrix);
-        newSlideshowReceived->setDynamicWidget(data["widget_path"], data["config_path"]);
+        try{
+            auto newWidget = new WidgetRenderer(matrix);
+            newWidget->setDynamicWidget(data["widget_path"], data["config_path"]);
+            newWidgetReceived = newWidget;
+        }catch (const std::exception &e) {
+            Logger::logError("Error while loading widget: " + std::string(e.what()));
+            return;
+        }
 
     } else if (command == "UNLOAD_WIDGET") {
-        newSlideshowReceived = new MatrixSlideshow(matrix);
-        newSlideshowReceived->setIdle();
+        newWidgetReceived = new WidgetRenderer(matrix);
+        newWidgetReceived->setIdle();
 
     }
     pythonSocket->sendResponse();
 }
 
 
-// This is run while loading screena is shown
+// This is run while loading screen is shown
 void initStuffBackground() {
 
     // Fake loading
@@ -57,18 +63,15 @@ void initStuffBackground() {
     Logger::logInfo("Loading fonts...");
     DrawableText::loadFonts();
 
+    // Do other stuff here
+
     // Set matrix as fully initialized
     matrixFullyInitialized = true;
     Logger::logInfo("Matrix fully initialized");
 
-    // Set the new slideshow
-    newSlideshowReceived = new MatrixSlideshow(matrix);
-  //  newSlideshowReceived->setDynamicRunner();
-//  newSlideshowReceived->setIdle();
-//  newSlideshowReceived->showClock();
-//  newSlideshowReceived->setTestRunner();
-//  newSlideshowReceived->setGame(MatrixGameEnum::TETRIS);
-    newSlideshowReceived->showLoading();
+    // Set the new widget
+    newWidgetReceived = new WidgetRenderer(matrix);
+    newWidgetReceived->showLoading();
 
     // Start python server
     pythonSocket = new PythonSocket();
@@ -94,7 +97,7 @@ int main(int argc, char *argv[]) {
     matrix = MatrixBuilder::build();
 
     // Show loading at first
-    auto *runningSlideshow = new MatrixSlideshow(matrix);
+    auto *runningSlideshow = new WidgetRenderer(matrix);
     runningSlideshow->showLoading();
 
     // Initialize stuff on a separate thread while showing loading
@@ -109,15 +112,15 @@ int main(int argc, char *argv[]) {
         runningSlideshow->renderOnMatrix();
 
         // Check if a new slideshow was received
-        if (newSlideshowReceived != NULL) {
+        if (newWidgetReceived != NULL) {
 
             // Delete current slideshow
             delete runningSlideshow;
 
-            runningSlideshow = newSlideshowReceived;
+            runningSlideshow = newWidgetReceived;
 
             // Reset newSlideshowReceived
-            newSlideshowReceived = NULL;
+            newWidgetReceived = NULL;
 
             // Clear the matrix
             //matrix->Clear();
