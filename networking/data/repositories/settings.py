@@ -1,73 +1,61 @@
 from data.db import conn
 
+def set_setting(key: str, value: str) -> None:
+    """
+    Sets the value for a given key in the settings table. If the key exists, it updates the value.
+    If the key does not exist, it inserts a new key-value pair.
 
-def set_active_widget_id(widget_id) -> None:
+    :param key: The key to set or update in the settings table.
+    :param value: The value to associate with the key.
+    """
     c = conn.cursor()
 
     # Check if key already exists
-    c.execute('''
-    SELECT key FROM settings WHERE key = 'active_widget'
-    ''')
+    c.execute('SELECT key FROM settings WHERE key = ?', (key,))
 
-    # If key exists, update value
+    # Update value if key exists, otherwise insert new key-value pair
     if c.fetchone():
-        c.execute('''
-        UPDATE settings SET value = ? WHERE key = 'active_widget'
-        ''', (widget_id,))
-
-    # If key does not exist, insert new key-value pair
+        c.execute('UPDATE settings SET value = ? WHERE key = ?', (value, key))
     else:
-        c.execute('''
-        INSERT INTO settings (key, value) VALUES ('active_widget', ?)
-        ''', (widget_id,))
+        c.execute('INSERT INTO settings (key, value) VALUES (?, ?)', (key, value))
 
     conn.commit()
+
+
+def get_setting(key: str) -> str:
+    """
+    Retrieves the value associated with a given key from the settings table.
+
+    :param key: The key to look up in the settings table.
+    :return: The value associated with the key, or None if the key does not exist.
+    """
+    c = conn.cursor()
+    c.execute('SELECT value FROM settings WHERE key = ?', (key,))
+
+    result = c.fetchone()
+    return result['value'] if result else None
+
+
+# Specific functions using the generic functions
+def set_active_widget_id(widget_id) -> None:
+    set_setting('active_widget', widget_id)
 
 
 def get_active_widget_id():
-    c = conn.cursor()
-    c.execute('''
-    SELECT value FROM settings WHERE key = 'active_widget'
-    ''')
-
-    result = c.fetchone()
-    if result:
-        return result['value']
-    else:
-        return None
+    return get_setting('active_widget')
 
 
 def set_active_config_id(configuration_id) -> None:
-    c = conn.cursor()
-
-    # Check if key already exists
-    c.execute('''
-    SELECT key FROM settings WHERE key = 'active_configuration'
-    ''')
-
-    # If key exists, update value
-    if c.fetchone():
-        c.execute('''
-        UPDATE settings SET value = ? WHERE key = 'active_configuration'
-        ''', (configuration_id,))
-
-    # If key does not exist, insert new key-value pair
-    else:
-        c.execute('''
-        INSERT INTO settings (key, value) VALUES ('active_configuration', ?)
-        ''', (configuration_id,))
-
-    conn.commit()
+    set_setting('active_configuration', configuration_id)
 
 
 def get_active_config_id():
-    c = conn.cursor()
-    c.execute('''
-        SELECT value FROM settings WHERE key = 'active_configuration'
-        ''')
+    return get_setting('active_configuration')
 
-    result = c.fetchone()
-    if result:
-        return result['value']
-    else:
-        return None
+
+def set_active_slideshow_id(slideshow_id) -> None:
+    set_setting('active_slideshow', slideshow_id)
+
+
+def get_active_slideshow_id():
+    return get_setting('active_slideshow')
