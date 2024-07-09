@@ -16,6 +16,7 @@ class DynamicResource(Resource, PathCapable):
         return await self.handle_dynamic_request(request,args)
 
     async def handle_dynamic_request(self, request, args):
+
         # This method can be customized to handle different dynamic values
         if request.code == Code.GET:
             return await self.render_get(request, args)

@@ -44,23 +44,26 @@ def set_active_widget(widget_id, config_id):
     settings.set_active_config_id(config_id)
 
 async def start_slideshow(slideshow_id):
-
     logger.info("Starting slideshow with id: " + str(slideshow_id))
 
     while True:  # Loop indefinitely to restart the slideshow when it ends
         # Get slideshow
         slideshow = data.repositories.slideshows.get_slideshow(slideshow_id)
 
+        if slideshow is None:
+            logger.error(f"Slideshow with id {slideshow_id} not found")
+            break
+
         # Get slideshow next widget
-        for slideshow_item in slideshow['items']:
+        for slideshow_item in slideshow.get('items', []):
             set_active_widget(slideshow_item['widget_id'], slideshow_item['config_id'])
 
             # Wait for the duration of the widget
-            logger.info("Waiting for " + str(slideshow_item['seconds_duration']) + " seconds before switching to the next widget")
-            await asyncio.sleep(slideshow_item['seconds_duration'])
+            duration = slideshow_item.get('seconds_duration', 0)
+            logger.info(f"Waiting for {duration} seconds before switching to the next widget")
+            await asyncio.sleep(duration)
 
 async def set_active_slideshow(slideshow_id):
-
     global current_slideshow_task
 
     logger.info("Received request to set active slideshow")
@@ -73,11 +76,12 @@ async def set_active_slideshow(slideshow_id):
                 await current_slideshow_task
             except asyncio.CancelledError:
                 logger.info("Previous slideshow was cancelled")
+            except Exception as e:
+                logger.error(f"Error while waiting for current slideshow task to cancel: {e}")
 
         # Create a new background task for the slideshow
         settings.set_active_slideshow_id(slideshow_id)
         current_slideshow_task = asyncio.create_task(start_slideshow(slideshow_id))
-
 
 
 async def restore_last_session():
