@@ -11,13 +11,18 @@ from bless import (
 from gatt.service_dispatcher import AsyncInitMixin
 import logging
 import core.utils as utils
+
 logger = logging.getLogger('mosaico_networking')
 
-def write_wifi_credentials(value):
-    logger.info(f"Received value: {value}")
 
-    # connect to the wifi network
-    pass
+def write_wifi_credentials(value):
+    logger.info(f"Received network credentials")
+
+    # Split the value into ssid and password |
+    ssid, password = value.decode().split("|")
+    logger.info(f"Connecting to network {ssid}")
+
+    utils.add_wifi_network(ssid, password)
 
 
 def get_local_ip():

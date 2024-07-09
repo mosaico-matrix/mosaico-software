@@ -87,6 +87,7 @@ if [ "$MODE" == "simulation" ]; then
     echo -e "${YELLOW}Make sure you have libx11-dev installed${NC}"
 fi
 if [ "$MODE" == "default" ] || [ "$MODE" == "cross-compile" ]; then
+    #check_command "nmcli" "network-manager"
     echo -e "${BLUE}This could take a while, please be patient ;)${NC}"
 fi
 

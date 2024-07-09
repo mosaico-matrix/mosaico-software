@@ -59,3 +59,30 @@ def get_local_ip():
     finally:
         s.close()
     return local_ip
+
+
+def add_wifi_network(ssid, password):
+
+    # Generate PSK using wpa_passphrase
+    command = f'wpa_passphrase "{ssid}" "{password}"'
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+
+    psk = None
+    for line in result.stdout.split('\n'):
+        if "psk=" in line and "#" not in line:
+            psk = line.split('=')[1].strip()
+            break
+
+    if psk:
+        # Append the new network configuration to wpa_supplicant.conf
+        config = f'\nnetwork={{\n\tssid="{ssid}"\n\tscan_ssid=1\n\tkey_mgmt=WPA-PSK\n\tpsk={psk}\n}}\n'
+        with open('/etc/wpa_supplicant/wpa_supplicant.conf', 'a') as file:
+            file.write(config)
+
+        # Restart the wpa_supplicant service and the network interface
+        subprocess.run('sudo systemctl restart wpa_supplicant', shell=True)
+        subprocess.run('sudo ifdown wlan0 && sudo ifup wlan0', shell=True)
+
+        print(f"Network {ssid} added and services restarted.")
+    else:
+        print("Failed to generate PSK.")
