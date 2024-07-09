@@ -14,7 +14,7 @@ logger = logging.getLogger('mosaico_networking')
 current_slideshow_task = None
 slideshow_lock = asyncio.Lock()
 
-def set_active_widget(widget_id, config_id):
+async def set_active_widget(widget_id, config_id):
     """
     Set the active widget
     """
@@ -27,6 +27,9 @@ def set_active_widget(widget_id, config_id):
 
     # Get widget configuration
     widget_config = get_widget_configuration(config_id)
+
+    # Stop slideshow if it's running
+    await stop_slideshow()
 
     # Set widget on matrix
     call_matrix("LOAD_WIDGET",
@@ -56,12 +59,32 @@ async def start_slideshow(slideshow_id):
 
         # Get slideshow next widget
         for slideshow_item in slideshow.get('items', []):
-            set_active_widget(slideshow_item['widget_id'], slideshow_item['config_id'])
+            await set_active_widget(slideshow_item['widget_id'], slideshow_item['config_id'])
 
             # Wait for the duration of the widget
             duration = slideshow_item.get('seconds_duration', 0)
             logger.info(f"Waiting for {duration} seconds before switching to the next widget")
             await asyncio.sleep(duration)
+
+
+async def stop_slideshow():
+    global current_slideshow_task
+
+    logger.info("Received request to stop slideshow")
+
+    async with slideshow_lock:  # Acquire the lock before changing the slideshow
+        # If there's a currently running slideshow, cancel it
+        if current_slideshow_task:
+            current_slideshow_task.cancel()
+            try:
+                await current_slideshow_task
+            except asyncio.CancelledError:
+                logger.info("Previous slideshow was cancelled")
+            except Exception as e:
+                logger.error(f"Error while waiting for current slideshow task to cancel: {e}")
+
+        # Clear the active slideshow
+        settings.set_active_slideshow_id(None)
 
 async def set_active_slideshow(slideshow_id):
     global current_slideshow_task
@@ -98,6 +121,6 @@ async def restore_last_session():
     active_widget_id = settings.get_active_widget_id()
     if active_widget_id is not None:
         logger.info("Restoring last active widget with id: " + str(active_widget_id))
-        set_active_widget(active_widget_id, settings.get_active_config_id())
+        await set_active_widget(active_widget_id, settings.get_active_config_id())
 
 

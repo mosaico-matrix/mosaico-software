@@ -142,7 +142,7 @@ class ActiveWidget(resource.Resource):
         config_id = payload["config_id"]
 
         # Set the active widget
-        slideshow_manager.set_active_widget(widget_id, config_id)
+        await slideshow_manager.set_active_widget(widget_id, config_id)
 
         return success_response(None, "Widget set successfully")
 
