@@ -2,7 +2,7 @@ import os
 
 import base64
 
-from core import utils
+from core import utils, configs
 from core.configs import get_widget_configuration_path
 import data.repositories.widgets as local_widgets
 from data.repositories.widget_configurations import *
@@ -119,3 +119,34 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
         # Get the configurations
         widget_configs = local_widgets.get_widget_configurations(widget_id)
         return success_response(widget_configs)
+
+class WidgetConfigurationPackage(coap.dynamic_resource.DynamicResource):
+
+    async def render_get(self, request, args):
+        """
+        Get the configuration archive previously saved in order to edit existing configurations
+        """
+        logger.info("Received GET request to widget_configurations_package")
+        configuration_id = args['configuration_id']
+
+        # Get the configuration
+        configuration = get_widget_configuration(configuration_id)
+        if not configuration:
+            return error_response("Configuration not found in the database")
+
+        # Get the widget of the configuration
+        widget = get_widget_from_configuration_id(configuration_id)
+        if not widget:
+            return error_response("Widget not found in the database")
+
+        # Get the path to the archive
+        archive_path = configs.get_widget_configuration_archive_path(widget["author"], widget["name"], configuration["name"])
+
+        # Read the archive to base64
+        try:
+            with open(archive_path, "rb") as f:
+                archive_base64 = base64.b64encode(f.read()).decode()
+        except Exception as e:
+            return error_response("Failed to read the archive")
+
+        return success_response(archive_base64)

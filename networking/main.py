@@ -7,7 +7,7 @@ from typing import Any, Union
 
 from coap.services.matrix_control import MatrixControl as CoapMatrixControl
 from coap.services.slideshows import CreatedSlideshows, ActiveSlideshow
-from coap.services.widget_configurations import WidgetConfigurations
+from coap.services.widget_configurations import WidgetConfigurations, WidgetConfigurationPackage
 from data.db import init as init_db
 from bless import (
     BlessServer,
@@ -64,6 +64,7 @@ async def run(loop):
     root.add_resource(['widgets', 'configuration_form'], WidgetConfigurationForm())
     root.add_resource(['widgets', 'developed'], DevelopedWidgets())
     root.add_resource(['widget_configurations'], WidgetConfigurations())
+    root.add_resource(['widget_configurations', 'package'], WidgetConfigurationPackage())
     root.add_resource(['slideshows', 'created'], CreatedSlideshows())
     root.add_resource(['slideshows', 'active'], ActiveSlideshow())
     root.add_resource(['matrix', 'control'], CoapMatrixControl())

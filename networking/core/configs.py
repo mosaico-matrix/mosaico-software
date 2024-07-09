@@ -18,6 +18,9 @@ def get_widget_configuration_path(author: str, widget_name: str, config_name: st
     config_name = sanitize_filename(config_name)
     return f"{get_widget_configurations_path()}/{author}/{widget_name}/{config_name}"
 
+def get_widget_configuration_archive_path(author: str, widget_name: str, config_name: str):
+    return f"{get_widget_configuration_path(author, widget_name, config_name)}/archive.tar.gz"
+
 def get_db_path():
     return f"{program_path}/data/db.sqlite"
 
