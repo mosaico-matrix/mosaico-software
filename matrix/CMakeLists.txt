@@ -23,6 +23,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -static-libstdc++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMATRIX_ROWS=${MATRIX_ROWS} -DMATRIX_COLS=${MATRIX_COLS} -DMATRIX_REFRESH_RATE=${MATRIX_REFRESH_RATE}")
 # Improve chai script performance by disabling threading
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCHAISCRIPT_NO_THREADS")
+# Pybind11
+find_package(pybind11 REQUIRED)  # or add_subdirectory(pybind11)
 
 # SIMULATION
 if(COMPILE_MODE STREQUAL "simulation")
@@ -166,6 +168,9 @@ add_executable(main ${SOURCES})
 
 # Include directories
 target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/include)
+
+# Pybind11
+target_link_libraries(main PRIVATE pybind11::embed)
 
 # Link libraries
 if (COMPILE_MODE STREQUAL "simulation")

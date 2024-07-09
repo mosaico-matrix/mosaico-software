@@ -1,0 +1,3 @@
+/Users/murkrow/Desktop/Repos/mosaico/mosaico-software/test/CMakeFiles/example.dir
+/Users/murkrow/Desktop/Repos/mosaico/mosaico-software/test/CMakeFiles/edit_cache.dir
+/Users/murkrow/Desktop/Repos/mosaico/mosaico-software/test/CMakeFiles/rebuild_cache.dir

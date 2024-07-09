@@ -6,6 +6,8 @@
 #include "matrix/matrices/matrix-builder.cpp"
 #include <csignal>
 #include "external/json/json.hpp"
+#include <pybind11/embed.h>
+
 using json = nlohmann::json;
 
 // Global variables
@@ -84,7 +86,38 @@ void initStuffBackground() {
 
 
 
+void cpp_function() {
+    std::cout << "C++ function called from Python!" << std::endl;
+}
+
+PYBIND11_MODULE(main, m) {
+m.def("cpp_function", &cpp_function, "A function that prints a message");
+}
+
+namespace py = pybind11;
+
 int main(int argc, char *argv[]) {
+
+
+    py::scoped_interpreter guard{}; // Start the interpreter and keep it alive
+
+    try {
+        py::exec(R"(
+import main
+
+def python_function():
+    print("Calling C++ function from Python...")
+    main.cpp_function()
+
+# Call the function
+python_function()
+        )");
+    } catch (const py::error_already_set& e) {
+        std::cerr << "Python error: " << e.what() << std::endl;
+    }
+
+
+    return 0;
 
     // Set up the signal handler
     signal(SIGINT, signalHandler);
