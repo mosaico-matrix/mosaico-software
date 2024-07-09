@@ -3,7 +3,7 @@ import logging
 from .exceptions import APIClientError, APIClientResponseError, APIClientConnectionError
 
 #base_url = "http://host.orb.internal:8000/api"
-base_url = "http://localhost:8000/api"
+base_url = "https://mosaico.murkrowdev.org/api"
 headers = {
     "Content-Type": "application/json"
 }
