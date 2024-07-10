@@ -76,11 +76,11 @@ void initStuffBackground() {
     newWidgetReceived->showLoading();
 
     // Start python server
-//    pythonSocket = new PythonSocket();
-//    while (true) {
-//        auto command = pythonSocket->waitNextCommand();
-//        commandHandler(command.first, command.second);
-//    }
+    pythonSocket = new PythonSocket();
+    while (true) {
+        auto command = pythonSocket->waitNextCommand();
+        commandHandler(command.first, command.second);
+    }
 }
 
 
