@@ -19,40 +19,12 @@ class DynamicWidget : public MatrixWidget {
 
 public:
 
-    void test()
-    {
-        std::cout << "Hello, World!" << std::endl;
-    }
-
-    py::scoped_interpreter guard{};
-
-    DynamicWidget(const string& widgetDirPath, const string& configDirPath) : MatrixWidget() {
+    std::string widgetScriptString;
+    std::string configScriptString;
+    DynamicWidget(const string &widgetDirPath, const string &configDirPath) : MatrixWidget() {
 
         // Default fps if something goes wrong
         setFps(1);
-
-        // Register self to Python
-        py::module mosaico_module = py::module::import("mosaico");
-        py::object widget = py::cast(this);
-        mosaico_module.attr("widget") = widget;
-
-        py::exec(R"(
-            from mosaico import widget, DrawableText
-
-            # Ensure fonts are loaded before creating any DrawableText objects
-            DrawableText.loadFonts()
-
-            text = widget.createText();
-)");
-
-
-        return;
-
-
-        // Create new ChaiScript instance
-        //chaiInstance = new ChaiScript();
-        registerModules();
-        registerGraphics();
 
         // Paths
         std::string widgetMetadataPath = widgetDirPath + "/mosaico.json";
@@ -62,10 +34,8 @@ public:
         // File contents
         std::string metadataString;
         Utils::readFile(widgetMetadataPath, metadataString);
-        std::string widgetScriptString;
         Utils::readFile(widgetScriptPath, widgetScriptString);
-        std::string configScriptString;
-        if(!configDirPath.empty()) {
+        if (!configDirPath.empty()) {
             Utils::readFile(configScriptPath, configScriptString);
         }
 
@@ -87,23 +57,8 @@ public:
 
         // Configure script based on metadata
         setFps(metadata.fps);
-        // TODO: Set canvas size
 
-        // Try to evaluate the config script
-//        try {
-//           // chaiInstance->eval(configScriptString);
-//        } catch (const chaiscript::exception::eval_error &e) {
-//            Logger::logError("Error while evaluating config script: " + std::string(e.what()));
-//            return;
-//        }
-//
-//        // Try to evaluate the script
-//        try {
-//            //chaiInstance->eval(widgetScriptString);
-//        } catch (const chaiscript::exception::eval_error &e) {
-//            Logger::logError("Error while evaluating script: " + std::string(e.what()));
-//            return;
-//        }
+        // TODO: Set canvas size
 
         // If we got here, the widget is valid
         validWidget = true;
@@ -111,100 +66,58 @@ public:
     }
 
     ~DynamicWidget() {
-        //delete chaiInstance;
+        py::finalize_interpreter();
     }
 
 private:
-
-    // Script
-  //  ChaiScript *chaiInstance;
     bool validWidget = false;
 
-    // Register here all the modules that will be available in the script
-    void registerModules() {
+    void bindObjectsToPython() {
+        // Get bound module
+        py::module mosaico_module = py::module::import("mosaico");
 
+        // Pass this very object to the module
+        py::object widget = py::cast(this);
+        mosaico_module.attr("widget") = widget;
     }
 
-
     // Loop
+    bool scriptInitialized = false;
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
 
-        canvas->Fill(RED_COLOR);
+        // Initialize Python script
+        if(!scriptInitialized) {
+            py::initialize_interpreter();
+            bindObjectsToPython();
+            try {
+                //Logger::logDebug(configScriptString);
+                py::exec(configScriptString);
+                py::exec(widgetScriptString);
+            } catch (const py::error_already_set &e) {
+                Logger::logError("Error while evaluating script: " + std::string(e.what()));
+                validWidget = false;
+                return;
+            }
+            scriptInitialized = true;
+        }
 
-        return;
+
         // If script is invalid don't try to render
-        if(!validWidget) {
+        if (!validWidget) {
             canvas->Fill(RED_COLOR);
             return;
         }
 
-        // Try to evaluate the loop function
-       // try {
-         //   chaiInstance->eval("loop()");
-     //   } catch (const chaiscript::exception::eval_error &e) {
-      //      Logger::logError("Error while evaluating loop: " + std::string(e.what()));
-      //      validWidget = false;
-      //      return;
-      //  }
+
+        // Execute Python loop code
+        try {
+            py::exec("loop()");
+        } catch (const py::error_already_set &e) {
+            Logger::logError("Error while evaluating loop function: " + std::string(e.what()));
+            return;
+        }
+
     }
-
-
-    void registerGraphics() {
-
-        // COLORS
-//        chaiInstance->add_global(chaiscript::var(WHITE_COLOR), "WHITE_COLOR");
-//        chaiInstance->add_global(chaiscript::var(BLACK_COLOR), "BLACK_COLOR");
-//        chaiInstance->add_global(chaiscript::var(RED_COLOR), "RED_COLOR");
-//        chaiInstance->add_global(chaiscript::var(GREEN_COLOR), "GREEN_COLOR");
-//        chaiInstance->add_global(chaiscript::var(BLUE_COLOR), "BLUE_COLOR");
-//        chaiInstance->add_global(chaiscript::var(YELLOW_COLOR), "YELLOW_COLOR");
-//        chaiInstance->add_global(chaiscript::var(CYAN_COLOR), "CYAN_COLOR");
-//        chaiInstance->add_global(chaiscript::var(MAGENTA_COLOR), "MAGENTA_COLOR");
-//        chaiInstance->add(fun(&RandomColor), "RANDOM_COLOR");
-//
-//        // Register basic canvas functions and bind them to the canvas object
-////        chaiInstance->add(fun(&CanvasLayer::FillColor, getCanvasTemplate()), "_fillColor");
-////        chaiInstance->add(fun(&CanvasLayer::Fill, getCanvasTemplate()), "_fillRGB");
-//        chaiInstance->add(fun(&CanvasLayer::Clear, getCanvasTemplate()), "_clear");
-//        chaiInstance->add(fun(&CanvasLayer::width, getCanvasTemplate()), "_canvasWidth");
-//        chaiInstance->add(fun(&CanvasLayer::height, getCanvasTemplate()), "_canvasHeight");
-//
-//        // Register drawable functions
-//        chaiInstance->add(fun(&Drawable::setColor), "setColor");
-//        chaiInstance->add(fun(&Drawable::moveTo), "moveTo");
-//        chaiInstance->add(fun(&Drawable::translate), "translate");
-//        chaiInstance->add(fun(&Drawable::translateX), "translateX");
-//        chaiInstance->add(fun(&Drawable::translateY), "translateY");
-//        chaiInstance->add(fun(&Drawable::animateTo), "animateTo");
-//        chaiInstance->add(fun(&Drawable::hide), "hide");
-//        chaiInstance->add(fun(&Drawable::show), "show");
-//        chaiInstance->add(fun(&Drawable::isVisible), "isVisible");
-//        chaiInstance->add(fun(&Drawable::isAnimating), "isAnimating");
-//        chaiInstance->add(fun(&Drawable::getX), "getX");
-//        chaiInstance->add(fun(&Drawable::getY), "getY");
-//
-//        // TEXT
-//        chaiInstance->add(chaiscript::base_class<Drawable, DrawableText>());
-//        chaiInstance->add(user_type < DrawableText > (), "DrawableText");
-//        chaiInstance->add(fun(&DynamicWidget::createDrawableText, this), "_DrawableText");
-//        chaiInstance->add(fun(&DrawableText::setText), "setText");
-//        chaiInstance->add(fun(&DrawableText::setFontHeight), "setFontHeight");
-//
-//        // SHAPES
-//        chaiInstance->add(chaiscript::base_class<Drawable, DrawableShape>());
-//
-//        // RECTANGLE
-//        chaiInstance->add(chaiscript::base_class<Drawable, DrawableRectangle>());
-//        chaiInstance->add(chaiscript::base_class<DrawableShape, DrawableRectangle>());
-//        chaiInstance->add(user_type < DrawableRectangle > (), "DrawableRectangle");
-//        chaiInstance->add(fun(&DynamicWidget::createDrawableRectangle, this), "_DrawableRectangle");
-//        chaiInstance->add(fun(&DrawableRectangle::setSize), "setSize");
-//
-////        // PPM
-////        chai->add(user_type<DrawablePPM> (), "_DrawablePPM");
-////        chai->add(chaiscript::base_class<Drawable, DrawablePPM>());
-    }
-
 };
 
 #endif

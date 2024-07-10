@@ -9,6 +9,7 @@
 #include "../drawables/drawable.h"
 #include "../canvas-layer.cpp"
 #include "../drawables/drawable-text.cpp"
+#include "../drawables/drawable-shape.cpp"
 
 // Available games (add more as needed)
 enum class MatrixGameEnum {
@@ -74,8 +75,8 @@ public:
         registerDrawable(drawable);
         return drawable;
     }
-    DrawableText *createRectangle(){
-        auto *drawable = new DrawableText();
+    DrawableRectangle *createRectangle(){
+        auto *drawable = new DrawableRectangle();
         registerDrawable(drawable);
         return drawable;
     }

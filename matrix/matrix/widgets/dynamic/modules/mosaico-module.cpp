@@ -17,7 +17,20 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     py::class_<DynamicWidget, MatrixWidget>(m, "DynamicWidget");
 
     // Bind the Drawable class
-    py::class_<Drawable>(m, "Drawable");
+    py::class_<Drawable>(m, "Drawable")
+    .def("moveTo", &Drawable::moveTo)
+    .def("translate", &Drawable::translate)
+    .def("translateX", &Drawable::translateX)
+    .def("translateY", &Drawable::translateY)
+    .def("setColor", &Drawable::setColor)
+    .def("animateTo", &Drawable::animateTo)
+    .def("hide", &Drawable::hide)
+    .def("show", &Drawable::show)
+    .def("isVisible", &Drawable::isVisible)
+    .def("isAnimating", &Drawable::isAnimating)
+    .def("getX", &Drawable::getX)
+    .def("getY", &Drawable::getY);
+
 
     // Bind the DrawableShape class
     py::class_<DrawableShape, Drawable>(m, "DrawableShape");
