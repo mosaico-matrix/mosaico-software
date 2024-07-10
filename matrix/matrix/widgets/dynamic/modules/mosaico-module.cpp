@@ -37,6 +37,8 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
 
     // Bind the DrawableRectangle class
     py::class_<DrawableRectangle, DrawableShape>(m, "DrawableRectangle")
+    .def("getWidth", &DrawableRectangle::getWidth)
+    .def("getHeight", &DrawableRectangle::getHeight)
     .def("setSize", &DrawableRectangle::setSize);
 
     // Bind the DrawableText class

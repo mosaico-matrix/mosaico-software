@@ -25,6 +25,14 @@ public:
         height = h;
     }
 
+    int getWidth() {
+        return width;
+    }
+
+    int getHeight() {
+        return height;
+    }
+
     void _draw(Canvas *canvas) override {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {

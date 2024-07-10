@@ -109,6 +109,7 @@ private:
             py::exec("loop()");
         } catch (const py::error_already_set &e) {
             Logger::logError("Error while evaluating loop function: " + std::string(e.what()));
+            validWidget = false;
             return;
         }
 
