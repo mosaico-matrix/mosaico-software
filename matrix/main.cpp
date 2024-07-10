@@ -13,7 +13,7 @@ using json = nlohmann::json;
 // Global variables
 std::map<int, rgb_matrix::Font *> DrawableText::fonts;
 bool matrixFullyInitialized = false;
-WidgetRenderer *newWidgetReceived = NULL;
+WidgetRenderer *newWidgetReceived = nullptr;
 
 // Rgb matrix options
 RGBMatrix::Options matrix_options;
@@ -74,7 +74,7 @@ void initStuffBackground() {
 
     // Set the new widget
     newWidgetReceived = new WidgetRenderer(matrix);
-    newWidgetReceived->showLoading();
+    newWidgetReceived->setLoading();
 
     // Start python server
     pythonSocket = new PythonSocket();
@@ -98,30 +98,32 @@ int main(int argc, char *argv[]) {
     matrix = MatrixBuilder::build();
 
     // Show loading at first
-    auto *runningSlideshow = new WidgetRenderer(matrix);
-    runningSlideshow->showLoading();
+    auto *runningWidget = new WidgetRenderer(matrix);
+    runningWidget->setLoading();
 
     // Initialize stuff on a separate thread while showing loading
     std::thread loadingThread([&]() {
         initStuffBackground();
     });
 
+
     // Main loop
     while (true) {
 
         // Render the current slideshow frame
-        runningSlideshow->renderOnMatrix();
+        runningWidget->renderOnMatrix();
 
         // Check if a new slideshow was received
-        if (newWidgetReceived != NULL) {
+        if (newWidgetReceived != nullptr) {
 
             // Delete current slideshow
-            delete runningSlideshow;
+            Logger::logDebug("Deleting old slideshow");
+            delete runningWidget;
 
-            runningSlideshow = newWidgetReceived;
+            runningWidget = newWidgetReceived;
 
             // Reset newSlideshowReceived
-            newWidgetReceived = NULL;
+            newWidgetReceived = nullptr;
 
             // Clear the matrix
             //matrix->Clear();

@@ -60,8 +60,9 @@ public:
         Logger::logDebug("Widget loaded successfully");
     }
 
-    ~DynamicWidget() {
+    ~DynamicWidget() override {
         py::finalize_interpreter();
+        Logger::logDebug("DynamicWidget destroyed");
     }
 
 private:
@@ -82,6 +83,7 @@ private:
 
         // Initialize Python script
         if(!scriptInitialized) {
+            Logger::logDebug("Initializing Python script");
             py::initialize_interpreter();
             bindObjectsToPython();
             try {

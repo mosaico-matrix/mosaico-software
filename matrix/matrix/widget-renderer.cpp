@@ -40,6 +40,10 @@ public:
     ~WidgetRenderer()
     {
         delete compositeCanvasBuffer;
+        for (auto widget : currentWidgetsGroup)
+        {
+            delete widget;
+        }
     }
 
     void renderOnMatrix()
@@ -100,7 +104,7 @@ public:
     }
 
 
-    void showLoading() {
+    void setLoading() {
         framesUntilNextRefresh.push_back(0);
         currentWidgetsGroup = {new LoadingWidget()};
     }
@@ -112,7 +116,8 @@ public:
 
     void setIdle()
     {
-
+        framesUntilNextRefresh.push_back(0);
+        currentWidgetsGroup = {};
     }
 
 };

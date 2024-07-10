@@ -64,8 +64,8 @@ public:
     /// This basically returns the last rendered frame, but has a different name because can serve a different purpose
     [[nodiscard]] CanvasLayer* getCanvasTemplate() const { return lastRenderedFrame; }
 
-    ~MatrixWidget() = default;
-
+    /// Virtual destructor
+    virtual ~MatrixWidget() = default;
 
     /*
      * Add drawables

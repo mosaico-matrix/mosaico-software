@@ -55,6 +55,10 @@ public:
         randomSquares(canvas);
     }
 
+    ~LoadingWidget() override {
+        Logger::logDebug("LoadingWidget destroyed");
+    }
+
 };
 
 #endif //LOADING_RUNNER_CPP
