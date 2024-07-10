@@ -19,15 +19,6 @@ private:
 
 public:
 
-    void bouncingSquares(CanvasLayer *canvas) {
-        for (int i = 0; i < squares.size(); i++) {
-            auto square = squares[i];
-            if (!square->isAnimating()) {
-                //square->animateTo(rand() % (canvas->width() - squareSize), rand() % (canvas->height() - squareSize));
-            }
-        }
-    }
-
     void randomSquares(CanvasLayer *canvas) {
         // Cycle on spots where a potential square could be drawn
         for (int i = 0; i < canvas->width(); i += squareSize) {
@@ -49,7 +40,6 @@ public:
         }
     }
 
-    std::vector<DrawableRectangle *> squares;
 
     LoadingWidget() : MatrixWidget() {
 

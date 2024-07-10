@@ -4,7 +4,6 @@
 
 
 MatrixWidget::MatrixWidget() {
-
     Logger::logDebug("Matrix widget created");
 }
 

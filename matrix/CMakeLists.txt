@@ -22,7 +22,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -static-libstdc++")
 # Matrix flags
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMATRIX_ROWS=${MATRIX_ROWS} -DMATRIX_COLS=${MATRIX_COLS} -DMATRIX_REFRESH_RATE=${MATRIX_REFRESH_RATE}")
 # Improve chai script performance by disabling threading
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCHAISCRIPT_NO_THREADS")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCHAISCRIPT_NO_THREADS")
 # Pybind11
 find_package(pybind11 REQUIRED)  # or add_subdirectory(pybind11)
 
@@ -137,7 +137,7 @@ set(SOURCES
 
         matrix/widgets/dynamic/dynamic-widget.cpp
         matrix/widgets/dynamic/dynamic-widget-metadata.cpp
-        matrix/widgets/dynamic/modules/rest-module.cpp
+        matrix/widgets/dynamic/modules/mosaico-module.cpp
 
         matrix/widgets/games/pixel-mover.cpp
         matrix/widgets/games/flappy-bird.cpp
@@ -165,12 +165,12 @@ set(SOURCES
 
 # Executable
 add_executable(main ${SOURCES})
-
+# Pybind11
+target_link_libraries(main PRIVATE pybind11::embed)
 # Include directories
 target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/include)
 
-# Pybind11
-target_link_libraries(main PRIVATE pybind11::embed)
+
 
 # Link libraries
 if (COMPILE_MODE STREQUAL "simulation")

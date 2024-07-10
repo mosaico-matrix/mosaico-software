@@ -84,7 +84,7 @@ if [ "$MODE" != "cross-compile" ]; then
     echo -e "${YELLOW}Make sure you have libcurl installed${NC}"
 fi
 if [ "$MODE" == "simulation" ]; then
-    systemctl restart bluetooth
+    #systemctl restart bluetooth
     echo -e "${YELLOW}Make sure you have libx11-dev installed${NC}"
 fi
 if [ "$MODE" == "default" ] || [ "$MODE" == "cross-compile" ]; then

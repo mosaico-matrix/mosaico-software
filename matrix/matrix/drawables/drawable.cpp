@@ -1,8 +1,7 @@
 #include "drawable.h"
 #include "../widgets/matrix-widget.h"
 
-Drawable::Drawable(MatrixWidget *runner) {
-    runner->registerDrawable(this);
+Drawable::Drawable() {
 }
 
 Drawable::~Drawable() {}

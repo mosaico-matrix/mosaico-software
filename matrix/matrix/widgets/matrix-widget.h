@@ -8,6 +8,8 @@
 #include "../../logger/logger.h"
 #include "../drawables/drawable.h"
 #include "../canvas-layer.cpp"
+#include "../drawables/drawable-text.cpp"
+#include "../drawables/drawable-shape.cpp"
 
 // Available games (add more as needed)
 enum class MatrixGameEnum {
@@ -63,6 +65,21 @@ public:
     [[nodiscard]] CanvasLayer* getCanvasTemplate() const { return lastRenderedFrame; }
 
     ~MatrixWidget() = default;
+
+
+    /*
+     * Add drawables
+     */
+    DrawableText *createText(){
+        auto *drawable = new DrawableText();
+        registerDrawable(drawable);
+        return drawable;
+    }
+    DrawableRectangle *createRectangle(){
+        auto *drawable = new DrawableRectangle();
+        registerDrawable(drawable);
+        return drawable;
+    }
 
 protected:
     CanvasLayerPosition runnerPosition = CanvasLayerPosition::FULL;

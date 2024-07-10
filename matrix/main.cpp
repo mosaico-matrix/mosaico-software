@@ -6,11 +6,12 @@
 #include "matrix/matrices/matrix-builder.cpp"
 #include <csignal>
 #include "external/json/json.hpp"
-#include <pybind11/embed.h>
+#include "matrix/drawables/drawable-text.cpp"
 
 using json = nlohmann::json;
 
 // Global variables
+std::map<int, rgb_matrix::Font *> DrawableText::fonts;
 bool matrixFullyInitialized = false;
 WidgetRenderer *newWidgetReceived = NULL;
 
@@ -24,7 +25,7 @@ PythonSocket *pythonSocket;
 
 // Signal handler function
 void signalHandler(int signal) {
-    if (signal == SIGINT || signal == SIGTERM || signal == SIGKILL  || signal == SIGABRT) {
+    if (signal == SIGINT || signal == SIGTERM || signal == SIGKILL || signal == SIGABRT) {
         delete matrix;
         delete pythonSocket;
         exit(0);
@@ -33,15 +34,15 @@ void signalHandler(int signal) {
 
 // Handle commands received from Python through BLE or COAP
 // Note that the socket expects a response so make sure to send a response back at the end of the function
-void commandHandler(const std::string& command, const json &data) {
+void commandHandler(const std::string &command, const json &data) {
 
     // Handle different commands
     if (command == "LOAD_WIDGET") {
-        try{
+        try {
             auto newWidget = new WidgetRenderer(matrix);
             newWidget->setDynamicWidget(data["widget_path"], data["config_path"]);
             newWidgetReceived = newWidget;
-        }catch (const std::exception &e) {
+        } catch (const std::exception &e) {
             Logger::logError("Error while loading widget: " + std::string(e.what()));
             return;
         }
@@ -77,47 +78,14 @@ void initStuffBackground() {
 
     // Start python server
     pythonSocket = new PythonSocket();
-    while (true)
-    {
+    while (true) {
         auto command = pythonSocket->waitNextCommand();
         commandHandler(command.first, command.second);
     }
 }
 
 
-
-void cpp_function() {
-    std::cout << "C++ function called from Python!" << std::endl;
-}
-
-PYBIND11_MODULE(main, m) {
-m.def("cpp_function", &cpp_function, "A function that prints a message");
-}
-
-namespace py = pybind11;
-
 int main(int argc, char *argv[]) {
-
-
-    py::scoped_interpreter guard{}; // Start the interpreter and keep it alive
-
-    try {
-        py::exec(R"(
-import main
-
-def python_function():
-    print("Calling C++ function from Python...")
-    main.cpp_function()
-
-# Call the function
-python_function()
-        )");
-    } catch (const py::error_already_set& e) {
-        std::cerr << "Python error: " << e.what() << std::endl;
-    }
-
-
-    return 0;
 
     // Set up the signal handler
     signal(SIGINT, signalHandler);
