@@ -11,6 +11,7 @@
 using json = nlohmann::json;
 
 // Global variables
+std::map<int, rgb_matrix::Font *> DrawableText::fonts;
 bool matrixFullyInitialized = false;
 WidgetRenderer *newWidgetReceived = NULL;
 

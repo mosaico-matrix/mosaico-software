@@ -1,7 +1,6 @@
 #ifndef TEXT_DRAWER_CPP
 #define TEXT_DRAWER_CPP
 
-
 #include "drawable.h"
 #include <vector>
 #include <string>
@@ -9,29 +8,28 @@
 
 using namespace rgb_matrix;
 
-static std::map<int, rgb_matrix::Font *> fonts; // Preloaded fonts
-
 enum TextScrollingSpeed {
     SLOW = 10000,
     MEDIUM = 5000,
     FAST = 1000
 };
 
+
 class DrawableText : public Drawable {
 
 public:
+    static std::map<int, rgb_matrix::Font *> fonts; // Preloaded fonts
 
     DrawableText() : Drawable() {
 
         // Load fonts if not already loaded
         //DrawableText::loadFonts();
 
-        if (fonts.empty())
+        if (DrawableText::fonts.empty())
         {
             Logger::logFatal("Fonts not loaded, please load fonts before creating a DrawableText object");
         }
     }
-
 
     void setText(const std::string text) {
         this->text = text;
@@ -47,7 +45,7 @@ public:
 
     static void loadFonts() {
 
-        if (!fonts.empty()) return;
+        if (!DrawableText::fonts.empty()) return;
         std::vector<std::string> fontFilenames = {
                 "4x6.bdf",
                 "5x7.bdf",
@@ -76,7 +74,7 @@ public:
             if (!font->LoadFont(fontPath.c_str())) {
                 Logger::logFatal("Error loading font: " + filename);
             }
-            fonts[fontHeight] = font;
+            DrawableText::fonts[fontHeight] = font;
         }
     }
 
@@ -88,10 +86,10 @@ private:
     void _draw(Canvas *canvas) override {
 
         // Get font
-        rgb_matrix::Font *font = fonts[fontHeight];
+        rgb_matrix::Font *font = DrawableText::fonts[fontHeight];
         if (font == nullptr) {
             Logger::logError("Font height " + std::to_string(fontHeight) + " not found, falling back to default font");
-            font = fonts[6];
+            font = DrawableText::fonts[6];
         }
 
         // Draw text and get text length in pixels
@@ -113,8 +111,7 @@ private:
             }
         }
     }
-
-
 };
+
 
 #endif

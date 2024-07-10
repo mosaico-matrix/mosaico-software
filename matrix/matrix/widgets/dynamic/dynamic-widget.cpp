@@ -2,11 +2,6 @@
 #define DYNAMIC_RUNNER_CPP
 
 #include "../matrix-widget.h"
-#include "../../drawables/drawable-shape.cpp"
-#include "../../drawables/drawable-text.cpp"
-#include "../../drawables/drawable.h"
-#include "../../drawables/colors.cpp"
-#include <utility>
 #include <variant>
 #include "../../../utils.cpp"
 #include "dynamic-widget-metadata.cpp"
