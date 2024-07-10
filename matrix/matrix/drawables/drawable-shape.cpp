@@ -6,7 +6,7 @@
 class DrawableShape : public Drawable {
 
 public:
-    DrawableShape(MatrixWidget *runner) : Drawable(runner) {}
+    DrawableShape() : Drawable() {}
 };
 
 
@@ -17,7 +17,7 @@ private:
     int height = 5;
 
 public:
-    DrawableRectangle (MatrixWidget *runner) : DrawableShape(runner) {
+    DrawableRectangle () : DrawableShape() {
     }
 
     void setSize(int w, int h) {

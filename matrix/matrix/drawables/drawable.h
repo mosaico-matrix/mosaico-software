@@ -46,7 +46,7 @@ public:
         uint8_t blue;
     };
 
-    Drawable(MatrixWidget *runner);
+    Drawable();
     virtual ~Drawable();
 
     void setFrameDuration(unsigned int frameDurationMs);

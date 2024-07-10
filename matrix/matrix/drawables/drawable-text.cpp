@@ -21,15 +21,15 @@ class DrawableText : public Drawable {
 
 public:
 
-    DrawableText(MatrixWidget *widget) : Drawable(widget) {
+    DrawableText() : Drawable() {
+
+        // Load fonts if not already loaded
+        //DrawableText::loadFonts();
 
         if (fonts.empty())
         {
             Logger::logFatal("Fonts not loaded, please load fonts before creating a DrawableText object");
         }
-
-        // Load fonts if not already loaded
-        //DrawableText::loadFonts();
     }
 
 
