@@ -10,11 +10,14 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
 
     // Binding the MatrixWidget class
     py::class_<MatrixWidget>(m, "MatrixWidget")
-    .def("createRectangle", &MatrixWidget::createRectangle)
-    .def("createText", &MatrixWidget::createText);
+            .def("createRectangle", &MatrixWidget::createRectangle)
+            .def("createImage", &MatrixWidget::createPPM)
+            .def("createText", &MatrixWidget::createText);
 
     // Binding the DynamicWidget class
-    py::class_<DynamicWidget, MatrixWidget>(m, "DynamicWidget");
+    py::class_<DynamicWidget, MatrixWidget>(m, "DynamicWidget")
+            .def("widgetAsset", &DynamicWidget::widgetAssetPath)
+            .def("configAsset", &DynamicWidget::configAssetPath);
 
     // Bind the Drawable class
     py::class_<Drawable>(m, "Drawable")
@@ -47,6 +50,9 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     .def("setFontHeight", &DrawableText::setFontHeight)
     .def("setScrollingSpeed", &DrawableText::setScrollingSpeed)
     .def("loadFonts", &DrawableText::loadFonts);
+
+    // Bind the DrawablePPM class
+    py::class_<DrawablePPM, Drawable>(m, "DrawablePPM");
 
 }
 

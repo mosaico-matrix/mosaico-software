@@ -35,6 +35,9 @@ class ActiveSlideshow(resource.Resource):
         payload = json.loads(request.payload.decode())
         slideshow_id = payload["slideshow_id"]
 
+        # Stop previous slideshow
+        #await core.slideshow_manager.stop_slideshow()
+
         # Set the active slideshow
         await core.slideshow_manager.set_active_slideshow(slideshow_id)
         return success_response(None, "Slideshow set successfully")

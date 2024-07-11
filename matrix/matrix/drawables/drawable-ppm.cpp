@@ -2,9 +2,6 @@
 #define DRAWABLE_PPM_CPP
 
 #include "drawable.h"
-#include <stdio.h>
-#include <math.h>
-#include <stdio.h>
 #include <unistd.h>
 
 class DrawablePPM : public Drawable {
@@ -12,7 +9,7 @@ class DrawablePPM : public Drawable {
 private:
 
     struct Image {
-        Image() : width(-1), height(-1), image(NULL) {}
+        Image() : width(-1), height(-1), image(nullptr) {}
 
         ~Image() { Delete(); }
 
@@ -22,14 +19,14 @@ private:
         }
 
         void Reset() {
-            image = NULL;
+            image = nullptr;
             width = -1;
             height = -1;
         }
 
-        inline bool IsValid() { return image && height > 0 && width > 0; }
+        [[nodiscard]] inline bool IsValid() const { return image && height > 0 && width > 0; }
 
-        const Pixel &getPixel(int x, int y) {
+        [[nodiscard]] const Pixel &getPixel(int x, int y) const {
             static Pixel black;
             if (x < 0 || x >= width || y < 0 || y >= height) return black;
             return image[x + width * y];
@@ -43,7 +40,7 @@ private:
     Image image;
 
     // Read line, skip comments from file
-    char *ReadLine(FILE *f, char *buffer, size_t len) {
+    static char *ReadLine(FILE *f, char *buffer, size_t len) {
         char *result;
         do {
             result = fgets(buffer, len, f);
@@ -52,17 +49,17 @@ private:
     }
 
 public:
-    DrawablePPM(const char *filename) : Drawable() {
+    explicit DrawablePPM(const char *filename) {
 
         FILE *f = fopen(filename, "r");
 
         // check if file exists
-        if (f == NULL && access(filename, F_OK) == -1) {
+        if (f == nullptr && access(filename, F_OK) == -1) {
             fprintf(stderr, "File \"%s\" doesn't exist\n", filename);
             return;
         }
 
-        if (f == NULL) return;
+        if (f == nullptr) return;
 
         char header_buf[256];
         const char *line = ReadLine(f, header_buf, sizeof(header_buf));

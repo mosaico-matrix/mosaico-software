@@ -74,7 +74,8 @@ async def run(loop):
 
     # Restore active widget/slideshow
     try:
-        await slideshow_manager.restore_last_session()
+        pass
+        #await slideshow_manager.restore_last_session()
     except Exception as e:
         logger.error(f"Error while restoring active widget/slideshow: {str(e)}")
 

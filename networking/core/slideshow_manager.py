@@ -20,16 +20,17 @@ async def set_active_widget(widget_id, config_id):
     """
     logger.info("Setting active widget with id: " + str(widget_id) + " and config_id: " + str(config_id))
 
+    # Clear the matrix state
+    #clear_matrix_state()
+
     # Get widget
     widget = local_widgets.get_widget(widget_id)
     if widget is None:
+        logger.error(f"Widget with id {widget_id} not found")
         return
 
     # Get widget configuration
     widget_config = get_widget_configuration(config_id)
-
-    # Stop slideshow if it's running
-    await stop_slideshow()
 
     # Set widget on matrix
     call_matrix("LOAD_WIDGET",
@@ -59,19 +60,36 @@ async def start_slideshow(slideshow_id):
 
         # Get slideshow next widget
         for slideshow_item in slideshow.get('items', []):
-            await set_active_widget(slideshow_item['widget_id'], slideshow_item['config_id'])
+            try:
+                await set_active_widget(slideshow_item['widget_id'], slideshow_item['config_id'])
 
-            # Wait for the duration of the widget
-            duration = slideshow_item.get('seconds_duration', 0)
-            logger.info(f"Waiting for {duration} seconds before switching to the next widget")
-            await asyncio.sleep(duration)
+                # Wait for the duration of the widget
+                duration = slideshow_item.get('seconds_duration', 0)
+                logger.info(f"Waiting for {duration} seconds before switching to the next widget")
+                await asyncio.sleep(duration)
+            except asyncio.CancelledError:
+                logger.info("Slideshow task was cancelled")
+                return
+            except Exception as e:
+                logger.error(f"Error during slideshow: {e}")
+                return
 
+async def clear_matrix():
+
+    clear_matrix_state()
+    await stop_slideshow()
+
+    # Unload the widget on the matrix
+    call_matrix("UNLOAD_WIDGET", {})
+
+def clear_matrix_state():
+    settings.set_active_widget_id(None)
+    settings.set_active_config_id(None)
+    settings.set_active_slideshow_id(None)
 
 async def stop_slideshow():
+    # Stop the slideshow
     global current_slideshow_task
-
-    logger.info("Received request to stop slideshow")
-
     async with slideshow_lock:  # Acquire the lock before changing the slideshow
         # If there's a currently running slideshow, cancel it
         if current_slideshow_task:
@@ -82,9 +100,6 @@ async def stop_slideshow():
                 logger.info("Previous slideshow was cancelled")
             except Exception as e:
                 logger.error(f"Error while waiting for current slideshow task to cancel: {e}")
-
-        # Clear the active slideshow
-        settings.set_active_slideshow_id(None)
 
 async def set_active_slideshow(slideshow_id):
     global current_slideshow_task
@@ -106,7 +121,6 @@ async def set_active_slideshow(slideshow_id):
         settings.set_active_slideshow_id(slideshow_id)
         current_slideshow_task = asyncio.create_task(start_slideshow(slideshow_id))
 
-
 async def restore_last_session():
 
     # Check for active slideshow
@@ -116,11 +130,8 @@ async def restore_last_session():
         await set_active_slideshow(active_slideshow_id)
         return
 
-
     # Check if there is an active widget
     active_widget_id = settings.get_active_widget_id()
     if active_widget_id is not None:
         logger.info("Restoring last active widget with id: " + str(active_widget_id))
         await set_active_widget(active_widget_id, settings.get_active_config_id())
-
-

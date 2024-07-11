@@ -10,6 +10,7 @@
 #include "../canvas-layer.cpp"
 #include "../drawables/drawable-text.cpp"
 #include "../drawables/drawable-shape.cpp"
+#include "../drawables/drawable-ppm.cpp"
 
 // Available games (add more as needed)
 enum class MatrixGameEnum {
@@ -68,8 +69,8 @@ public:
     virtual ~MatrixWidget() = default;
 
     /*
-     * Add drawables
-     */
+    * Add drawables shortcuts
+    */
     DrawableText *createText(){
         auto *drawable = new DrawableText();
         registerDrawable(drawable);
@@ -77,6 +78,12 @@ public:
     }
     DrawableRectangle *createRectangle(){
         auto *drawable = new DrawableRectangle();
+        registerDrawable(drawable);
+        return drawable;
+    }
+
+    DrawablePPM *createPPM(const char *filename){
+        auto *drawable = new DrawablePPM(filename);
         registerDrawable(drawable);
         return drawable;
     }

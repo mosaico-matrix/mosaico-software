@@ -2,62 +2,34 @@
 #define DYNAMIC_RUNNER_CPP
 
 #include "../matrix-widget.h"
+#include <utility>
 #include <variant>
 #include "../../../utils.cpp"
 #include "dynamic-widget-metadata.cpp"
 #include <pybind11/embed.h>
 #include <iostream>
+#include "../../drawables/drawable-ppm.cpp"
 
 namespace py = pybind11;
 
 class DynamicWidget : public MatrixWidget {
-
 public:
 
-    std::string widgetScriptString;
-    std::string configScriptString;
-    DynamicWidget(const string &widgetDirPath, const string &configDirPath) : MatrixWidget() {
+    DynamicWidget(std::string widgetDirPath, std::string configDirPath)
+            : MatrixWidget(),
+              widgetDirPath(std::move(widgetDirPath)),
+              configDirPath(std::move(configDirPath)),
+              validWidget(false){
 
-        // Default fps if something goes wrong
-        setFps(1);
+        setFps(1); // Default fps if something goes wrong
 
-        // Paths
-        std::string widgetMetadataPath = widgetDirPath + "/mosaico.json";
-        std::string widgetScriptPath = widgetDirPath + "/widget.py";
-        std::string configScriptPath = configDirPath + "/config.py";
-
-        // File contents
-        std::string metadataString;
-        Utils::readFile(widgetMetadataPath, metadataString);
-        Utils::readFile(widgetScriptPath, widgetScriptString);
-        if (!configDirPath.empty()) {
-            Utils::readFile(configScriptPath, configScriptString);
+        if (!initializePaths() || !readMetadata()) {
+            validWidget = false;
+            Logger::logError("Widget initialization failed");
+        } else {
+            validWidget = true;
+            Logger::logDebug("Widget loaded successfully");
         }
-
-        // Read script metadata
-        DynamicWidgetMetadata metadata;
-        try {
-            json j = json::parse(metadataString);
-            metadata = j.template get<DynamicWidgetMetadata>();
-        }
-        catch (const nlohmann::json::exception &e) {
-            Logger::logError("Error while parsing metadata: " + std::string(e.what()));
-            return;
-        }
-
-        Logger::logDebug("Parsed dynamic runner metadata: " + widgetMetadataPath);
-#ifdef DEBUG
-        metadata.dump();
-#endif
-
-        // Configure script based on metadata
-        setFps(metadata.fps);
-
-        // TODO: Set canvas size
-
-        // If we got here, the widget is valid
-        validWidget = true;
-        Logger::logDebug("Widget loaded successfully");
     }
 
     ~DynamicWidget() override {
@@ -65,56 +37,90 @@ public:
         Logger::logDebug("DynamicWidget destroyed");
     }
 
+    /// Returns the path to the widget asset
+    std::string widgetAssetPath(const std::string &assetName) {
+        return widgetDirPath + "/assets/" + assetName;
+    }
+
+    /// Returns the path to the config asset
+    std::string configAssetPath(const std::string &assetName) {
+        return configDirPath.empty() ? "" : configDirPath + "/assets/" + assetName;
+    }
+
+
 private:
-    bool validWidget = false;
+    std::string widgetScriptString;
+    std::string configScriptString;
+    std::string widgetDirPath;
+    std::string configDirPath;
+    std::string widgetMetadataString;
+    bool validWidget;
+
+    bool initializePaths() {
+        std::string widgetMetadataPath = widgetDirPath + "/mosaico.json";
+        std::string widgetScriptPath = widgetDirPath + "/widget.py";
+        std::string configScriptPath = configDirPath + "/config.py";
+
+        return Utils::readFile(widgetMetadataPath, widgetMetadataString) &&
+               Utils::readFile(widgetScriptPath, widgetScriptString) &&
+               (configDirPath.empty() || Utils::readFile(configScriptPath, configScriptString));
+    }
+
+    bool readMetadata() {
+        try {
+            json j = json::parse(widgetMetadataString);
+            DynamicWidgetMetadata metadata = j.get<DynamicWidgetMetadata>();
+            Logger::logDebug("Parsed dynamic runner metadata");
+#ifdef DEBUG
+            metadata.dump();
+#endif
+            setFps(metadata.fps);
+            // TODO: Set canvas size based on metadata
+            return true;
+        } catch (const nlohmann::json::exception &e) {
+            Logger::logError("Error while parsing metadata: " + std::string(e.what()));
+            return false;
+        }
+    }
+
+    bool scriptsInitialized = false;
+    void initializeScripts() {
+        try {
+            py::initialize_interpreter();
+            bindObjectsToPython();
+            py::exec(configScriptString);
+            py::exec(widgetScriptString);
+        } catch (const py::error_already_set &e) {
+            Logger::logError("Error while initializing scripts: " + std::string(e.what()));
+            validWidget = false;
+        }
+        scriptsInitialized = true;
+    }
 
     void bindObjectsToPython() {
-        // Get bound module
         py::module mosaico_module = py::module::import("mosaico");
-
-        // Pass this very object to the module
         py::object widget = py::cast(this);
         mosaico_module.attr("widget") = widget;
     }
 
-    // Loop
-    bool scriptInitialized = false;
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
 
-        // Initialize Python script
-        if(!scriptInitialized) {
-            Logger::logDebug("Initializing Python script");
-            py::initialize_interpreter();
-            bindObjectsToPython();
-            try {
-                //Logger::logDebug(configScriptString);
-                py::exec(configScriptString);
-                py::exec(widgetScriptString);
-            } catch (const py::error_already_set &e) {
-                Logger::logError("Error while evaluating script: " + std::string(e.what()));
-                validWidget = false;
-                return;
-            }
-            scriptInitialized = true;
+        if (!scriptsInitialized) {
+            initializeScripts();
         }
 
-
-        // If script is invalid don't try to render
         if (!validWidget) {
             canvas->Fill(RED_COLOR);
             return;
         }
 
-
-        // Execute Python loop code
         try {
             py::exec("loop()");
         } catch (const py::error_already_set &e) {
-            Logger::logError("Error while evaluating loop function: " + std::string(e.what()));
+            Logger::logError("Error while executing loop function: " + std::string(e.what()));
             validWidget = false;
-            return;
+            canvas->Fill(RED_COLOR);
         }
-
     }
 };
 

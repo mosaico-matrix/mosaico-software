@@ -153,10 +153,8 @@ class ActiveWidget(resource.Resource):
         """
         logger.info("Received DELETE request to active_widget")
 
-        # Unload the widget
-        settings.set_active_widget_id(None)
-        settings.set_active_config_id(None)
-        call_matrix("UNLOAD_WIDGET", {})
+        # Unload everything
+        await slideshow_manager.clear_matrix()
 
         return success_response(None, "Widget stopped")
 
