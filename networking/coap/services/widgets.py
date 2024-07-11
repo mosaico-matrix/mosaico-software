@@ -44,7 +44,7 @@ class InstalledWidgets(coap.dynamic_resource.DynamicResource):
         else:
             logger.warning(f"Widget path: {widget_path} does not exist, skipping")
 
-        return success_response(None, "Widget deleted successfully")
+        return success_response(None)
 
     async def render_get(self, request, args):
         """
