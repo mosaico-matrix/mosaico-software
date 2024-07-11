@@ -8,9 +8,10 @@
 #include "dynamic-widget-metadata.cpp"
 #include <pybind11/embed.h>
 #include <iostream>
-#include "../../drawables/drawable-ppm.cpp"
+#include "../../../external/pybind/include/pybind11_json.hpp"
 
 namespace py = pybind11;
+using namespace pybind11::literals;
 
 class DynamicWidget : public MatrixWidget {
 public:
@@ -50,7 +51,7 @@ public:
 
 private:
     std::string widgetScriptString;
-    std::string configScriptString;
+    std::string configDataString;
     std::string widgetDirPath;
     std::string configDirPath;
     std::string widgetMetadataString;
@@ -59,11 +60,11 @@ private:
     bool initializePaths() {
         std::string widgetMetadataPath = widgetDirPath + "/mosaico.json";
         std::string widgetScriptPath = widgetDirPath + "/widget.py";
-        std::string configScriptPath = configDirPath + "/config.py";
+        std::string configScriptPath = configDirPath + "/config.json";
 
         return Utils::readFile(widgetMetadataPath, widgetMetadataString) &&
                Utils::readFile(widgetScriptPath, widgetScriptString) &&
-               (configDirPath.empty() || Utils::readFile(configScriptPath, configScriptString));
+               (configDirPath.empty() || Utils::readFile(configScriptPath, configDataString));
     }
 
     bool readMetadata() {
@@ -88,7 +89,6 @@ private:
         try {
             py::initialize_interpreter();
             bindObjectsToPython();
-            py::exec(configScriptString);
             py::exec(widgetScriptString);
         } catch (const py::error_already_set &e) {
             Logger::logError("Error while initializing scripts: " + std::string(e.what()));
@@ -98,9 +98,18 @@ private:
     }
 
     void bindObjectsToPython() {
+        // Take the main module
         py::module mosaico_module = py::module::import("mosaico");
+
+        // Pass this very object to the python script
         py::object widget = py::cast(this);
         mosaico_module.attr("widget") = widget;
+
+        // Pass the config object if it exists
+        if (!configDataString.empty()) {
+            py::dict config = nlohmann::json::parse(configDataString);
+            mosaico_module.attr("config") = config;
+        }
     }
 
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
