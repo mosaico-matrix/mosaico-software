@@ -38,3 +38,11 @@ def delete_widget_configuration(id: int) -> None:
     ''', (id,))
     conn.commit()
 
+
+def rename_widget_configuration(id: int, name: str) -> None:
+    c = conn.cursor()
+    c.execute('''
+    UPDATE widget_configurations SET name = ? WHERE id = ?
+    ''', (name, id))
+    conn.commit()
+

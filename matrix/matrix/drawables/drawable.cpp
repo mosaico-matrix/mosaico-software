@@ -36,6 +36,13 @@ void Drawable::setColor(Color color) {
 this->color = color;
 }
 
+void Drawable::setHexColor(std::string hexColor) {
+    // Convert hex to individual RGB values
+    int r, g, b;
+    sscanf(hexColor.c_str(), "#%02x%02x%02x", &r, &g, &b);
+    this->color = Color(r, g, b);
+}
+
 void Drawable::animateTo(int x, int y, unsigned int animationDurationMs) {
     // Set the target position and animation flag
     targetX = x;

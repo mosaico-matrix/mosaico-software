@@ -60,6 +60,7 @@ public:
     void translateY(int y);
 
     void setColor(Color color);
+    void setHexColor(std::string hexColor);
     void animateTo(int x, int y, unsigned int animationDurationMs);
     void hide();
     void show();

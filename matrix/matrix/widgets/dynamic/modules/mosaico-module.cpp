@@ -26,6 +26,7 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     .def("translateX", &Drawable::translateX)
     .def("translateY", &Drawable::translateY)
     .def("setColor", &Drawable::setColor)
+    .def("setHexColor", &Drawable::setHexColor)
     .def("animateTo", &Drawable::animateTo)
     .def("hide", &Drawable::hide)
     .def("show", &Drawable::show)

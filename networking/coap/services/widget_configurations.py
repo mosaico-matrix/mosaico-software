@@ -48,12 +48,17 @@ class WidgetConfigurations(coap.dynamic_resource.DynamicResource):
             return success_response(config)
 
         elif 'configuration_id' in args:
+
             # Handle the updating of an existing configuration
             configuration_id = args['configuration_id']
 
             configuration = get_widget_configuration(configuration_id)
             if not configuration:
                 return error_response("Configuration not found in the database")
+
+            # Update config name
+            rename_widget_configuration(configuration_id, config_name)
+            configuration["name"] = config_name
 
             widget, error = get_widget(configuration["widget_id"])
             if error:
