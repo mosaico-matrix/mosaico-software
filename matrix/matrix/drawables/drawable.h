@@ -39,7 +39,7 @@ protected:
 public:
 
     struct Pixel {
-        Pixel() : red(0), green(0), blue(0) {}
+        Pixel(int r=0,int g=0, int b=0) : red(r), green(g), blue(b) {}
 
         uint8_t red;
         uint8_t green;

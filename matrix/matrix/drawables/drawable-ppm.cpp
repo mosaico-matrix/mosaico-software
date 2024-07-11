@@ -2,104 +2,119 @@
 #define DRAWABLE_PPM_CPP
 
 #include "drawable.h"
-#include <unistd.h>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <memory>
+#include <stdexcept>
 
 class DrawablePPM : public Drawable {
-
 private:
-
     struct Image {
-        Image() : width(-1), height(-1), image(nullptr) {}
-
-        ~Image() { Delete(); }
-
-        void Delete() {
-            delete[] image;
-            Reset();
-        }
-
-        void Reset() {
-            image = nullptr;
-            width = -1;
-            height = -1;
-        }
-
-        [[nodiscard]] inline bool IsValid() const { return image && height > 0 && width > 0; }
-
-        [[nodiscard]] const Pixel &getPixel(int x, int y) const {
-            static Pixel black;
-            if (x < 0 || x >= width || y < 0 || y >= height) return black;
-            return image[x + width * y];
-        }
-
         int width;
         int height;
-        Pixel *image;
+        std::unique_ptr<Pixel[]> pixels;
+
+        Image() : width(-1), height(-1) {}
+
+        void reset(int w, int h) {
+            width = w;
+            height = h;
+            pixels = std::make_unique<Pixel[]>(w * h);
+        }
+
+        bool isValid() const {
+            return pixels != nullptr && width > 0 && height > 0;
+        }
+
+        const Pixel &getPixel(int x, int y) const {
+            static Pixel black;
+            if (x < 0 || x >= width || y < 0 || y >= height) return black;
+            return pixels[x + width * y];
+        }
     };
 
     Image image;
 
-    // Read line, skip comments from file
-    static char *ReadLine(FILE *f, char *buffer, size_t len) {
-        char *result;
-        do {
-            result = fgets(buffer, len, f);
-        } while (result != NULL && result[0] == '#');
-        return result;
+    static std::vector<std::string> split(const std::string &str, char delimiter) {
+        std::vector<std::string> tokens;
+        std::stringstream ss(str);
+        std::string token;
+        while (std::getline(ss, token, delimiter)) {
+            tokens.push_back(token);
+        }
+        return tokens;
+    }
+
+    void loadP6(std::ifstream &file) {
+        std::string line;
+        std::getline(file, line);
+        if (line != "P6") throw std::runtime_error("Can only handle P6 as PPM type.");
+
+        while (std::getline(file, line) && line[0] == '#');  // Skip comments
+        auto dims = split(line, ' ');
+        if (dims.size() != 2) throw std::runtime_error("Width/height expected");
+        int new_width = std::stoi(dims[0]);
+        int new_height = std::stoi(dims[1]);
+
+        while (std::getline(file, line) && line[0] == '#');  // Skip comments
+        if (std::stoi(line) != 255) throw std::runtime_error("Only 255 for maxval allowed.");
+
+        size_t pixel_count = new_width * new_height;
+        image.reset(new_width, new_height);
+        file.read(reinterpret_cast<char*>(image.pixels.get()), pixel_count * sizeof(Pixel));
+        if (!file) throw std::runtime_error("Not enough pixels read.");
+    }
+
+    void loadP3(std::ifstream &file) {
+        std::string line;
+        std::getline(file, line);
+        if (line != "P3") throw std::runtime_error("Can only handle P3 as PPM type.");
+
+        while (std::getline(file, line) && line[0] == '#');  // Skip comments
+        auto dims = split(line, ' ');
+        if (dims.size() != 2) throw std::runtime_error("Width/height expected");
+        int new_width = std::stoi(dims[0]);
+        int new_height = std::stoi(dims[1]);
+
+        while (std::getline(file, line) && line[0] == '#');  // Skip comments
+        if (std::stoi(line) != 255) throw std::runtime_error("Only 255 for maxval allowed.");
+
+        size_t pixel_count = new_width * new_height;
+        image.reset(new_width, new_height);
+
+        for (size_t i = 0; i < pixel_count; ++i) {
+            int r, g, b;
+            file >> r >> g >> b;
+            image.pixels[i] = Pixel(r, g, b);
+        }
     }
 
 public:
     explicit DrawablePPM(const char *filename) {
-
-        FILE *f = fopen(filename, "r");
-
-        // check if file exists
-        if (f == nullptr && access(filename, F_OK) == -1) {
-            fprintf(stderr, "File \"%s\" doesn't exist\n", filename);
-            return;
+        std::ifstream file(filename, std::ios::binary);
+        if (!file) {
+            throw std::runtime_error(std::string("File \"") + filename + "\" doesn't exist");
         }
 
-        if (f == nullptr) return;
-
-        char header_buf[256];
-        const char *line = ReadLine(f, header_buf, sizeof(header_buf));
-
-#define EXIT_WITH_MSG(m) { fprintf(stderr, "%s: %s |%s", filename, m, line); fclose(f); return; }
-
-        if (sscanf(line, "P6 ") == EOF) EXIT_WITH_MSG("Can only handle P6 as PPM type.");
-
-        line = ReadLine(f, header_buf, sizeof(header_buf));
-        int new_width, new_height;
-        if (!line || sscanf(line, "%d %d ", &new_width, &new_height) != 2) EXIT_WITH_MSG("Width/height expected");
-
-        int value;
-        line = ReadLine(f, header_buf, sizeof(header_buf));
-        if (!line || sscanf(line, "%d ", &value) != 1 || value != 255) EXIT_WITH_MSG("Only 255 for maxval allowed.");
-
-        const size_t pixel_count = new_width * new_height;
-        Pixel *new_image = new Pixel[pixel_count];
-
-        if (fread(new_image, sizeof(Pixel), pixel_count, f) != pixel_count) {
-            line = "";
-            EXIT_WITH_MSG("Not enough pixels read.");
+        std::string header;
+        std::getline(file, header);
+        file.seekg(0);
+        if (header == "P6") {
+            loadP6(file);
+        } else if (header == "P3") {
+            loadP3(file);
+        } else {
+            throw std::runtime_error("Unsupported PPM format");
         }
-
-#undef EXIT_WITH_MSG
-
-
-        fclose(f);
-        image.Delete();  // in case we reload faster than is picked up
-        image.image = new_image;
-        image.width = new_width;
-        image.height = new_height;
     }
 
     void _draw(Canvas *canvas) override {
-        // Actually draw the image
+        if (!image.isValid()) return;
+
         for (int x = 0; x < canvas->width(); ++x) {
             for (int y = 0; y < canvas->height(); ++y) {
-                const Pixel &p = image.getPixel(
-                        (x) % image.width, y);
+                const Pixel &p = image.getPixel(x % image.width, y % image.height);
                 canvas->SetPixel(x, y, p.red, p.green, p.blue);
             }
         }
