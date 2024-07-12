@@ -102,18 +102,20 @@ class InstalledWidgets(coap.dynamic_resource.DynamicResource):
 
         # Check if already installed
         conflict_widget = local_widgets.get_widget_by_store_id(widget_store_id)
-
         if conflict_widget:
             logger.warning(f"Widget with id: {widget_store_id} is already installed, enabling")
 
             # Re-enable the widget (this was previously uninstalled)
             local_widgets.enable_widget(conflict_widget["id"])
+            return success_response(conflict_widget)
         else:
 
             # Save the widget to the db
             local_widgets.add_widget(widget["id"], widget["name"], widget["user"]["username"], metadata)
 
-        return success_response(None)
+            # Retrieve the widget from the database
+            widget = local_widgets.get_widget_by_store_id(widget_store_id)
+            return success_response(widget)
 
 
 class ActiveWidget(resource.Resource):
