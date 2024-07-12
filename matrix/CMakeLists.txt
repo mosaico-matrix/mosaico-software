@@ -130,10 +130,11 @@ set(SOURCES
         matrix/canvas-layer.cpp
         matrix/canvas-buffer.cpp
 
-        # Runners
+        # Widgets
         matrix/widgets/matrix-widget.h
         matrix/widgets/matrix-widget.cpp
         matrix/widgets/loading-widget.cpp
+        matrix/widgets/test-widget.cpp
 
         matrix/widgets/dynamic/dynamic-widget.cpp
         matrix/widgets/dynamic/dynamic-widget-metadata.cpp

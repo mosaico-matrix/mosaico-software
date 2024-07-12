@@ -8,6 +8,7 @@
 #include <cmath>
 #include "colors.cpp"
 #include <string>
+#include "../canvas-layer.cpp"
 
 using namespace std;
 using namespace rgb_matrix;
@@ -15,6 +16,7 @@ class MatrixWidget;
 
 class Drawable {
 protected:
+
     // Positioning
     int xPosition = 0, yPosition = 0;               // Where the shape is at the moment
     float xPositionFloat = 0, yPositionFloat = 0;   // Where the shape is at the moment (including half pixels)
@@ -68,7 +70,7 @@ public:
     bool isAnimating();
     int getX();
     int getY();
-    void draw(Canvas *canvas);
+    void draw(CanvasLayer *canvas);
 };
 
 

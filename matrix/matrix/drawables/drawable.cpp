@@ -96,7 +96,7 @@ int Drawable::getY() {
     return this->yPosition;
 }
 
-void Drawable::draw(Canvas *canvas) {
+void Drawable::draw(CanvasLayer *canvas) {
 
     if (canvas == nullptr) {
         Logger::logFatal("Trying to draw a drawable without a canvas");
@@ -123,5 +123,13 @@ void Drawable::draw(Canvas *canvas) {
             yPosition = targetY;
         }
     }
+
+
+    // Rotate each pixel in this canvas->pixels
+    for (CanvasLayer::Pixel &pixel : canvas->pixels) {
+        // Draw the pixel on the canvas
+        canvas->setPixel(xPosition,yPosition,pixel.red,pixel.green,pixel.blue,true);
+    }
+
     _draw(canvas);
 }

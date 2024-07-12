@@ -74,14 +74,15 @@ void initStuffBackground() {
 
     // Set the new widget
     newWidgetReceived = new WidgetRenderer(matrix);
-    newWidgetReceived->setLoading();
+    //newWidgetReceived->setLoading();
+    newWidgetReceived->setTestWidget();
 
     // Start python server
-    pythonSocket = new PythonSocket();
-    while (true) {
-        auto command = pythonSocket->waitNextCommand();
-        commandHandler(command.first, command.second);
-    }
+//    pythonSocket = new PythonSocket();
+//    while (true) {
+//        auto command = pythonSocket->waitNextCommand();
+//        commandHandler(command.first, command.second);
+//    }
 }
 
 

@@ -2,7 +2,6 @@
 #include <memory>
 #include "matrix-widget.h"
 
-
 MatrixWidget::MatrixWidget() {
     Logger::logDebug("Matrix widget created");
 }
@@ -29,10 +28,19 @@ CanvasLayer* MatrixWidget::renderCanvasLayer() {
         firstRender = false;
     }
 
+    // Clear the last rendered frame to start painting again
     lastRenderedFrame->Clear();
+
+    // Create a new canvas just for the drawable
+    auto drawableCanvas = new CanvasLayer(runnerPosition);
+    // Render all the drawables
     for (Drawable* drawable : registeredDrawables) {
-        drawable->draw(lastRenderedFrame);
+
+
+        // Draw the drawable on his canvas
+        drawable->draw(drawableCanvas);
     }
+    drawableCanvas->paintOntoCanvas(lastRenderedFrame);
 
     renderNextCanvasLayer(lastRenderedFrame);
     incrementFrameIndex();

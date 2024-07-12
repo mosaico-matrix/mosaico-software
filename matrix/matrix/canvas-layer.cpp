@@ -42,7 +42,6 @@ private:
     int _height;                    // The height of the layer, this can be smaller due to padding
     int originalWidth;              // The width of the layer without padding
     int originalHeight;             // The height of the layer without padding
-    std::list<Pixel> pixels;        // The pixels to be painted on the final canvas
     Point positionInMatrix;         // The start point of the layer in relation to the matrix
     bool bordered = false;          // If the layer should have a border
     Color borderColor = Color(255, 255, 255); // The color of the border

@@ -12,7 +12,7 @@
 #include "canvas-layer.cpp"
 #include "../networking/client/models.cpp"
 #include "widgets/dynamic/dynamic-widget.cpp"
-
+#include "widgets/test-widget.cpp"
 using namespace rgb_matrix;
 
 #define CANVAS_BUFFER_SIZE 2
@@ -103,6 +103,11 @@ public:
 
     }
 
+    void setTestWidget()
+    {
+        framesUntilNextRefresh.push_back(0);
+        currentWidgetsGroup = {new TestWidget()};
+    }
 
     void setLoading() {
         framesUntilNextRefresh.push_back(0);
