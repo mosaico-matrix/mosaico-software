@@ -105,17 +105,6 @@ set(RGB_LIBRARY "${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/lib/librgbmat
 include_directories(${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/lib)
 include_directories(${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/include)
 
-# RestClient library
-set(RESTCLIENT_SOURCES
-        external/restclient/source/connection.cc
-        external/restclient/source/restclient.cc
-        external/restclient/source/helpers.cc
-)
-
-# Add restclient library
-add_library(restclient STATIC ${RESTCLIENT_SOURCES})
-target_include_directories(restclient PUBLIC ${PROJECT_SOURCE_DIR}/external/restclient/include)
-
 # Source files
 set(SOURCES
         main.cpp
@@ -159,7 +148,6 @@ set(SOURCES
         #networking/server/database.cpp
 
         ${MATRIX_DEVICE}
-        ${RESTCLIENT_SOURCES}
         utils.cpp
 )
 
@@ -174,7 +162,7 @@ target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/external/rpi-rgb-l
 
 # Link libraries
 if (COMPILE_MODE STREQUAL "simulation")
-    target_link_libraries(main PRIVATE ${RGB_LIBRARY} restclient rt m pthread ${CURL_LIBRARIES} ${X11_LIBRARIES} -lX11 -ldl -fuse-ld=gold) # ${LUA_LIBRARIES}
+    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread ${CURL_LIBRARIES} ${X11_LIBRARIES} -lX11 -ldl -fuse-ld=gold)
 else ()
-    target_link_libraries(main PRIVATE ${RGB_LIBRARY} restclient rt m pthread ${CURL_LIBRARY} -ldl)
+    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread ${CURL_LIBRARY} -ldl)
 endif ()
