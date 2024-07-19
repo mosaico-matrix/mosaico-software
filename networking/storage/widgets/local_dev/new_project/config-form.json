@@ -1,0 +1,21 @@
+{
+"form": {
+"title": "Widget Configuration",
+"description": "Configure your widget here",
+  "fields": [
+    {
+      "name": {
+        "type": "image",
+        "label": "Name",
+        "dimensions" : {
+              "width":50,
+               "height":20              
+          },
+        "required": true,
+        "placeholder": "Enter some text here :)"
+      }
+    }
+  ]
+}
+}
+        

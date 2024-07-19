@@ -9,6 +9,14 @@ def add_widget(store_id, name: str, author: str, metadata: str):
     conn.commit()
 
 
+def update_widget_metadata(widget_id: int, metadata: str):
+    c = conn.cursor()
+    c.execute('''
+    UPDATE widgets SET metadata = ? WHERE id = ?
+    ''', (metadata, widget_id))
+    conn.commit()
+
+
 def get_installed_widgets():
     c = conn.cursor()
     c.execute('''

@@ -25,7 +25,7 @@ public:
 //    }
 
     static std::string getFontsPath() {
-        return Configs::getProjectRoot() + "external/rpi-rgb-led-matrix/fonts/";
+        return Configs::getProjectRoot() + "matrix/drawables/fonts/";
     }
 
     static std::string getFontPath(const std::string &fontName) {

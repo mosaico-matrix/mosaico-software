@@ -82,8 +82,8 @@ public:
         return drawable;
     }
 
-    DrawablePPM *createPPM(const char *filename){
-        auto *drawable = new DrawablePPM(filename);
+    DrawablePPM *createPPM(){
+        auto *drawable = new DrawablePPM();
         registerDrawable(drawable);
         return drawable;
     }

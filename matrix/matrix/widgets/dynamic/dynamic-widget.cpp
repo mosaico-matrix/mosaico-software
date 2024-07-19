@@ -9,7 +9,7 @@
 #include <pybind11/embed.h>
 #include <iostream>
 #include "../../../external/pybind/include/pybind11_json.hpp"
-
+#include "modules/colors-module.cpp"
 namespace py = pybind11;
 using namespace pybind11::literals;
 
@@ -98,12 +98,16 @@ private:
     }
 
     void bindObjectsToPython() {
+
         // Take the main module
         py::module mosaico_module = py::module::import("mosaico");
 
         // Pass this very object to the python script
         py::object widget = py::cast(this);
         mosaico_module.attr("widget") = widget;
+
+        // Register other modules
+        ColorsModule::load(&mosaico_module);
 
         // Pass the config object if it exists
         if (!configDataString.empty()) {

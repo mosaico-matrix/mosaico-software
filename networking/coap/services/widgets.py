@@ -107,6 +107,10 @@ class InstalledWidgets(coap.dynamic_resource.DynamicResource):
 
             # Re-enable the widget (this was previously uninstalled)
             local_widgets.enable_widget(conflict_widget["id"])
+
+            # Update the metadata
+            local_widgets.update_widget_metadata(conflict_widget["id"], metadata)
+            
             return success_response(conflict_widget)
         else:
 

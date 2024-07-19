@@ -1,5 +1,4 @@
-#ifndef DRAWABLE_H
-#define DRAWABLE_H
+#pragma once
 
 #include "../../external/rpi-rgb-led-matrix/include/graphics.h"
 #include "../../logger/logger.h"
@@ -9,37 +8,34 @@
 #include "colors.cpp"
 #include <string>
 
-using namespace std;
-using namespace rgb_matrix;
-class MatrixWidget;
-
+// Class representing a drawable object on the matrix
 class Drawable {
 protected:
     // Positioning
-    int xPosition = 0, yPosition = 0;               // Where the shape is at the moment
-    float xPositionFloat = 0, yPositionFloat = 0;   // Where the shape is at the moment (including half pixels)
+    int xPosition = 0, yPosition = 0;               // Current position
+    float xPositionFloat = 0, yPositionFloat = 0;   // Current position with subpixel precision
 
-    // The current color of the drawable
-    Color color = WHITE_COLOR;
+    // Color of the drawable
+    rgb_matrix::Color color = WHITE_COLOR;
 
-    // Whether the drawable is visible or not
+    // Visibility state
     bool visible = true;
 
-    // Animation stuff
-    int targetX = 0, targetY = 0;                                   // Where the shape is animating to
-    float stepX = 0, stepY = 0;                                     // How much to move in each frame
-    Color targetColor = WHITE_COLOR;
-    bool colorAnimating = false;                                    // The color we are animating to
-    bool animating = false;                                         // If the drawable is animating
+    // Animation parameters
+    int targetX = 0, targetY = 0;                                   // Target position for animation
+    float stepX = 0, stepY = 0;                                     // Steps for each frame of animation
+    rgb_matrix::Color targetColor = WHITE_COLOR;
+    bool colorAnimating = false;                                    // If color is being animated
+    bool animating = false;                                         // If position is being animated
     unsigned int frameDurationMs;                                   // Duration of each frame in milliseconds
-    unsigned int currentAnimationFramesLeft = 0;                    // How many frames are left in the current animation
+    unsigned int currentAnimationFramesLeft = 0;                    // Frames left in the current animation
 
-    virtual void _draw(Canvas *canvas) = 0;
+    // Abstract method to draw the drawable on the canvas, this must be implemented by subclasses
+    virtual void _draw(rgb_matrix::Canvas *canvas) = 0;
 
 public:
-
     struct Pixel {
-        Pixel(int r=0,int g=0, int b=0) : red(r), green(g), blue(b) {}
+        Pixel(int r = 0, int g = 0, int b = 0) : red(r), green(g), blue(b) {}
 
         uint8_t red;
         uint8_t green;
@@ -49,27 +45,48 @@ public:
     Drawable();
     virtual ~Drawable();
 
+    // Set the duration of each animation frame
     void setFrameDuration(unsigned int frameDurationMs);
 
     // Directly set the position of the drawable
     void moveTo(int x, int y);
 
-    // Offset the position of the drawable
-    void translate(int x, int y);
-    void translateX(int x);
-    void translateY(int y);
+    // Offset the position of the drawable by dx and dy
+    void translateBy(int dx, int dy);
 
-    void setColor(Color color);
+    // Offset the position of the drawable by dx
+    void translateXBy(int dx);
+
+    // Offset the position of the drawable by dy
+    void translateYBy(int dy);
+
+    // Set the color of the drawable
+    void setColor(rgb_matrix::Color color);
+
+    // Set the color of the drawable using hex color
     void setHexColor(std::string hexColor);
+
+    // Animate the drawable to a new position over a specified duration
     void animateTo(int x, int y, unsigned int animationDurationMs);
+
+    // Hide the drawable from the canvas
     void hide();
+
+    // Show the drawable on the canvas
     void show();
-    bool isVisible();
-    bool isAnimating();
-    int getX();
-    int getY();
-    void draw(Canvas *canvas);
+
+    // Check if the drawable is visible
+    bool isVisible() const;
+
+    // Check if the drawable is animating
+    bool isAnimating() const;
+
+    // Get the current X position of the drawable
+    int getX() const;
+
+    // Get the current Y position of the drawable
+    int getY() const;
+
+    // Draw the drawable on the canvas
+    void draw(rgb_matrix::Canvas *canvas);
 };
-
-
-#endif // DRAWABLE_H

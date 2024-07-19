@@ -119,18 +119,16 @@ set(SOURCES
         matrix/canvas-layer.cpp
         matrix/canvas-buffer.cpp
 
-        # Runners
+        # Widgets
         matrix/widgets/matrix-widget.h
         matrix/widgets/matrix-widget.cpp
         matrix/widgets/loading-widget.cpp
 
+        # Dynamic widgets
         matrix/widgets/dynamic/dynamic-widget.cpp
         matrix/widgets/dynamic/dynamic-widget-metadata.cpp
         matrix/widgets/dynamic/modules/mosaico-module.cpp
-
-        matrix/widgets/games/pixel-mover.cpp
-        matrix/widgets/games/flappy-bird.cpp
-        matrix/widgets/games/tetris.cpp
+        matrix/widgets/dynamic/modules/colors-module.cpp
 
         # Drawables
         matrix/drawables/drawable.h

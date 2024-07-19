@@ -7,7 +7,7 @@
 #include <vector>
 #include <memory>
 #include <stdexcept>
-
+#include "../../configs.cpp"
 class DrawablePPM : public Drawable {
 private:
     struct Image {
@@ -35,7 +35,6 @@ private:
     };
 
     Image image;
-
     static std::vector<std::string> split(const std::string &str, char delimiter) {
         std::vector<std::string> tokens;
         std::stringstream ss(str);
@@ -91,12 +90,15 @@ private:
     }
 
 public:
-    explicit DrawablePPM(const char *filename) {
+    explicit DrawablePPM() {}
+
+    void setImage(const char *filename) {
         std::ifstream file(filename, std::ios::binary);
         if (!file) {
             throw std::runtime_error(std::string("File \"") + filename + "\" doesn't exist");
         }
 
+        // Load PPM file
         std::string header;
         std::getline(file, header);
         file.seekg(0);
@@ -110,15 +112,19 @@ public:
     }
 
     void _draw(Canvas *canvas) override {
-        if (!image.isValid()) return;
+        if (!image.isValid()) {
+            // Load default image
+            setImage(Configs::getImagePath("heart.ppm").c_str());
+        }
 
-        for (int x = 0; x < canvas->width(); ++x) {
-            for (int y = 0; y < canvas->height(); ++y) {
-                const Pixel &p = image.getPixel(x % image.width, y % image.height);
-                canvas->SetPixel(x, y, p.red, p.green, p.blue);
+        for (int x = 0; x < image.width; ++x) {
+            for (int y = 0; y < image.height; ++y) {
+                const Pixel &p = image.getPixel(x, y);
+                canvas->SetPixel(x + xPosition, y + yPosition, p.red, p.green, p.blue);
             }
         }
     }
+
 };
 
 #endif

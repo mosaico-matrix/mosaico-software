@@ -18,13 +18,9 @@ enum TextScrollingSpeed {
 class DrawableText : public Drawable {
 
 public:
-    static std::map<int, rgb_matrix::Font *> fonts; // Preloaded fonts
+    static std::map<std::string, rgb_matrix::Font *> fonts; // Preloaded fonts
 
     DrawableText() : Drawable() {
-
-        // Load fonts if not already loaded
-        //DrawableText::loadFonts();
-
         if (DrawableText::fonts.empty())
         {
             Logger::logFatal("Fonts not loaded, please load fonts before creating a DrawableText object");
@@ -35,8 +31,8 @@ public:
         this->text = text;
     }
 
-    void setFontHeight(int fontHeight) {
-        this->fontHeight = fontHeight;
+    void setFont(std::string font) {
+        this->fontName = font;
     }
 
     void setScrollingSpeed(TextScrollingSpeed scrollingSpeed) {
@@ -46,50 +42,60 @@ public:
     static void loadFonts() {
 
         if (!DrawableText::fonts.empty()) return;
-        std::vector<std::string> fontFilenames = {
-                "4x6.bdf",
-                "5x7.bdf",
-                "5x8.bdf",
-                "6x9.bdf",
-                "6x10.bdf",
-                "6x12.bdf",
-                "6x13.bdf",
-                //"7x13.bdf",
-                "7x14.bdf",
-                //"8x13.bdf",
-                "9x15.bdf",
-                "9x18.bdf",
-                "10x20.bdf"
+        std::vector<std::string> fontNames = {
+                "4x6",
+                "5x7",
+                "5x8",
+                "6x9",
+                "6x10",
+                "6x12",
+                "6x13",
+                "7x13",
+                "7x14",
+                "8x13",
+                "9x15",
+                "9x18",
+                "10x20",
+                "clR6x12",
+                "7x14B",
+                "9x15B",
+                "texgyre-27",
+                "8x13O",
+                "7x13B",
+                "9x18B",
+                "6x13O",
+                "tom-thumb",
+                "helvR12",
+                "6x13B",
+                "7x13O",
+                "8x13B"
         };
 
-        for (const auto &filename: fontFilenames) {
-
-            // Extract font height from filename (e.g. 4x6.bdf -> 6)
-            int fontHeight = std::stoi(filename.substr(filename.find("x") + 1, filename.find(".bdf")));
+        for (const auto &fontName: fontNames) {
 
             // Load font
             auto *font = new rgb_matrix::Font();
-            std::string fontPath = Configs::getFontPath(filename);
+            std::string fontPath = Configs::getFontPath(fontName + ".bdf");
             Logger::logDebug("Loading font: " + fontPath);
             if (!font->LoadFont(fontPath.c_str())) {
-                Logger::logFatal("Error loading font: " + filename);
+                Logger::logFatal("Error loading font: " + fontName);
             }
-            DrawableText::fonts[fontHeight] = font;
+            DrawableText::fonts[fontName] = font;
         }
     }
 
 private:
     std::string text = "Lorem ipsum";
-    int fontHeight = 6;
+    std::string fontName = "5x7";
     TextScrollingSpeed scrollingSpeed = MEDIUM;
 
     void _draw(Canvas *canvas) override {
 
         // Get font
-        rgb_matrix::Font *font = DrawableText::fonts[fontHeight];
+        rgb_matrix::Font *font = DrawableText::fonts[fontName];
         if (font == nullptr) {
-            Logger::logError("Font height " + std::to_string(fontHeight) + " not found, falling back to default font");
-            font = DrawableText::fonts[6];
+            Logger::logError("Font height " + fontName + " not found, falling back to default font");
+            font = DrawableText::fonts["5x7"];
         }
 
         // Draw text and get text length in pixels

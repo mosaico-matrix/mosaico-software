@@ -49,7 +49,7 @@ async def run(loop):
     trigger.clear()
 
     # Configure GATT server
-    if mode != "web":
+    if mode == "default":
         gatt_server = BlessServer(name="Mosaico", loop=loop)
         gatt_server.read_request_func = ble_read_request
         gatt_server.write_request_func = ble_write_request
@@ -85,8 +85,9 @@ async def run(loop):
     else:
         await trigger.wait()
     await asyncio.sleep(5)
+
     if mode == "default":
-        await gatt_server.stop()
+       await gatt_server.stop()
     await coap_context.shutdown()
 
 # Init database

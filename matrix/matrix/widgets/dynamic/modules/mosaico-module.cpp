@@ -22,9 +22,9 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     // Bind the Drawable class
     py::class_<Drawable>(m, "Drawable")
     .def("moveTo", &Drawable::moveTo)
-    .def("translate", &Drawable::translate)
-    .def("translateX", &Drawable::translateX)
-    .def("translateY", &Drawable::translateY)
+    .def("translateBy", &Drawable::translateBy)
+    .def("translateXBy", &Drawable::translateXBy)
+    .def("translateYBy", &Drawable::translateYBy)
     .def("setColor", &Drawable::setColor)
     .def("setHexColor", &Drawable::setHexColor)
     .def("animateTo", &Drawable::animateTo)
@@ -48,12 +48,17 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     // Bind the DrawableText class
     py::class_<DrawableText, Drawable>(m, "DrawableText")
     .def("setText", &DrawableText::setText)
-    .def("setFontHeight", &DrawableText::setFontHeight)
-    .def("setScrollingSpeed", &DrawableText::setScrollingSpeed)
-    .def("loadFonts", &DrawableText::loadFonts);
+    .def("setFont", &DrawableText::setFont)
+    .def("setScrollingSpeed", &DrawableText::setScrollingSpeed);
 
     // Bind the DrawablePPM class
-    py::class_<DrawablePPM, Drawable>(m, "DrawablePPM");
+    py::class_<DrawablePPM, Drawable>(m, "DrawablePPM")
+    .def("setImage", &DrawablePPM::setImage);
+
+    // Bind color class
+    py::class_<Color>(m, "Color")
+    .def(py::init<int, int, int>());
+
 
 }
 

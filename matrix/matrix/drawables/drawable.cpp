@@ -17,19 +17,19 @@ void Drawable::moveTo(int x, int y) {
     this->yPositionFloat = y;
 }
 
-void Drawable::translateX(int x) {
+void Drawable::translateXBy(int x) {
     this->xPosition += x;
     this->xPositionFloat += x;
 }
 
-void Drawable::translateY(int y) {
+void Drawable::translateYBy(int y) {
     this->yPosition += y;
     this->yPositionFloat += y;
 }
 
-void Drawable::translate(int x, int y) {
-    translateX(x);
-    translateY(y);
+void Drawable::translateBy(int x, int y) {
+    translateXBy(x);
+    translateYBy(y);
 }
 
 void Drawable::setColor(Color color) {
@@ -44,6 +44,7 @@ void Drawable::setHexColor(std::string hexColor) {
 }
 
 void Drawable::animateTo(int x, int y, unsigned int animationDurationMs) {
+
     // Set the target position and animation flag
     targetX = x;
     targetY = y;
@@ -80,19 +81,19 @@ void Drawable::show() {
     this->visible = true;
 }
 
-bool Drawable::isVisible() {
+bool Drawable::isVisible() const {
     return this->visible;
 }
 
-bool Drawable::isAnimating() {
+bool Drawable::isAnimating() const {
     return this->animating;
 }
 
-int Drawable::getX() {
+int Drawable::getX() const {
     return this->xPosition;
 }
 
-int Drawable::getY() {
+int Drawable::getY() const {
     return this->yPosition;
 }
 
