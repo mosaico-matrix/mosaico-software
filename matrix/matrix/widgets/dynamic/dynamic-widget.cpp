@@ -113,6 +113,10 @@ private:
         if (!configDataString.empty()) {
             py::dict config = nlohmann::json::parse(configDataString);
             mosaico_module.attr("config") = config;
+        }else
+        {
+            // Prevent crashes when importing the config object
+            mosaico_module.attr("config") = "";
         }
     }
 

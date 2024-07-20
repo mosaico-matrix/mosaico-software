@@ -111,6 +111,24 @@ public:
         }
     }
 
+    void flipHorizontally() {
+        if (!image.isValid()) return;
+        for (int y = 0; y < image.height; ++y) {
+            for (int x = 0; x < image.width / 2; ++x) {
+                std::swap(image.pixels[x + y * image.width], image.pixels[image.width - 1 - x + y * image.width]);
+            }
+        }
+    }
+
+    void flipVertically() {
+        if (!image.isValid()) return;
+        for (int x = 0; x < image.width; ++x) {
+            for (int y = 0; y < image.height / 2; ++y) {
+                std::swap(image.pixels[x + y * image.width], image.pixels[x + (image.height - 1 - y) * image.width]);
+            }
+        }
+    }
+
     void _draw(Canvas *canvas) override {
         if (!image.isValid()) {
             // Load default image

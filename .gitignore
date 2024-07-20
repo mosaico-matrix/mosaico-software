@@ -12,7 +12,6 @@ gatt/data/__pycache__/
 *.cbp
 matrix/Testing/Temporary/
 
-networking/data/db.sqlite
 
 matrix/librestclient.a
 
@@ -21,3 +20,5 @@ matrix/cmake_install.cmake
 matrix/main
 
 matrix/Makefile
+
+networking/data/db.sqlite

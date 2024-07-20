@@ -53,7 +53,9 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
 
     // Bind the DrawablePPM class
     py::class_<DrawablePPM, Drawable>(m, "DrawablePPM")
-    .def("setImage", &DrawablePPM::setImage);
+    .def("setImage", &DrawablePPM::setImage)
+    .def("flipVertically", &DrawablePPM::flipVertically)
+    .def("flipHorizontally", &DrawablePPM::flipHorizontally);
 
     // Bind color class
     py::class_<Color>(m, "Color")
