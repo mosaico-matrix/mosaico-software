@@ -11,9 +11,13 @@
 // Class representing a drawable object on the matrix
 class Drawable {
 protected:
+
     // Positioning
     int xPosition = 0, yPosition = 0;               // Current position
     float xPositionFloat = 0, yPositionFloat = 0;   // Current position with subpixel precision
+
+    // Dimensions
+    int width = 0, height = 0;
 
     // Color of the drawable
     rgb_matrix::Color color = WHITE_COLOR;
@@ -89,4 +93,7 @@ public:
 
     // Draw the drawable on the canvas
     void draw(rgb_matrix::Canvas *canvas);
+
+    // Center the drawable horizontally
+    void centerHorizontally();
 };

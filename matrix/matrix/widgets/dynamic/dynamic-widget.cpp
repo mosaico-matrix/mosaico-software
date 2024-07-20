@@ -113,10 +113,16 @@ private:
         if (!configDataString.empty()) {
             py::dict config = nlohmann::json::parse(configDataString);
             mosaico_module.attr("config") = config;
+
+            // Set the working directory to the config directory
+            py::exec("import os\nos.chdir('" + configDirPath + "')");
         }else
         {
             // Prevent crashes when importing the config object
             mosaico_module.attr("config") = "";
+
+            // Set the working directory to the widget directory
+            py::exec("import os\nos.chdir('" + widgetDirPath + "')");
         }
     }
 

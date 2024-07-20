@@ -102,6 +102,9 @@ private:
         int textSizePixels = rgb_matrix::DrawText(canvas, *font, xPosition, yPosition + font->baseline(), color,
                                                   text.c_str());
 
+        // Update width
+        width = textSizePixels > 64 ? 64 : textSizePixels;
+
         // If text is too big to be drawn, scroll it
         bool textTooBig = textSizePixels > canvas->width();
         if (textTooBig && !animating) {

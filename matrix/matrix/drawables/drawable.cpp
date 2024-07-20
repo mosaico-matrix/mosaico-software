@@ -97,6 +97,11 @@ int Drawable::getY() const {
     return this->yPosition;
 }
 
+void Drawable::centerHorizontally() {
+    xPosition = (MATRIX_COLS - width) / 2;
+    moveTo(xPosition, yPosition);
+}
+
 void Drawable::draw(Canvas *canvas) {
 
     if (canvas == nullptr) {

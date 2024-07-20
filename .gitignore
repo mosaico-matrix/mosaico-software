@@ -1,5 +1,4 @@
 .DS_STORE
-
 venv/
 gatt/services/__pycache__/
 gatt/.idea/
@@ -11,14 +10,8 @@ gatt/data/__pycache__/
 *.pyc
 *.cbp
 matrix/Testing/Temporary/
-
-
 matrix/librestclient.a
-
 matrix/cmake_install.cmake
-
 matrix/main
-
 matrix/Makefile
-
 networking/data/db.sqlite

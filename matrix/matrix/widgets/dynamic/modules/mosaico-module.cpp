@@ -33,7 +33,8 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     .def("isVisible", &Drawable::isVisible)
     .def("isAnimating", &Drawable::isAnimating)
     .def("getX", &Drawable::getX)
-    .def("getY", &Drawable::getY);
+    .def("getY", &Drawable::getY)
+    .def("centerHorizontally", &Drawable::centerHorizontally);
 
 
     // Bind the DrawableShape class
