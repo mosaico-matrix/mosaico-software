@@ -36,9 +36,9 @@ CanvasLayer* MatrixWidget::renderCanvasLayer() {
 }
 
 
-void MatrixWidget::registerDrawable(std::unique_ptr<Drawable> drawable) {
+void MatrixWidget::registerDrawable(Drawable *drawable) {
     drawable->setFrameDuration(1000 / framesPerSecond);
-    registeredDrawables.push_back(std::move(drawable));
+    registeredDrawables.push_back(drawable);
 }
 
 void MatrixWidget::clearDrawables() {
@@ -46,11 +46,5 @@ void MatrixWidget::clearDrawables() {
 }
 
 void MatrixWidget::unregisterDrawable(Drawable* drawable) {
-    auto it = std::remove_if(registeredDrawables.begin(), registeredDrawables.end(),
-                             [drawable](const std::unique_ptr<Drawable>& ptr) {
-                                 return ptr.get() == drawable;
-                             });
-    if (it != registeredDrawables.end()) {
-        registeredDrawables.erase(it, registeredDrawables.end()); // This will delete the matching Drawable object
-    }
+    registeredDrawables.erase(std::remove(registeredDrawables.begin(), registeredDrawables.end(), drawable), registeredDrawables.end());
 }
