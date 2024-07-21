@@ -29,7 +29,7 @@ private:
     unsigned long runningTime = 0;                  // Time runner has been running
     bool firstRender = true;                        // Flag for first render
     CanvasLayer* lastRenderedFrame = nullptr;       // Last rendered frame
-    std::vector<Drawable*> registeredDrawables;     // Drawables to be rendered
+    std::vector<std::unique_ptr<Drawable>> registeredDrawables;     // Drawables to be rendered
 
     void incrementFrameIndex();
 
@@ -50,11 +50,11 @@ public:
     /// Returns the number of frames rendered (this is reset to prevent overflow)
     [[nodiscard]] unsigned int getRenderedFrameCount() const { return renderedFrameCount; }
 
-    /// Resets the frame count
-    void resetRenderedFrameCount();
-
     /// Add a new drawable to the widget drawable list
-    void registerDrawable(Drawable* drawable);
+    void registerDrawable(std::unique_ptr<Drawable> drawable);
+
+    /// Remove a drawable from the widget drawable list
+    void unregisterDrawable(Drawable* drawable);
 
     /// Clear all drawables
     void clearDrawables();
@@ -73,18 +73,18 @@ public:
     */
     DrawableText *createText(){
         auto *drawable = new DrawableText();
-        registerDrawable(drawable);
+        registerDrawable( std::unique_ptr<Drawable>(drawable) );
         return drawable;
     }
     DrawableRectangle *createRectangle(){
         auto *drawable = new DrawableRectangle();
-        registerDrawable(drawable);
+        registerDrawable( std::unique_ptr<Drawable>(drawable) );
         return drawable;
     }
 
     DrawablePPM *createPPM(){
         auto *drawable = new DrawablePPM();
-        registerDrawable(drawable);
+        registerDrawable( std::unique_ptr<Drawable>(drawable) );
         return drawable;
     }
 

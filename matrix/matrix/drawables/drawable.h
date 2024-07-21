@@ -47,7 +47,9 @@ public:
     };
 
     Drawable();
-    virtual ~Drawable();
+
+    // Virtual destructor
+    virtual ~Drawable() = default;
 
     // Set the duration of each animation frame
     void setFrameDuration(unsigned int frameDurationMs);
@@ -68,7 +70,7 @@ public:
     void setColor(rgb_matrix::Color color);
 
     // Set the color of the drawable using hex color
-    void setHexColor(std::string hexColor);
+    void setHexColor(const std::string& hexColor);
 
     // Animate the drawable to a new position over a specified duration
     void animateTo(int x, int y, unsigned int animationDurationMs);
@@ -80,16 +82,16 @@ public:
     void show();
 
     // Check if the drawable is visible
-    bool isVisible() const;
+    [[nodiscard]] bool isVisible() const;
 
     // Check if the drawable is animating
-    bool isAnimating() const;
+    [[nodiscard]] bool isAnimating() const;
 
     // Get the current X position of the drawable
-    int getX() const;
+    [[nodiscard]] int getX() const;
 
     // Get the current Y position of the drawable
-    int getY() const;
+    [[nodiscard]] int getY() const;
 
     // Draw the drawable on the canvas
     void draw(rgb_matrix::Canvas *canvas);

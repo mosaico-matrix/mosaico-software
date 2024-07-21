@@ -12,7 +12,9 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     py::class_<MatrixWidget>(m, "MatrixWidget")
             .def("createRectangle", &MatrixWidget::createRectangle)
             .def("createImage", &MatrixWidget::createPPM)
-            .def("createText", &MatrixWidget::createText);
+            .def("createText", &MatrixWidget::createText)
+            .def("remove", &MatrixWidget::unregisterDrawable)
+            .def("clear", &MatrixWidget::clearDrawables);
 
     // Binding the DynamicWidget class
     py::class_<DynamicWidget, MatrixWidget>(m, "DynamicWidget")
@@ -35,7 +37,6 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     .def("getX", &Drawable::getX)
     .def("getY", &Drawable::getY)
     .def("centerHorizontally", &Drawable::centerHorizontally);
-
 
     // Bind the DrawableShape class
     py::class_<DrawableShape, Drawable>(m, "DrawableShape");

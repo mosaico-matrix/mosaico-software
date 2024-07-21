@@ -1,7 +1,6 @@
-#pragma once
-#include <memory>
 #include "matrix-widget.h"
-
+#include <limits>
+#include <algorithm>
 
 MatrixWidget::MatrixWidget() {
     Logger::logDebug("Matrix widget created");
@@ -9,19 +8,16 @@ MatrixWidget::MatrixWidget() {
 
 void MatrixWidget::incrementFrameIndex() {
     renderedFrameCount++;
-    if (renderedFrameCount > UINT_MAX) {
+    if (renderedFrameCount > std::numeric_limits<unsigned int>::max()) {
         renderedFrameCount = 0;
     }
 }
 
 CanvasLayer* MatrixWidget::renderCanvasLayer() {
-
-    // Check if lastRenderedFrame has been initialized
     if (lastRenderedFrame == nullptr) {
         lastRenderedFrame = new CanvasLayer(runnerPosition);
     }
 
-    // If framesPerSecond is 0, we should only render the first frame
     if (framesPerSecond == 0 && !firstRender) {
         return lastRenderedFrame;
     }
@@ -30,7 +26,7 @@ CanvasLayer* MatrixWidget::renderCanvasLayer() {
     }
 
     lastRenderedFrame->Clear();
-    for (Drawable* drawable : registeredDrawables) {
+    for (const auto& drawable : registeredDrawables) {
         drawable->draw(lastRenderedFrame);
     }
 
@@ -39,15 +35,22 @@ CanvasLayer* MatrixWidget::renderCanvasLayer() {
     return lastRenderedFrame;
 }
 
-void MatrixWidget::resetRenderedFrameCount() {
-    renderedFrameCount = 0;
-}
 
-void MatrixWidget::registerDrawable(Drawable* drawable) {
+void MatrixWidget::registerDrawable(std::unique_ptr<Drawable> drawable) {
     drawable->setFrameDuration(1000 / framesPerSecond);
-    registeredDrawables.push_back(drawable);
+    registeredDrawables.push_back(std::move(drawable));
 }
 
 void MatrixWidget::clearDrawables() {
     registeredDrawables.clear();
+}
+
+void MatrixWidget::unregisterDrawable(Drawable* drawable) {
+    auto it = std::remove_if(registeredDrawables.begin(), registeredDrawables.end(),
+                             [drawable](const std::unique_ptr<Drawable>& ptr) {
+                                 return ptr.get() == drawable;
+                             });
+    if (it != registeredDrawables.end()) {
+        registeredDrawables.erase(it, registeredDrawables.end()); // This will delete the matching Drawable object
+    }
 }

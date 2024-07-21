@@ -1,29 +1,24 @@
-#ifndef DYNAMIC_RUNNER_CPP
-#define DYNAMIC_RUNNER_CPP
+#ifndef DYNAMIC_WIDGET_H
+#define DYNAMIC_WIDGET_H
 
 #include "../matrix-widget.h"
-#include <utility>
-#include <variant>
+#include <string>
+#include <pybind11/embed.h>
+#include "../../../external/pybind/include/pybind11_json.hpp"
 #include "../../../utils.cpp"
 #include "dynamic-widget-metadata.cpp"
-#include <pybind11/embed.h>
-#include <iostream>
-#include "../../../external/pybind/include/pybind11_json.hpp"
 #include "modules/colors-module.cpp"
+
 namespace py = pybind11;
-using namespace pybind11::literals;
 
 class DynamicWidget : public MatrixWidget {
 public:
-
     DynamicWidget(std::string widgetDirPath, std::string configDirPath)
             : MatrixWidget(),
               widgetDirPath(std::move(widgetDirPath)),
               configDirPath(std::move(configDirPath)),
-              validWidget(false){
-
+              validWidget(false) {
         setFps(1); // Default fps if something goes wrong
-
         if (!initializePaths() || !readMetadata()) {
             validWidget = false;
             Logger::logError("Widget initialization failed");
@@ -33,21 +28,22 @@ public:
         }
     }
 
+    // Delete copy constructor and copy assignment operator
+    DynamicWidget(const DynamicWidget&) = delete;
+    DynamicWidget& operator=(const DynamicWidget&) = delete;
+
     ~DynamicWidget() override {
         py::finalize_interpreter();
         Logger::logDebug("DynamicWidget destroyed");
     }
 
-    /// Returns the path to the widget asset
-    std::string widgetAssetPath(const std::string &assetName) {
+    std::string widgetAssetPath(const std::string& assetName) {
         return widgetDirPath + "/assets/" + assetName;
     }
 
-    /// Returns the path to the config asset
-    std::string configAssetPath(const std::string &assetName) {
+    std::string configAssetPath(const std::string& assetName) {
         return configDirPath.empty() ? "" : configDirPath + "/assets/" + assetName;
     }
-
 
 private:
     std::string widgetScriptString;
@@ -72,13 +68,9 @@ private:
             json j = json::parse(widgetMetadataString);
             DynamicWidgetMetadata metadata = j.get<DynamicWidgetMetadata>();
             Logger::logDebug("Parsed dynamic runner metadata");
-#ifdef DEBUG
-            metadata.dump();
-#endif
             setFps(metadata.fps);
-            // TODO: Set canvas size based on metadata
             return true;
-        } catch (const nlohmann::json::exception &e) {
+        } catch (const nlohmann::json::exception& e) {
             Logger::logError("Error while parsing metadata: " + std::string(e.what()));
             return false;
         }
@@ -90,7 +82,7 @@ private:
             py::initialize_interpreter();
             bindObjectsToPython();
             py::exec(widgetScriptString);
-        } catch (const py::error_already_set &e) {
+        } catch (const py::error_already_set& e) {
             Logger::logError("Error while initializing scripts: " + std::string(e.what()));
             validWidget = false;
         }
@@ -98,36 +90,23 @@ private:
     }
 
     void bindObjectsToPython() {
-
-        // Take the main module
         py::module mosaico_module = py::module::import("mosaico");
-
-        // Pass this very object to the python script
         py::object widget = py::cast(this);
         mosaico_module.attr("widget") = widget;
 
-        // Register other modules
         ColorsModule::load(&mosaico_module);
 
-        // Pass the config object if it exists
         if (!configDataString.empty()) {
             py::dict config = nlohmann::json::parse(configDataString);
             mosaico_module.attr("config") = config;
-
-            // Set the working directory to the config directory
             py::exec("import os\nos.chdir('" + configDirPath + "')");
-        }else
-        {
-            // Prevent crashes when importing the config object
+        } else {
             mosaico_module.attr("config") = "";
-
-            // Set the working directory to the widget directory
             py::exec("import os\nos.chdir('" + widgetDirPath + "')");
         }
     }
 
-    void renderNextCanvasLayer(CanvasLayer *canvas) override {
-
+    void renderNextCanvasLayer(CanvasLayer* canvas) override {
         if (!scriptsInitialized) {
             initializeScripts();
         }
@@ -139,7 +118,7 @@ private:
 
         try {
             py::exec("loop()");
-        } catch (const py::error_already_set &e) {
+        } catch (const py::error_already_set& e) {
             Logger::logError("Error while executing loop function: " + std::string(e.what()));
             validWidget = false;
             canvas->Fill(RED_COLOR);
@@ -147,4 +126,4 @@ private:
     }
 };
 
-#endif
+#endif // DYNAMIC_WIDGET_H

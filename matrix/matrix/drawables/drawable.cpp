@@ -4,8 +4,6 @@
 Drawable::Drawable() {
 }
 
-Drawable::~Drawable() {}
-
 void Drawable::setFrameDuration(unsigned int frameDurationMs) {
     this->frameDurationMs = frameDurationMs;
 }
@@ -36,7 +34,7 @@ void Drawable::setColor(Color color) {
 this->color = color;
 }
 
-void Drawable::setHexColor(std::string hexColor) {
+void Drawable::setHexColor(const std::string& hexColor) {
     // Convert hex to individual RGB values
     int r, g, b;
     sscanf(hexColor.c_str(), "#%02x%02x%02x", &r, &g, &b);
