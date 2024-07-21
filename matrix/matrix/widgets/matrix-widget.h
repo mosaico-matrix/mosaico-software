@@ -50,6 +50,9 @@ public:
     /// Returns the number of frames rendered (this is reset to prevent overflow)
     [[nodiscard]] unsigned int getRenderedFrameCount() const { return renderedFrameCount; }
 
+    /// Resets the frame count
+    void resetRenderedFrameCount();
+
     /// Add a new drawable to the widget drawable list
     void registerDrawable(Drawable* drawable);
 

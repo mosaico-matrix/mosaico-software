@@ -1,13 +1,12 @@
 #include <pybind11/embed.h>
 #include "../dynamic-widget.cpp"
+#include "../../matrix-widget.h"
+#include "../../../drawables/drawable.h"
+#include "../../../drawables/drawable-text.cpp"
 
 namespace py = pybind11;
 
 PYBIND11_EMBEDDED_MODULE(mosaico, m) {
-
-//    // Binding the canvas layer class
-//    py::class_<CanvasLayer>(m, "Canvas")
-//            .def("setBorder", &CanvasLayer::setBorder);
 
     // Binding the MatrixWidget class
     py::class_<MatrixWidget>(m, "MatrixWidget")
@@ -37,7 +36,9 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     .def("isAnimating", &Drawable::isAnimating)
     .def("getX", &Drawable::getX)
     .def("getY", &Drawable::getY)
-    .def("centerHorizontally", &Drawable::centerHorizontally);
+    .def("centerHorizontally", &Drawable::centerHorizontally)
+    .def("centerVertically", &Drawable::centerVertically);
+
 
     // Bind the DrawableShape class
     py::class_<DrawableShape, Drawable>(m, "DrawableShape");

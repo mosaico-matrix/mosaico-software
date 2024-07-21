@@ -1,6 +1,7 @@
+#pragma once
+#include <memory>
 #include "matrix-widget.h"
-#include <limits>
-#include <algorithm>
+#include <algorithm> // Ensure this is included for std::remove
 
 MatrixWidget::MatrixWidget() {
     Logger::logDebug("Matrix widget created");
@@ -8,16 +9,19 @@ MatrixWidget::MatrixWidget() {
 
 void MatrixWidget::incrementFrameIndex() {
     renderedFrameCount++;
-    if (renderedFrameCount > std::numeric_limits<unsigned int>::max()) {
+    if (renderedFrameCount > UINT_MAX) {
         renderedFrameCount = 0;
     }
 }
 
 CanvasLayer* MatrixWidget::renderCanvasLayer() {
+
+    // Check if lastRenderedFrame has been initialized
     if (lastRenderedFrame == nullptr) {
         lastRenderedFrame = new CanvasLayer(runnerPosition);
     }
 
+    // If framesPerSecond is 0, we should only render the first frame
     if (framesPerSecond == 0 && !firstRender) {
         return lastRenderedFrame;
     }
@@ -26,7 +30,7 @@ CanvasLayer* MatrixWidget::renderCanvasLayer() {
     }
 
     lastRenderedFrame->Clear();
-    for (const auto& drawable : registeredDrawables) {
+    for (Drawable* drawable : registeredDrawables) {
         drawable->draw(lastRenderedFrame);
     }
 
@@ -35,8 +39,11 @@ CanvasLayer* MatrixWidget::renderCanvasLayer() {
     return lastRenderedFrame;
 }
 
+void MatrixWidget::resetRenderedFrameCount() {
+    renderedFrameCount = 0;
+}
 
-void MatrixWidget::registerDrawable(Drawable *drawable) {
+void MatrixWidget::registerDrawable(Drawable* drawable) {
     drawable->setFrameDuration(1000 / framesPerSecond);
     registeredDrawables.push_back(drawable);
 }
@@ -46,5 +53,8 @@ void MatrixWidget::clearDrawables() {
 }
 
 void MatrixWidget::unregisterDrawable(Drawable* drawable) {
-    registeredDrawables.erase(std::remove(registeredDrawables.begin(), registeredDrawables.end(), drawable), registeredDrawables.end());
+    registeredDrawables.erase(
+            std::remove(registeredDrawables.begin(), registeredDrawables.end(), drawable),
+            registeredDrawables.end()
+    );
 }
