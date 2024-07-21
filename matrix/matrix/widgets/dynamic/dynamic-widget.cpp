@@ -89,11 +89,20 @@ private:
         scriptsInitialized = true;
     }
 
+    py::module mosaico_module;
     void bindObjectsToPython() {
-        py::module mosaico_module = py::module::import("mosaico");
+
+        // Get module
+        mosaico_module = py::module::import("mosaico");
+
+        // Pass this very widget to the module
         py::object widget = py::cast(this);
         mosaico_module.attr("widget") = widget;
 
+        // Init the canvas object
+
+
+        // Load external modules
         ColorsModule::load(&mosaico_module);
 
         if (!configDataString.empty()) {
