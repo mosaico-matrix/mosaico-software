@@ -23,12 +23,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -static-libstdc++")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DMATRIX_ROWS=${MATRIX_ROWS} -DMATRIX_COLS=${MATRIX_COLS} -DMATRIX_REFRESH_RATE=${MATRIX_REFRESH_RATE}")
 # Improve chai script performance by disabling threading
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCHAISCRIPT_NO_THREADS")
-# Pybind11
-find_package(pybind11 REQUIRED)  # or add_subdirectory(pybind11)
+
+# Find Python3
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+message(STATUS "Python3 include dirs: ${Python3_INCLUDE_DIRS}")
+message(STATUS "Python3 libraries: ${Python3_LIBRARIES}")
+
+# Find pybind11
+find_package(pybind11 REQUIRED)
 
 # SIMULATION
 if(COMPILE_MODE STREQUAL "simulation")
-
     # Compile x11 matrix
     set(MATRIX_DEVICE matrix/matrices/x11-matrix.cpp)
 
@@ -36,20 +41,16 @@ if(COMPILE_MODE STREQUAL "simulation")
     find_package(X11 REQUIRED)
     include_directories(${X11_INCLUDE_DIR})
 
-    # LibCurl
-    #find_package(CURL REQUIRED)
-
     # Define simulation flag
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -DSIMULATION")
 
     # Set compiler
-    set(ENV{CXX} g++) # clang++ Clang is much faster to compile chaiscript
+    set(ENV{CXX} g++)
     set(ENV{CC} gcc)
 
-# Cross compile for Raspberry Pi
+    # Cross compile for Raspberry Pi
 elseif(COMPILE_MODE STREQUAL "cross-compile")
-
     # Compile hardware matrix
     set(MATRIX_DEVICE matrix/matrices/hardware-matrix.cpp)
 
@@ -59,31 +60,20 @@ elseif(COMPILE_MODE STREQUAL "cross-compile")
     set(ENV{CXX} ${CMAKE_CXX_COMPILER})
     set(ENV{CC} ${CMAKE_C_COMPILER})
 
-    # Manually built libcurl
-#    set(CURL_LIBRARY "${CMAKE_SOURCE_DIR}/external/curl/lib/libcurl.a")
-#    set(CURL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/curl/include")
-    include_directories(${CURL_INCLUDE_DIR})
+    # Include directories for manually built libcurl
+    #set(CURL_LIBRARY "${CMAKE_SOURCE_DIR}/external/curl/lib/libcurl.a")
+    #set(CURL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/curl/include")
+    #include_directories(${CURL_INCLUDE_DIR})
 
     # Standard compilation
 elseif (COMPILE_MODE STREQUAL "default")
-
     # Compile hardware matrix
     set(MATRIX_DEVICE matrix/matrices/hardware-matrix.cpp)
 
-#    # LibCurl
-#    find_package(CURL REQUIRED)
-
-    # Set compiler
-    set(ENV{CXX} g++)
-    set(ENV{CC} gcc)
-
+    # Web compilation
 elseif (COMPILE_MODE STREQUAL "web")
-
-    # Compile hardware matrix
+    # Compile web matrix
     set(MATRIX_DEVICE matrix/matrices/web-matrix.cpp)
-
-#    # LibCurl
-#    find_package(CURL REQUIRED)
 
     # Define web flag
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWEB")
@@ -102,7 +92,6 @@ execute_process(
         WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/lib
 )
 set(RGB_LIBRARY "${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/lib/librgbmatrix.a")
-include_directories(${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/lib)
 include_directories(${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/include)
 
 # Source files
@@ -142,25 +131,20 @@ set(SOURCES
         matrix/matrices/matrix-device.cpp
         matrix/matrices/matrix-builder.cpp
 
-        # Networking
-        #networking/server/database.cpp
-
         ${MATRIX_DEVICE}
         utils.cpp
 )
 
-# Executable
-add_executable(main ${SOURCES})
-# Pybind11
-target_link_libraries(main PRIVATE pybind11::embed)
-# Include directories
-target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/include)
-
-
+# Create executable
+add_executable(mosaico ${SOURCES})
 
 # Link libraries
+target_link_libraries(mosaico PUBLIC ${Python3_LIBRARIES} pybind11::embed ${RGB_LIBRARY} rt m pthread -ldl)
+
+# Include directories
+target_include_directories(mosaico PRIVATE ${Python3_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/external/rpi-rgb-led-matrix/include)
+
+# Conditional libraries
 if (COMPILE_MODE STREQUAL "simulation")
-    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread  ${X11_LIBRARIES} -lX11 -ldl -fuse-ld=gold) #${CURL_LIBRARIES}
-else ()
-    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread  -ldl) #${CURL_LIBRARY}
+    target_link_libraries(mosaico PRIVATE ${X11_LIBRARIES} -lX11 -fuse-ld=gold)
 endif ()

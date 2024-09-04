@@ -114,5 +114,5 @@ run_command make
 
 echo -e "${GREEN}Application compiled${NC}"
 
-# Start the application (example command, adjust as needed)
-./main
+# Start the application
+./mosaico
