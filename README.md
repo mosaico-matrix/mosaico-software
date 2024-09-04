@@ -1,7 +1,3 @@
-Based on the provided scripts and files, here's an updated and comprehensive README that includes details on requirements, how to compile and run the software, and how to use different modes of operation.
-
----
-
 # Mosaico Software
 
 ![Mosaico Logo](./icon.png)
