@@ -64,6 +64,9 @@ More infos about the project can be found on the [Mosaico Website](https://mosai
 
 ### Compiling on Raspberry Pi
 
+I suggest to use a lightweight OS for your Pi like Dietpi, especially if you're using a Raspberry Pi Zero.
+Once you have your Raspberry Pi set up, follow these steps to install the software:
+
 1. **Clone the Repository:**
    ```bash
    git clone --recursive https://github.com/mosaico-matrix/mosaico-software
@@ -73,7 +76,7 @@ More infos about the project can be found on the [Mosaico Website](https://mosai
 2. **Install Required Packages:**
    ```bash
    sudo apt-get update
-   sudo apt-get install -y pybind11
+   sudo apt-get install -y pybind11-dev python3-pybind11
    ```
 
 3. **Run the Installation Script:**
@@ -138,7 +141,7 @@ We welcome contributions! Feel free to open an issue or submit a pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This software is licensed under the AGPL-3.0 License. A copy of the license can be found in the [LICENSE](./LICENSE) file.
 
 ---
 
