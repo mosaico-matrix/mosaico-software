@@ -29,7 +29,9 @@ private:
         std::string pythonScriptPath = Configs::getPythonScriptPath();
         std::string command = ". "
                               + pythonScriptPath
-                              + "/venv/bin/activate && python3 "
+                              + "/venv/bin/activate && "
+                              + pythonScriptPath
+                              + "/venv/bin/python3 "
                               + pythonScriptPath
                               + "/main.py "
                               + pythonScriptArguments
