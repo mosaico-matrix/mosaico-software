@@ -60,7 +60,7 @@ Once you have your Raspberry Pi set up, follow these steps to install the softwa
 1. **Install Required Packages:**
    ```bash
    sudo apt-get update
-   sudo apt-get install -y python3-venv python3 python3-pip cmake build-essential git pybind11-dev python3-pybind11
+   sudo apt-get install -y python3-dev python3-venv python3 python3-pip cmake build-essential git pybind11-dev python3-pybind11
     ```
    
 2. **Clone the Repository:**
