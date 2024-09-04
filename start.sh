@@ -81,7 +81,6 @@ check_command "cmake" "CMake"
 check_command "pip3" "Pip3"
 
 if [ "$MODE" != "cross-compile" ]; then
-    echo -e "${YELLOW}Make sure you have libcurl installed${NC}"
 fi
 if [ "$MODE" == "simulation" ]; then
     #systemctl restart bluetooth
