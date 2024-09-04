@@ -79,7 +79,7 @@ Once you have your Raspberry Pi set up, follow these steps to install the softwa
 
 4. **Run the Application:**
    ```bash
-   ./main
+   ./mosaico
    ```
 
 ### Simulating on a Computer
