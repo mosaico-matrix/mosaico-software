@@ -80,8 +80,10 @@ check_command "python3" "Python3"
 check_command "cmake" "CMake"
 check_command "pip3" "Pip3"
 
-if [ "$MODE" != "cross-compile" ]; then
-fi
+#if [ "$MODE" != "cross-compile" ]; then
+#
+#fi
+
 if [ "$MODE" == "simulation" ]; then
     #systemctl restart bluetooth
     echo -e "${YELLOW}Make sure you have libx11-dev installed${NC}"

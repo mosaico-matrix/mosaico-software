@@ -63,17 +63,18 @@ More infos about the project can be found on the [Mosaico Website](https://mosai
 I suggest to use a lightweight OS for your Pi like Dietpi, especially if you're using a Raspberry Pi Zero.
 Once you have your Raspberry Pi set up, follow these steps to install the software:
 
-1. **Clone the Repository:**
+1. **Install Required Packages:**
    ```bash
-   git clone --recursive https://github.com/mosaico-matrix/mosaico-software
+   sudo apt-get update
+   sudo apt-get install -y python3 python3-pip cmake build-essential git pybind11-dev python3-pybind11
+    ```
+   
+2. **Clone the Repository:**
+   ```bash
+   git clone --depth=1 https://github.com/mosaico-matrix/mosaico-software
    cd mosaico-software
    ```
 
-2. **Install Required Packages:**
-   ```bash
-   sudo apt-get update
-   sudo apt-get install -y pybind11-dev python3-pybind11
-   ```
 
 3. **Run the Installation Script:**
    ```bash
