@@ -4,6 +4,8 @@
 Drawable::Drawable() {
 }
 
+Drawable::~Drawable() {}
+
 void Drawable::setFrameDuration(unsigned int frameDurationMs) {
     this->frameDurationMs = frameDurationMs;
 }
@@ -34,7 +36,7 @@ void Drawable::setColor(Color color) {
 this->color = color;
 }
 
-void Drawable::setHexColor(const std::string& hexColor) {
+void Drawable::setHexColor(std::string hexColor) {
     // Convert hex to individual RGB values
     int r, g, b;
     sscanf(hexColor.c_str(), "#%02x%02x%02x", &r, &g, &b);
@@ -97,6 +99,11 @@ int Drawable::getY() const {
 
 void Drawable::centerHorizontally() {
     xPosition = (MATRIX_COLS - width) / 2;
+    moveTo(xPosition, yPosition);
+}
+
+void Drawable::centerVertically() {
+    yPosition = (MATRIX_ROWS - height) / 2;
     moveTo(xPosition, yPosition);
 }
 

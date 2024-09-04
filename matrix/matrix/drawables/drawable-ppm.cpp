@@ -109,6 +109,10 @@ public:
         } else {
             throw std::runtime_error("Unsupported PPM format");
         }
+
+        // Update width and height of the drawable
+        width = image.width;
+        height = image.height;
     }
 
     void flipHorizontally() {
@@ -131,8 +135,9 @@ public:
 
     void _draw(Canvas *canvas) override {
         if (!image.isValid()) {
+            return;
             // Load default image
-            setImage(Configs::getImagePath("heart.ppm").c_str());
+            //setImage(Configs::getImagePath("heart.ppm").c_str());
         }
 
         for (int x = 0; x < image.width; ++x) {

@@ -87,6 +87,8 @@ void initStuffBackground() {
 
 int main(int argc, char *argv[]) {
 
+    py::initialize_interpreter();
+
     // Set up the signal handler
     signal(SIGINT, signalHandler);
 
