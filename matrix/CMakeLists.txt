@@ -37,7 +37,7 @@ if(COMPILE_MODE STREQUAL "simulation")
     include_directories(${X11_INCLUDE_DIR})
 
     # LibCurl
-    find_package(CURL REQUIRED)
+    #find_package(CURL REQUIRED)
 
     # Define simulation flag
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG")
@@ -60,8 +60,8 @@ elseif(COMPILE_MODE STREQUAL "cross-compile")
     set(ENV{CC} ${CMAKE_C_COMPILER})
 
     # Manually built libcurl
-    set(CURL_LIBRARY "${CMAKE_SOURCE_DIR}/external/curl/lib/libcurl.a")
-    set(CURL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/curl/include")
+#    set(CURL_LIBRARY "${CMAKE_SOURCE_DIR}/external/curl/lib/libcurl.a")
+#    set(CURL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/external/curl/include")
     include_directories(${CURL_INCLUDE_DIR})
 
     # Standard compilation
@@ -70,8 +70,8 @@ elseif (COMPILE_MODE STREQUAL "default")
     # Compile hardware matrix
     set(MATRIX_DEVICE matrix/matrices/hardware-matrix.cpp)
 
-    # LibCurl
-    find_package(CURL REQUIRED)
+#    # LibCurl
+#    find_package(CURL REQUIRED)
 
     # Set compiler
     set(ENV{CXX} g++)
@@ -82,8 +82,8 @@ elseif (COMPILE_MODE STREQUAL "web")
     # Compile hardware matrix
     set(MATRIX_DEVICE matrix/matrices/web-matrix.cpp)
 
-    # LibCurl
-    find_package(CURL REQUIRED)
+#    # LibCurl
+#    find_package(CURL REQUIRED)
 
     # Define web flag
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DWEB")
@@ -160,7 +160,7 @@ target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/external/rpi-rgb-l
 
 # Link libraries
 if (COMPILE_MODE STREQUAL "simulation")
-    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread ${CURL_LIBRARIES} ${X11_LIBRARIES} -lX11 -ldl -fuse-ld=gold)
+    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread  ${X11_LIBRARIES} -lX11 -ldl -fuse-ld=gold) #${CURL_LIBRARIES}
 else ()
-    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread ${CURL_LIBRARY} -ldl)
+    target_link_libraries(main PRIVATE ${RGB_LIBRARY} rt m pthread  -ldl) #${CURL_LIBRARY}
 endif ()

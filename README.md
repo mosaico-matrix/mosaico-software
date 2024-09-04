@@ -30,15 +30,6 @@ your local machine as a simulator.
 Mosaico allows users and developers to create, share, and display custom widgets on an LED matrix. 
 More infos about the project can be found on the [Mosaico Website](https://mosaico.murkrowdev.org).
 
-### Example Widgets
-- Display the current time and date.
-- Show the weather forecast for your location.
-- Create a shopping list widget.
-- Upload and display custom pixel art.
-- Write custom text messages or quotes.
-- Create animations or visual effects.
-- And much more!
-
 ## Requirements
 
 ### General Requirements
@@ -50,6 +41,9 @@ More infos about the project can be found on the [Mosaico Website](https://mosai
 - **Pybind11**: Required for Python bindings for C++ code.
 
 ### Mode-Specific Requirements
+
+#### Raspberry Pi Mode
+- Make sure to enable Bluetooth (Diepi: `dietpi-config` -> `Advanced Options` -> `Bluetooth`).
 
 #### Simulation Mode (Local Machine)
 - **libx11-dev**: Required for launching the simulation window.
@@ -66,7 +60,7 @@ Once you have your Raspberry Pi set up, follow these steps to install the softwa
 1. **Install Required Packages:**
    ```bash
    sudo apt-get update
-   sudo apt-get install -y python3 python3-pip cmake build-essential git pybind11-dev python3-pybind11
+   sudo apt-get install -y python3-venv python3 python3-pip cmake build-essential git pybind11-dev python3-pybind11
     ```
    
 2. **Clone the Repository:**

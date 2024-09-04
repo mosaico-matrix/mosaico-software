@@ -98,7 +98,7 @@ fi
 echo -e "${YELLOW}Checking python virtual environment${NC}"
 cd networking
 run_command python3 -m venv venv
-run_command source venv/bin/activate
+source venv/bin/activate
 echo -e "${GREEN}Python virtual environment OK${NC}"
 
 # Install the required python packages
