@@ -95,7 +95,7 @@ if [ "$MODE" == "default" ] || [ "$MODE" == "cross-compile" ]; then
 fi
 
 # Create python virtual environment
-echo -e "${YELLOW}Checking python virtual environment${NC}"
+echo -e "${YELLOW}Checking python virtual environment for networking${NC}"
 cd networking
 run_command python3 -m venv venv
 source venv/bin/activate
@@ -106,8 +106,25 @@ echo -e "${YELLOW}Installing python packages${NC}"
 run_command pip3 install -r requirements.txt
 echo -e "${GREEN}Python packages installed${NC}"
 
+# Exit from the virtual environment
+cd ..
+
+if [$MODE == "web"]; then
+  # Create python virtual environment
+  echo -e "${YELLOW}Checking python virtual environment for streaming${NC}"
+  cd streaming
+  run_command python3 -m venv venv
+  source venv/bin/activate
+  echo -e "${GREEN}Python virtual environment OK${NC}"
+
+  # Install the required python packages
+  echo -e "${YELLOW}Installing python packages${NC}"
+  run_command pip3 install -r requirements.txt
+  echo -e "${GREEN}Python packages installed${NC}"
+fi
+
 # Compile the application
-cd ../matrix
+cd matrix
 echo -e "${YELLOW}Compiling the application${NC}"
 run_command cmake -DCOMPILE_MODE=${MODE} .
 run_command make

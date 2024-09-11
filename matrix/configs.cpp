@@ -19,6 +19,10 @@ public:
         return Configs::getProjectRoot() + "../networking";
     }
 
+    static std::string getPythonStreamPath() {
+        return Configs::getProjectRoot() + "../stream";
+    }
+
 //    static std::string getWidgetsPath()
 //    {
 //        return Configs::getProjectRoot() + "

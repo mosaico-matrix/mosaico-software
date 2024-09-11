@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Stream</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #container {
+            border: 5px solid white;
+            padding: 10px;
+            width: 100%;
+            max-width: 750px;
+        }
+        #video {
+            display: block;
+            margin: 0 auto;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+    <img id="video" src="" alt="Matrix Stream">
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('new_image', function(data) {
+        const img = document.getElementById('video');
+        // Convert hex string to binary
+        const binary = new Uint8Array(data.image.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+        const blob = new Blob([binary], { type: 'image/png' });
+        img.src = URL.createObjectURL(blob);
+    });
+
+    socket.on('connect', function() {
+        console.log('Connected to server');
+    });
+
+    socket.on('disconnect', function() {
+        console.log('Disconnected from server');
+    });
+</script>
+</body>
+</html>

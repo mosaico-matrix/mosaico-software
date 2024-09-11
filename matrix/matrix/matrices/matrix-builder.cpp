@@ -6,9 +6,11 @@
 
 #include "../../logger/logger.h"
 #include "hardware-matrix.cpp"
-#include "web-matrix.cpp"
 #if SIMULATION
 #include "x11-matrix.cpp"
+#endif
+#if WEB
+#include "matrix-stream.cpp"
 #endif
 
 class MatrixBuilder
@@ -19,7 +21,7 @@ public:
 #if SIMULATION
         return new x11matrix::X11Matrix();
 #elif WEB
-        return new WebMatrix();
+        return new MatrixStream();
 #else
         return new HardwareMatrix();
 #endif
