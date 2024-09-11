@@ -27,5 +27,11 @@ WORKDIR /app
 # Copy project files
 COPY . /app
 
-# Default command
-CMD ["./start.sh web -v"]
+WORKDIR /app
+
+# Expose the necessary ports
+EXPOSE 5000
+EXPOSE 5683/udp
+
+
+CMD ["./start-web.sh"]

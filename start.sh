@@ -109,10 +109,11 @@ echo -e "${GREEN}Python packages installed${NC}"
 # Exit from the virtual environment
 cd ..
 
-if [$MODE == "web"]; then
+
+if [ "$MODE" == "web" ]; then
   # Create python virtual environment
   echo -e "${YELLOW}Checking python virtual environment for streaming${NC}"
-  cd streaming
+  cd stream
   run_command python3 -m venv venv
   source venv/bin/activate
   echo -e "${GREEN}Python virtual environment OK${NC}"
@@ -121,6 +122,8 @@ if [$MODE == "web"]; then
   echo -e "${YELLOW}Installing python packages${NC}"
   run_command pip3 install -r requirements.txt
   echo -e "${GREEN}Python packages installed${NC}"
+
+  cd ..
 fi
 
 # Compile the application
