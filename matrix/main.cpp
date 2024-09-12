@@ -28,6 +28,7 @@ void signalHandler(int signal) {
     if (signal == SIGINT || signal == SIGTERM || signal == SIGKILL || signal == SIGABRT) {
         delete matrix;
         delete pythonSocket;
+        delete matrix;
         exit(0);
     }
 }

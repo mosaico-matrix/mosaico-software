@@ -4,6 +4,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO
 import io
 import threading
+import logging
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -14,6 +15,11 @@ MATRIX_ROWS = 64
 
 # Adjustable scaling factor
 SCALE_FACTOR = 5
+
+
+# Disable default Flask request logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)  # Only log errors, suppress other messages
 
 def receive_data():
     global image_data

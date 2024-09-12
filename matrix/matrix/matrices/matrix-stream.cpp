@@ -64,6 +64,7 @@ private:
     int opt = 1;
     int addrlen = sizeof(address);
     static const int PORT = 10005;
+    pid_t python_pid = 0;
 
 public:
     MatrixStream() {
@@ -106,6 +107,18 @@ public:
             Logger::logFatal("Failed to start stream server");
         }
 
+        char buffer[BUFFER_SIZE];
+        std::memset(buffer, 0, sizeof(buffer));
+        if (fgets(buffer, 128, pipe) != nullptr) {
+            python_pid = atoi(buffer);
+            Logger::logInfo("Python stream server started with PID: " + std::to_string(python_pid));
+        } else {
+            Logger::logFatal("Failed to start Python stream server");
+        }
+
+        pclose(pipe);
+
+
         if (acceptConnection(server_fd, new_socket, address, addrlen) != 0) {
             Logger::logFatal("Failed to accept connection");
         }
@@ -114,6 +127,9 @@ public:
     ~MatrixStream() {
         closeSocket(server_fd);
         close(new_socket);
+
+        Logger::logInfo("Killing Python stream with PID: " + std::to_string(python_pid));
+        kill(python_pid, SIGKILL);
     }
 
     Canvas *CreateFrameCanvas() override {
