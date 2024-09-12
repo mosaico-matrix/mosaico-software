@@ -75,7 +75,7 @@ void initStuffBackground() {
 
     // Set the new widget
     newWidgetReceived = new WidgetRenderer(matrix);
-    newWidgetReceived->setLoading();
+    newWidgetReceived->setIdle();
 
     // Start python server
     pythonSocket = new PythonSocket();
