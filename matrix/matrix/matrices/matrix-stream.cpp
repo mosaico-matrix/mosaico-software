@@ -13,6 +13,9 @@
 
 using namespace rgb_matrix;
 
+#define STREAM_BUFFER_SIZE 2048
+
+
 class MatrixStreamCanvas : public Canvas {
 private:
     std::vector <uint8_t> pixelData;
@@ -107,7 +110,7 @@ public:
             Logger::logFatal("Failed to start stream server");
         }
 
-        char buffer[BUFFER_SIZE];
+        char buffer[STREAM_BUFFER_SIZE];
         std::memset(buffer, 0, sizeof(buffer));
         if (fgets(buffer, 128, pipe) != nullptr) {
             python_pid = atoi(buffer);
