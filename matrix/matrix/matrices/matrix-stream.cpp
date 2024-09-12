@@ -110,6 +110,11 @@ public:
             Logger::logFatal("Failed to start stream server");
         }
 
+        if (acceptConnection(server_fd, new_socket, address, addrlen) != 0) {
+            Logger::logFatal("Failed to accept connection");
+        }
+
+
         char buffer[STREAM_BUFFER_SIZE];
         std::memset(buffer, 0, sizeof(buffer));
         if (fgets(buffer, 128, pipe) != nullptr) {
@@ -119,12 +124,6 @@ public:
             Logger::logFatal("Failed to start Python stream server");
         }
 
-        pclose(pipe);
-
-
-        if (acceptConnection(server_fd, new_socket, address, addrlen) != 0) {
-            Logger::logFatal("Failed to accept connection");
-        }
     }
 
     ~MatrixStream() {
