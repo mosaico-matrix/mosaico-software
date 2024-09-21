@@ -228,6 +228,7 @@ public:
 
     // Clear screen to be all black.
     void Clear() {
+
         pixels.clear();
     }
 

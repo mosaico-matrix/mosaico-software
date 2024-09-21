@@ -8,12 +8,23 @@ namespace py = pybind11;
 
 PYBIND11_EMBEDDED_MODULE(mosaico, m) {
 
+
+    // Bind color class
+    py::class_<Color>(m, "Color")
+    .def(py::init<int, int, int>());
+
+//    // Bind the canvas to directly draw on the matrix
+//    py::class_<CanvasLayer>(m, "CanvasLayer")
+//            .def("setPixel", py::overload_cast<int, int, Color>(&CanvasLayer::SetPixel))
+//            .def("clear", &CanvasLayer::Clear);
+
     // Binding the MatrixWidget class
     py::class_<MatrixWidget>(m, "MatrixWidget")
             .def("createRectangle", &MatrixWidget::createRectangle)
             .def("createImage", &MatrixWidget::createPPM)
             .def("createText", &MatrixWidget::createText)
             .def("remove", &MatrixWidget::unregisterDrawable)
+            .def("setPixel", &MatrixWidget::setPixel)
             .def("clear", &MatrixWidget::clearDrawables);
 
     // Binding the DynamicWidget class
@@ -60,11 +71,5 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     .def("setImage", &DrawablePPM::setImage)
     .def("flipVertically", &DrawablePPM::flipVertically)
     .def("flipHorizontally", &DrawablePPM::flipHorizontally);
-
-    // Bind color class
-    py::class_<Color>(m, "Color")
-    .def(py::init<int, int, int>());
-
-
 }
 

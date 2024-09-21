@@ -148,6 +148,7 @@ class ActiveWidget(resource.Resource):
         config_id = payload["config_id"]
 
         # Set the active widget
+        await slideshow_manager.clear_matrix()
         await slideshow_manager.set_active_widget(widget_id, config_id)
 
         return success_response(None, "Widget set successfully")
@@ -162,7 +163,7 @@ class ActiveWidget(resource.Resource):
         # Unload everything
         await slideshow_manager.clear_matrix()
 
-        return success_response(None, "Widget stopped")
+        return success_response(None, "Playback stopped")
 
 
 class WidgetConfigurationForm(coap.dynamic_resource.DynamicResource):

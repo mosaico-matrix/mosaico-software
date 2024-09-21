@@ -91,6 +91,10 @@ public:
         return drawable;
     }
 
+    void setPixel(int x, int y, Color color){
+        lastRenderedFrame->SetPixel(x, y, color);
+    }
+
 protected:
     CanvasLayerPosition runnerPosition = CanvasLayerPosition::FULL;
     MatrixWidget();

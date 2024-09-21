@@ -51,6 +51,7 @@ async def start_slideshow(slideshow_id):
     logger.info("Starting slideshow with id: " + str(slideshow_id))
 
     while True:  # Loop indefinitely to restart the slideshow when it ends
+
         # Get slideshow
         slideshow = data.repositories.slideshows.get_slideshow(slideshow_id)
 

@@ -43,18 +43,6 @@ class ActiveSlideshow(resource.Resource):
         return success_response(None, "Slideshow set successfully")
 
 
-    # async def render_delete(self, request):
-    #     """
-    #     Unset the active widget
-    #     """
-    #     logger.info("Received DELETE request to active_widget")
-    #
-    #     # Unload the widget
-    #     settings.set_active_widget_id(None)
-    #     settings.set_active_config_id(None)
-    #     call_matrix("UNLOAD_WIDGET", {})
-    #
-    #     return success_response(None, "Widget stopped")
 
 
 
