@@ -244,6 +244,11 @@ public:
         updateCanvasDimensions();
     }
 
+
+    int getPixelCount() {
+        return pixels.size();
+    }
+
 };
 
 

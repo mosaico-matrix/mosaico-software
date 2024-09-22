@@ -101,6 +101,9 @@ protected:
 
     // Pure virtual method to be overridden for rendering
     virtual void renderNextCanvasLayer(CanvasLayer* canvas) = 0;
+
+    /// This is called just before the first render
+    virtual void initialize() = 0;
 };
 
 #endif

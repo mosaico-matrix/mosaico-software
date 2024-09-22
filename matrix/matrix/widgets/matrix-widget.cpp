@@ -16,6 +16,8 @@ void MatrixWidget::incrementFrameIndex() {
 
 CanvasLayer* MatrixWidget::renderCanvasLayer() {
 
+    Logger::logDebug("Rendering canvas layer");
+
     // Check if lastRenderedFrame has been initialized
     if (lastRenderedFrame == nullptr) {
         lastRenderedFrame = new CanvasLayer(runnerPosition);
@@ -26,11 +28,13 @@ CanvasLayer* MatrixWidget::renderCanvasLayer() {
         return lastRenderedFrame;
     }
     if (firstRender) {
+        this->initialize();
         firstRender = false;
     }
 
     lastRenderedFrame->Clear();
     for (Drawable* drawable : registeredDrawables) {
+        Logger::logDebug("Drawing drawable");
         drawable->draw(lastRenderedFrame);
     }
 
@@ -44,6 +48,7 @@ void MatrixWidget::resetRenderedFrameCount() {
 }
 
 void MatrixWidget::registerDrawable(Drawable* drawable) {
+    Logger::logDebug("Registering drawable");
     drawable->setFrameDuration(1000 / framesPerSecond);
     registeredDrawables.push_back(drawable);
 }

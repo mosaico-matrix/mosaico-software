@@ -10,6 +10,7 @@
 #include <iostream>
 #include "../../../external/pybind/include/pybind11_json.hpp"
 #include "modules/colors-module.cpp"
+
 namespace py = pybind11;
 using namespace pybind11::literals;
 
@@ -20,7 +21,7 @@ public:
             : MatrixWidget(),
               widgetDirPath(std::move(widgetDirPath)),
               configDirPath(std::move(configDirPath)),
-              validWidget(false){
+              validWidget(false) {
 
         setFps(1); // Default fps if something goes wrong
 
@@ -85,6 +86,7 @@ private:
     }
 
     bool scriptsInitialized = false;
+
     void initializeScripts() {
         try {
             //py::initialize_interpreter();
@@ -116,8 +118,7 @@ private:
 
             // Set the working directory to the config directory
             py::exec("import os\nos.chdir('" + configDirPath + "')");
-        }else
-        {
+        } else {
             // Prevent crashes when importing the config object
             mosaico_module.attr("config") = "";
 
@@ -127,16 +128,6 @@ private:
     }
 
     void renderNextCanvasLayer(CanvasLayer *canvas) override {
-
-        if (!scriptsInitialized) {
-            initializeScripts();
-        }
-
-        if (!validWidget) {
-            canvas->Fill(RED_COLOR);
-            return;
-        }
-
         try {
             // Execute the loop function
             py::exec("loop()");
@@ -144,6 +135,17 @@ private:
             Logger::logError("Error while executing loop function: " + std::string(e.what()));
             validWidget = false;
             canvas->Fill(RED_COLOR);
+        }
+    }
+
+    void initialize() override {
+    Logger::logInfo("Initializing dynamic widget");
+        initializeScripts();
+
+
+        if (!validWidget) {
+            getCanvasTemplate()->Fill(RED_COLOR);
+            return;
         }
     }
 };

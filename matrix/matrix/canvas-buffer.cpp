@@ -4,6 +4,7 @@
 #include <list>
 #include "matrices/matrix-device.cpp"
 #include "canvas-layer.cpp"
+#include "../logger/logger.h"
 
 /// This class is responsible for buffering the canvas frames
 /// This is useful when you want to render multiple runners on the matrix and be able to show them all at once

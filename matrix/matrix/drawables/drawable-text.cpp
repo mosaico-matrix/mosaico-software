@@ -85,7 +85,7 @@ public:
     }
 
 private:
-    std::string text = "Lorem ipsum";
+    std::string text = "";
     std::string fontName = "5x7";
     TextScrollingSpeed scrollingSpeed = MEDIUM;
 

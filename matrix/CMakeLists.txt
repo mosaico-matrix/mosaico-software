@@ -120,6 +120,7 @@ set(SOURCES
         matrix/widgets/matrix-widget.h
         matrix/widgets/matrix-widget.cpp
         matrix/widgets/loading-widget.cpp
+        matrix/widgets/idle-widget.cpp
 
         # Dynamic widgets
         matrix/widgets/dynamic/dynamic-widget.cpp

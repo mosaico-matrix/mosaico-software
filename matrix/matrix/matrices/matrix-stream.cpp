@@ -155,14 +155,11 @@ public:
     }
 
     void SetPixel(int x, int y, uint8_t red, uint8_t green, uint8_t blue) override {
-        // This will be handled by Canvas objects, no need to override
     }
 
     void Fill(uint8_t red, uint8_t green, uint8_t blue) override {
-        // This will be handled by Canvas objects, no need to override
     }
 
     void Clear() override {
-        // This will be handled by Canvas objects, no need to override
     }
 };

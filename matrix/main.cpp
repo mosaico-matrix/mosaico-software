@@ -13,7 +13,7 @@ using json = nlohmann::json;
 // Global variables
 std::map<std::string, rgb_matrix::Font *> DrawableText::fonts;
 bool matrixFullyInitialized = false;
-WidgetRenderer *newWidgetReceived = nullptr;
+WidgetRenderer *runningWidget = nullptr;
 
 // Rgb matrix options
 RGBMatrix::Options matrix_options;
@@ -33,6 +33,18 @@ void signalHandler(int signal) {
     }
 }
 
+// Set a new widget as the active one
+void setActiveWidget(WidgetRenderer *newWidget) {
+
+    // Delete the old widget
+    Logger::logDebug("Deleting old widget");
+    runningWidget = nullptr;
+    delete runningWidget;
+
+    // Set new widget
+    runningWidget = newWidget;
+}
+
 // Handle commands received from Python through BLE or COAP
 // Note that the socket expects a response so make sure to send a response back at the end of the function
 void commandHandler(const std::string &command, const json &data) {
@@ -42,17 +54,18 @@ void commandHandler(const std::string &command, const json &data) {
         try {
             auto newWidget = new WidgetRenderer(matrix);
             newWidget->setDynamicWidget(data["widget_path"], data["config_path"]);
-            newWidgetReceived = newWidget;
+            setActiveWidget(newWidget); // Use the new method to set the widget immediately
         } catch (const std::exception &e) {
             Logger::logError("Error while loading widget: " + std::string(e.what()));
             return;
         }
 
     } else if (command == "UNLOAD_WIDGET") {
-        newWidgetReceived = new WidgetRenderer(matrix);
-        newWidgetReceived->setIdle();
-
+        auto idleWidget = new WidgetRenderer(matrix);
+        idleWidget->setIdle();
+        setActiveWidget(idleWidget);
     }
+
     pythonSocket->sendResponse();
 }
 
@@ -73,9 +86,10 @@ void initStuffBackground() {
     matrixFullyInitialized = true;
     Logger::logInfo("Matrix fully initialized");
 
-    // Set the new widget
-    newWidgetReceived = new WidgetRenderer(matrix);
-    newWidgetReceived->setIdle();
+    // Set IDLE
+    auto idleRenderer = new WidgetRenderer(matrix);
+    idleRenderer->setIdle();
+    setActiveWidget(idleRenderer);
 
     // Start python server
     pythonSocket = new PythonSocket();
@@ -100,7 +114,7 @@ int main(int argc, char *argv[]) {
     matrix = MatrixBuilder::build();
 
     // Show loading at first
-    auto *runningWidget = new WidgetRenderer(matrix);
+    runningWidget = new WidgetRenderer(matrix);
     runningWidget->setLoading();
 
     // Initialize stuff on a separate thread while showing loading
@@ -108,27 +122,13 @@ int main(int argc, char *argv[]) {
         initStuffBackground();
     });
 
-
     // Main loop
     while (true) {
-
-        // Render the current slideshow frame
-        runningWidget->renderOnMatrix();
-
-        // Check if a new slideshow was received
-        if (newWidgetReceived != nullptr) {
-
-            // Delete current slideshow
-            Logger::logDebug("Deleting old slideshow");
-            delete runningWidget;
-
-            runningWidget = newWidgetReceived;
-
-            // Reset newSlideshowReceived
-            newWidgetReceived = nullptr;
-
-            // Clear the matrix
-            //matrix->Clear();
+        // Render the current widget frame
+        if (runningWidget != nullptr)
+        {
+            runningWidget->renderOnMatrix();
         }
     }
 }
+
