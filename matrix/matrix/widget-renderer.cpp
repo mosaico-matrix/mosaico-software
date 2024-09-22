@@ -62,7 +62,7 @@ public:
         CanvasLayer *partialLayer = currentWidget->renderCanvasLayer();
 
         // Check how many pixels in this frame
-        Logger::logError("Partial layer has " + std::to_string(partialLayer->getPixelCount()) + " pixels");
+        //Logger::logDebug("Partial layer has " + std::to_string(partialLayer->getPixelCount()) + " pixels");
         compositeCanvasBuffer->paintPartialLayerOnCurrentFrame(partialLayer);
 
         // Swap the canvas to the matrix

@@ -12,12 +12,7 @@
 #include "../drawables/drawable-shape.cpp"
 #include "../drawables/drawable-ppm.cpp"
 
-// Available games (add more as needed)
-enum class MatrixGameEnum {
-    PIXEL_MOVER = -1,
-    TETRIS = 0,
-    // Add more games here
-};
+
 
 class CanvasLayer;
 class Drawable;
@@ -99,7 +94,7 @@ protected:
     CanvasLayerPosition runnerPosition = CanvasLayerPosition::FULL;
     MatrixWidget();
 
-    // Pure virtual method to be overridden for rendering
+    /// Pure virtual method to be overridden for rendering
     virtual void renderNextCanvasLayer(CanvasLayer* canvas) = 0;
 
     /// This is called just before the first render

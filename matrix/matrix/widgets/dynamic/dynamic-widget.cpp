@@ -85,19 +85,6 @@ private:
         }
     }
 
-    bool scriptsInitialized = false;
-
-    void initializeScripts() {
-        try {
-            //py::initialize_interpreter();
-            bindObjectsToPython();
-            py::exec(widgetScriptString);
-        } catch (const py::error_already_set &e) {
-            Logger::logError("Error while initializing scripts: " + std::string(e.what()));
-            validWidget = false;
-        }
-        scriptsInitialized = true;
-    }
 
     void bindObjectsToPython() {
 
@@ -139,9 +126,17 @@ private:
     }
 
     void initialize() override {
-    Logger::logInfo("Initializing dynamic widget");
-        initializeScripts();
 
+        try {
+            // Register C++ -> Python bindings
+            bindObjectsToPython();
+
+            // Load the widget script and execute everything except the loop function
+            py::exec(widgetScriptString);
+        } catch (const py::error_already_set &e) {
+            Logger::logError("Error while initializing scripts: " + std::string(e.what()));
+            validWidget = false;
+        }
 
         if (!validWidget) {
             getCanvasTemplate()->Fill(RED_COLOR);
