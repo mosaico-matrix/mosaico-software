@@ -34,6 +34,23 @@ void signalHandler(int signal) {
 }
 
 
+// Set a new widget as the active one
+void setActiveWidget(WidgetRenderer *newWidget) {
+
+    // Delete the old widget
+    Logger::logDebug("Deleting old widget");
+    runningWidget = nullptr;
+    delete runningWidget;
+
+    // Small loading transition
+    auto canvas = matrix->CreateFrameCanvas();
+    drawTransition(canvas);
+    matrix->SwapFrameCanvas(canvas);
+
+    // Set new widget
+    runningWidget = newWidget;
+}
+
 // Handle commands received from Python through BLE or COAP
 // Note that the socket expects a response so make sure to send a response back at the end of the function
 void commandHandler(const std::string &command, const json &data) {
@@ -113,24 +130,6 @@ void drawTransition(Canvas *canvas) {
             }
         }
     }
-}
-
-
-// Set a new widget as the active one
-void setActiveWidget(WidgetRenderer *newWidget) {
-
-    // Delete the old widget
-    Logger::logDebug("Deleting old widget");
-    runningWidget = nullptr;
-    delete runningWidget;
-
-    // Small loading transition
-    auto canvas = matrix->CreateFrameCanvas();
-    drawTransition(canvas);
-    matrix->SwapFrameCanvas(canvas);
-
-    // Set new widget
-    runningWidget = newWidget;
 }
 
 
