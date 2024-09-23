@@ -33,6 +33,32 @@ void signalHandler(int signal) {
     }
 }
 
+// Draws a simple transition between widgets loading
+void drawTransition(Canvas *canvas) {
+    // Brightness levels for the squares
+    int brightnessLevels[3] = {255, 170, 85};
+
+    // Fixed square size
+    int squareSize = 5;
+
+    // Hardcoded positions for the squares centered horizontally and vertically
+    // X coordinates of the squares (centered at (32, 32) on the 64x64 matrix)
+    int positions[3] = {24, 32, 40}; // Horizontal positions for left, middle, right squares
+    int centerY = 32 - (squareSize / 2); // Top-left Y position for all squares
+
+    // Loop to draw the 3 squares
+    for (int i = 0; i < 3; ++i) {
+        int topLeftX = positions[i] - (squareSize / 2);
+        int brightness = brightnessLevels[i];
+
+        // Draw the square as a block of pixels
+        for (int x = topLeftX; x < topLeftX + squareSize; ++x) {
+            for (int y = centerY; y < centerY + squareSize; ++y) {
+                canvas->SetPixel(x, y, brightness, brightness, brightness);
+            }
+        }
+    }
+}
 
 // Set a new widget as the active one
 void setActiveWidget(WidgetRenderer *newWidget) {
@@ -105,32 +131,7 @@ void initStuffBackground() {
     }
 }
 
-// Draws a simple transition between widgets loading
-void drawTransition(Canvas *canvas) {
-    // Brightness levels for the squares
-    int brightnessLevels[3] = {255, 170, 85};
 
-    // Fixed square size
-    int squareSize = 5;
-
-    // Hardcoded positions for the squares centered horizontally and vertically
-    // X coordinates of the squares (centered at (32, 32) on the 64x64 matrix)
-    int positions[3] = {24, 32, 40}; // Horizontal positions for left, middle, right squares
-    int centerY = 32 - (squareSize / 2); // Top-left Y position for all squares
-
-    // Loop to draw the 3 squares
-    for (int i = 0; i < 3; ++i) {
-        int topLeftX = positions[i] - (squareSize / 2);
-        int brightness = brightnessLevels[i];
-
-        // Draw the square as a block of pixels
-        for (int x = topLeftX; x < topLeftX + squareSize; ++x) {
-            for (int y = centerY; y < centerY + squareSize; ++y) {
-                canvas->SetPixel(x, y, brightness, brightness, brightness);
-            }
-        }
-    }
-}
 
 
 int main(int argc, char *argv[]) {
