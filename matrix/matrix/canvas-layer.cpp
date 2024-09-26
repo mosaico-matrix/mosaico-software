@@ -108,8 +108,10 @@ private:
 
 public:
 
-    CanvasLayer(CanvasLayerPosition position)  {
+    CanvasLayerPosition pos = CanvasLayerPosition::FULL;
+    CanvasLayer(CanvasLayerPosition position = CanvasLayerPosition::FULL) {
 
+        pos = position;
 
         // Set the layer position and start point
         switch (position) {
@@ -183,7 +185,7 @@ public:
 
 
     // Merge to actual canvas
-    void paintOntoCanvas(Canvas *canvas) {
+    void paintOntoCanvas(Canvas *canvas, int xOff = 0, int yOff = 0) {
 
         // Draw border if needed
         if (bordered)
@@ -193,8 +195,8 @@ public:
 
         // Draw pixels on the final canvas
         for (auto pixel: pixels) {
-            int x = pixel.point.x;
-            int y = pixel.point.y;
+            int x = pixel.point.x + xOff;
+            int y = pixel.point.y + yOff;
             canvas->SetPixel(x, y, pixel.red, pixel.green, pixel.blue);
         }
     }
@@ -230,6 +232,14 @@ public:
     void Clear() {
 
         pixels.clear();
+    }
+
+    CanvasLayer *Clone() {
+        CanvasLayer *layer = new CanvasLayer(pos);
+        layer->setPadding(padding);
+        layer->setBorder(borderColor);
+        this->paintOntoCanvas(layer);
+        return layer;
     }
 
 

@@ -11,7 +11,7 @@
 #include "../drawables/drawable-text.cpp"
 #include "../drawables/drawable-shape.cpp"
 #include "../drawables/drawable-ppm.cpp"
-
+#include "../drawables/drawable-canvas.cpp"
 
 
 class CanvasLayer;
@@ -82,6 +82,12 @@ public:
 
     DrawablePPM *createPPM(){
         auto *drawable = new DrawablePPM();
+        registerDrawable(drawable);
+        return drawable;
+    }
+
+    DrawableCanvas *createCanvas(){
+        auto *drawable = new DrawableCanvas();
         registerDrawable(drawable);
         return drawable;
     }

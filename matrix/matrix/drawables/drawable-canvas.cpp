@@ -1,13 +1,16 @@
 #pragma once
 
 #include "drawable.h"
+#include "../canvas-layer.cpp"
 
 class DrawableCanvas : public Drawable {
 
-
+private:
+    CanvasLayer *canvasLayer;
 
 public:
-    DrawableCanvas () : DrawableShape() {
+    DrawableCanvas (CanvasLayer* existingLayer = nullptr) : Drawable() {
+        canvasLayer = existingLayer == nullptr ? new CanvasLayer() : existingLayer;
     }
 
     void setSize(int w, int h) {
@@ -23,11 +26,23 @@ public:
         return height;
     }
 
+    void setPixel(int x, int y, Color color) {
+        canvasLayer->SetPixel(x, y, color);
+    }
+
+    void clear() {
+        canvasLayer->Clear();
+    }
+
+    void fill(Color color) {
+        canvasLayer->Fill(color);
+    }
+
+    DrawableCanvas* clone() {
+        return new DrawableCanvas(canvasLayer->Clone());
+    }
+
     void _draw(Canvas *canvas) override {
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                canvas->SetPixel(xPosition + i, yPosition + j, color.r, color.g, color.b);
-            }
-        }
+        canvasLayer->paintOntoCanvas(canvas, xPosition, yPosition);
     }
 };

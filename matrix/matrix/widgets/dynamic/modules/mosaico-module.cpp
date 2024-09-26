@@ -13,16 +13,19 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     py::class_<Color>(m, "Color")
     .def(py::init<int, int, int>());
 
-//    // Bind the canvas to directly draw on the matrix
-//    py::class_<CanvasLayer>(m, "CanvasLayer")
-//            .def("setPixel", py::overload_cast<int, int, Color>(&CanvasLayer::SetPixel))
-//            .def("clear", &CanvasLayer::Clear);
+    // Bind the canvas to directly draw on the matrix
+    py::class_<CanvasLayer>(m, "CanvasLayer")
+            .def("setPixel", py::overload_cast<int, int, Color>(&CanvasLayer::SetPixel))
+            .def("clone", &CanvasLayer::Clone)
+            .def("clear", &CanvasLayer::Clear);
+
 
     // Binding the MatrixWidget class
     py::class_<MatrixWidget>(m, "MatrixWidget")
             .def("createRectangle", &MatrixWidget::createRectangle)
             .def("createImage", &MatrixWidget::createPPM)
             .def("createText", &MatrixWidget::createText)
+            .def("createCanvas", &MatrixWidget::createCanvas)
             .def("remove", &MatrixWidget::unregisterDrawable)
             .def("setPixel", &MatrixWidget::setPixel)
             .def("clear", &MatrixWidget::clearDrawables);
@@ -49,6 +52,16 @@ PYBIND11_EMBEDDED_MODULE(mosaico, m) {
     .def("getY", &Drawable::getY)
     .def("centerHorizontally", &Drawable::centerHorizontally)
     .def("centerVertically", &Drawable::centerVertically);
+
+    // Bind the DrawableCanvas class
+    py::class_<DrawableCanvas, Drawable>(m, "DrawableCanvas")
+    .def("setSize", &DrawableCanvas::setSize)
+    .def("getWidth", &DrawableCanvas::getWidth)
+    .def("getHeight", &DrawableCanvas::getHeight)
+    .def("setPixel", &DrawableCanvas::setPixel)
+    .def("clear", &DrawableCanvas::clear)
+    .def("clone", &DrawableCanvas::clone)
+    .def("fill", &DrawableCanvas::fill);
 
 
     // Bind the DrawableShape class

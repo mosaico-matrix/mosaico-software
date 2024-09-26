@@ -61,6 +61,7 @@ void drawTransition(Canvas *canvas) {
 }
 
 // Set a new widget as the active one
+Canvas* loadingCanvas = nullptr; // Saved here for performance reasons ;)
 void setActiveWidget(WidgetRenderer *newWidget) {
 
     // Delete the old widget
@@ -68,10 +69,13 @@ void setActiveWidget(WidgetRenderer *newWidget) {
     runningWidget = nullptr;
     delete runningWidget;
 
-    // Small loading transition
-    auto canvas = matrix->CreateFrameCanvas();
-    drawTransition(canvas);
-    matrix->SwapFrameCanvas(canvas);
+    // Disabled per now, maybe is slowing down new widget loading
+//    // Small loading transition
+//    if (loadingCanvas == nullptr) {
+//        loadingCanvas = matrix->CreateFrameCanvas();
+//        drawTransition(loadingCanvas);
+//    }
+//    matrix->SwapFrameCanvas(loadingCanvas);
 
     // Set new widget
     runningWidget = newWidget;
