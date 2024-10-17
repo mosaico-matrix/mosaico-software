@@ -7,7 +7,7 @@
 #include "../logger/logger.h"
 
 /// This class is responsible for buffering the canvas frames
-/// This is useful when you want to render multiple runners on the matrix and be able to show them all at once
+/// This is useful when you want to render multiple widgets on the matrix and be able to show them all at once
 /// The buffer will be able to swap the frames on the matrix without flickering
 class CanvasBuffer {
 

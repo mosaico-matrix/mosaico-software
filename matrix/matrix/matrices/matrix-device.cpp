@@ -14,7 +14,7 @@ public:
 
     int width() const {
         return MATRIX_COLS;
-    }m
+    }
     int height() const {
         return MATRIX_ROWS;
     }

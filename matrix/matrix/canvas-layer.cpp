@@ -20,9 +20,9 @@ enum CanvasLayerPosition {
     RIGHT = 8
 };
 
-/// A canvas layer is basically a layer that can be painted on by a runner
-/// It is used to create a composite image that can be displayed on the matrix
-/// Note that the canvas layer can be narrower and/or shorter than the matrix
+/// A CanvasLayer is a layer that can be painted on by a widget.
+/// Allows to create composite widgets to be displayed on the matrix.
+/// Can be narrower or shorter than the matrix.
 class CanvasLayer : public Canvas {
 
 private:
