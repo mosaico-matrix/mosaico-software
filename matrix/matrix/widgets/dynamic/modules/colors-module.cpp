@@ -28,5 +28,6 @@ public:
         colors.attr("maroon") = MAROON_COLOR;
         colors.attr("olive") = OLIVE_COLOR;
         colors.attr("navy") = NAVY_COLOR;
+        colors.def("random", &RandomColor);
     }
 };
