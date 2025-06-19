@@ -131,6 +131,10 @@ private:
             // Register C++ -> Python bindings
             bindObjectsToPython();
 
+            auto sys = py::module_::import("sys");
+            std::cout << "Python Path: " << sys.attr("executable").cast<std::string>() << std::endl;
+           // Logger::logDebug("Executing widget script");
+
             // Load the widget script and execute everything except the loop function
             py::exec(widgetScriptString);
         } catch (const py::error_already_set &e) {

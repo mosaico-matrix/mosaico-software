@@ -126,6 +126,15 @@ if [ "$MODE" == "web" ]; then
   cd ..
 fi
 
+## Enter the FINAL virtual environment to get access pip packages from widgets
+echo -e "${YELLOW}Checking python virtual environment for widgets${NC}"
+cd networking/storage/widgets
+run_command python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+echo -e "${GREEN}Python virtual environment OK${NC}"
+cd ../../..
+
 # Compile the application
 cd matrix
 echo -e "${YELLOW}Compiling the application${NC}"
